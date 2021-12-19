@@ -150,6 +150,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\CollisionComponent.cpp" />
     <ClCompile Include="src\GameStateManager.cpp" />
     <ClCompile Include="src\Camera.cpp" />
     <ClCompile Include="src\DrawingComponent.cpp" />
@@ -161,6 +162,7 @@
     <ClCompile Include="src\Vector.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\CollisionComponent.h" />
     <ClInclude Include="src\GameStateManager.h" />
     <ClInclude Include="src\Camera.h" />
     <ClInclude Include="src\DrawingComponent.h" />

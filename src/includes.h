@@ -28,7 +28,7 @@ extern uint32_t actualFPS;
 // unused
 extern uint32_t WIN_WIDTH;
 extern uint32_t WIN_HEIGHT;
-
+extern bool debugKeyDown;
 
 
 struct SpriteSheet {

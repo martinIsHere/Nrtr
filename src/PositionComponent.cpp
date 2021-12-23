@@ -6,6 +6,7 @@ PositionComponent::PositionComponent(int x, int y) : m_X(x), m_Y(y) {
 	m_acceleration_vector = nullptr;
 	m_Magnitude = 0;
 	m_Directions = { false, false, false, false };
+	m_facingDir = 0;
 	DEFAULT_SPEED = 1.f;
 	DEFAULT_NATURAL_DECELERATION = 0.5f;
 	m_speed = DEFAULT_SPEED;
@@ -29,10 +30,6 @@ int& PositionComponent::getx(){
 }
 int& PositionComponent::gety(){
 	return m_Y;
-}
-
-int PositionComponent::getPos() const {
-	return m_X, m_Y;
 }
 
 float PositionComponent::getMaxVel() const{
@@ -84,6 +81,13 @@ void PositionComponent::update_current_acceleration() {
 	else if (m_Directions[DIR_UP]) {
 		m_acceleration_vector->y = -m_speed;
 	}
+	log(m_acceleration_vector->x);
+	if ((m_Directions[DIR_LEFT] || m_Directions[DIR_RIGHT]) 
+		&& (m_Directions[DIR_UP] || m_Directions[DIR_DOWN])) {
+		m_acceleration_vector->x *= 0.9;
+		log(m_acceleration_vector->x);
+		m_acceleration_vector->y *= 0.9;
+	}
 }
 
 void PositionComponent::cap_velocity() {
@@ -109,7 +113,8 @@ void PositionComponent::update(){
 	//NATURAL_DECELERATION = DEFAULT_NATURAL_DECELERATION * m_deltaTime_speedFix;
 	//m_speed = DEFAULT_SPEED * m_deltaTime_speedFix;
 
-	cap_velocity();
+	updateFacingDir();
+
 
 	update_current_acceleration();
 
@@ -117,11 +122,16 @@ void PositionComponent::update(){
 	m_velocity_vector = *m_velocity_vector + m_acceleration_vector;
 	apply_natural_deceleration();
 
-	normalize();
+	cap_velocity();
 
 	// update position by updated velocity
 	m_X += (int)m_velocity_vector->x;
 	m_Y += (int)m_velocity_vector->y;
+}
+
+// rendered pointless
+void PositionComponent::updateFacingDir() {
+	
 }
 
 void PositionComponent::draw(){
@@ -157,31 +167,66 @@ void PositionComponent::setAcc(const float& xAcc, const float& yAcc) {
 void PositionComponent::setDirX(const bool& left, const bool& right) {
 	m_Directions[DIR_LEFT] = left;
 	m_Directions[DIR_RIGHT] = right;
+	if (left) {
+		m_facingDir = DIR_LEFT;
+	}
+	else if(right) {
+		m_facingDir = DIR_RIGHT;
+	}
 }
 
 void PositionComponent::setDirY(const bool& up, const bool& down) {
 	m_Directions[DIR_DOWN] = down;
 	m_Directions[DIR_UP] = up;
+	if (down) {
+		m_facingDir = DIR_DOWN;
+	}
+	else if (up) {
+		m_facingDir = DIR_UP;
+	}
 }
 
 void PositionComponent::setDirX_left(const bool& dir) {
 	m_Directions[DIR_LEFT] = dir;
+	if (dir) {
+		m_facingDir = DIR_LEFT;
+	}
 }
 
 void PositionComponent::setDirX_right(const bool& dir) {
 	m_Directions[DIR_RIGHT] = dir;
+	if (dir) {
+		m_facingDir = DIR_RIGHT;
+	}
 }
 
 void PositionComponent::setDirY_up(const bool& dir) {
 	m_Directions[DIR_UP] = dir;
+	if (dir) {
+		m_facingDir = DIR_UP;
+	}
 }
 
 void PositionComponent::setDirY_down(const bool& dir) {
 	m_Directions[DIR_DOWN] = dir;
+	if (dir) {
+		m_facingDir = DIR_DOWN;
+	}
+}
+
+void PositionComponent::setDir(uint32_t dir, bool value) {
+	m_Directions[dir] = value;
+	if (value) {
+		m_facingDir = dir;
+	}
 }
 
 std::array<bool, 4>& PositionComponent::getDir() {
 	return m_Directions;
+}
+
+uint32_t& PositionComponent::getFacingDir() {
+	return m_facingDir;
 }
 
 bool PositionComponent::isMoving() {
@@ -200,6 +245,67 @@ bool PositionComponent::isMovingX() {
 
 bool PositionComponent::isMovingY() {
 	if (m_Directions[DIR_UP] || m_Directions[DIR_DOWN]) {
+		return true;
+	}
+	return false;
+}
+
+float& PositionComponent::getVelx() {
+	return m_velocity_vector->x;
+}
+
+float& PositionComponent::getVely() {
+	return m_velocity_vector->y;
+}
+
+Vector* PositionComponent::getVel_vector() {
+	return m_velocity_vector;
+}
+
+bool PositionComponent::isMovingLeftVel() {
+	if (m_velocity_vector->x < 0) {
+		return true;
+	}
+	return false;
+}
+
+bool PositionComponent::isMovingRightVel() {
+	if (m_velocity_vector->x > 0) {
+		return true;
+	}
+	return false;
+}
+
+bool PositionComponent::isMovingUpVel() {
+	if (m_velocity_vector->y < 0) {
+		return true;
+	}
+	return false;
+}
+
+bool PositionComponent::isMovingDownVel() {
+	if (m_velocity_vector->y > 0) {
+		return true;
+	}
+	return false;
+}
+
+bool PositionComponent::isMovingVel() {
+	if (m_velocity_vector->x != 0 && m_velocity_vector != 0) {
+		return true;
+	}
+	return false;
+}
+
+bool PositionComponent::isMovingVelX() {
+	if (m_velocity_vector->x != 0) {
+		return true;
+	}
+	return false;
+}
+
+bool PositionComponent::isMovingVelY() {
+	if (m_velocity_vector->y != 0) {
 		return true;
 	}
 	return false;

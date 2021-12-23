@@ -17,10 +17,10 @@ GameEngine::GameEngine(const int nWidth, const int nHeight, const std::string& t
 	// game state related stuff
 	m_stateManager = new GameStateManager();
 
-	m_stateManager->get() = m_stateManager->startingScreen;
+	m_stateManager->get() = m_stateManager->state_startingScreen;
 
-	// when game has fully begun
-	m_stateManager->get() = m_stateManager->game;
+	// when game has fully started
+	m_stateManager->get() = m_stateManager->state_gameRunning;
 
 
 
@@ -61,12 +61,16 @@ GameEngine::GameEngine(const int nWidth, const int nHeight, const std::string& t
 		&(playerEntity->getComponent<PositionComponent>().gety())
 		);
 
+	map->get_drawingSolidStates_bool() = true;
+
 	playerEntity->addComponent<DrawingComponent>(
 		ren, 
 		"hero.bmp", 
 		3, 4, 
 		nFps, 
 		map->getCam()->getOffsetX(), map->getCam()->getOffsetY());
+	playerEntity->addComponent<CollisionComponent>(map);
+	playerEntity->addComponent<InteractionComponent>(map);
 
 
 	m_entityManager.init();
@@ -125,6 +129,16 @@ void GameEngine::handleEvents() {
 			case SDLK_d:
 				playerEntity->getComponent<PositionComponent>().setDirX_right(0);
 				break;
+			case SDLK_t:
+				map->get_drawingSolidStates_bool() = map->get_drawingSolidStates_bool() ? false : true;
+				break;
+			case SDLK_l:
+				// help key for debugging
+				debugKeyDown = true;
+				break;
+			case SDLK_SPACE:
+				playerEntity->getComponent<InteractionComponent>().interact();
+				break;
 			}
 			break;
 		}
@@ -134,7 +148,7 @@ void GameEngine::handleEvents() {
 void GameEngine::update() {
 	unStartElapsedTime = SDL_GetTicks();
 
-	if (m_stateManager->get() == m_stateManager->game) {
+	if (m_stateManager->get() == m_stateManager->state_gameRunning) {
 
 		handleEvents();
 		//player1->move();
@@ -144,9 +158,9 @@ void GameEngine::update() {
 		playerEntity->getComponent<PositionComponent>().setAcc(0, 0);
 
 		// 
-		draw();
+		map->update(); 
 
-		map->update();
+		draw();
 	
 		// delay
 		nElapsedTime = SDL_GetTicks() - unStartElapsedTime;
@@ -167,7 +181,7 @@ void GameEngine::draw() {
 	SDL_SetRenderDrawColor(ren, 0, 0, 0, 255);
 	SDL_RenderClear(ren);
 
-	if (m_stateManager->get() == m_stateManager->game) {
+	if (m_stateManager->get() == m_stateManager->state_gameRunning) {
 
 		map->draw();
 

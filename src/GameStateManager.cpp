@@ -2,7 +2,7 @@
 
 GameStateManager::GameStateManager() {
 	state = new GameState;
-	*state = noState;
+	*state = state_noState;
 }
 
 GameStateManager::~GameStateManager() {

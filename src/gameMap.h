@@ -38,6 +38,8 @@ public:
 
 	Camera* getCam();
 
+	bool& get_drawingSolidStates_bool();
+
 private:
 
 	std::vector <uint16_t> m_backLayer_array;
@@ -66,6 +68,8 @@ private:
 	int* playerX,* playerY;
 
 	char m_readingBuffer[2];
+
+	bool m_isDrawingSolidStates;
 
 	std::ifstream m_mapFile;
 

@@ -1,19 +1,24 @@
 #pragma once
 #include "ECS.h"
 #include "PositionComponent.h"
+#include "DrawingComponent.h"
 #include "gameMap.h"
 
-class CollisionComponent : public Component{
+class InteractionComponent : public Component {
 
 	PositionComponent* m_posComp;
 
 	GameMap* m_gameMap;
-	
+
+	bool m_hasInteracted;
+
 public:
 
-	CollisionComponent(GameMap* gameMap);
+	void interact();
 
-	~CollisionComponent();
+	InteractionComponent(GameMap* gameMap);
+
+	~InteractionComponent();
 
 	void init() override;
 
@@ -21,11 +26,7 @@ public:
 
 	void draw() override;
 
-	// true = entity has collided
-	bool correct_possible_collision();
-
 private:
-
 
 
 };

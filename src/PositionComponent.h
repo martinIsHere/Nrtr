@@ -4,12 +4,6 @@
 #include "includes.h"
 
 
-/*
-Will handle an entity's position on the screen. Accompanying this component will be a drawing component that will use
-the coordinates to draw a sprite at that location. Very simple
-
-I look forward to creating these components.
-*/
 
 class PositionComponent : public Component{
 
@@ -18,6 +12,7 @@ class PositionComponent : public Component{
 	Vector *m_acceleration_vector;
 	float m_Magnitude;
 	std::array<bool, 4> m_Directions;
+	uint32_t m_facingDir;
 	float m_speed;
 	float m_deltaTime_speedFix;
 
@@ -64,6 +59,8 @@ public:
 
 	void setDirY_down(const bool& dir);
 
+	void setDir(uint32_t dir, bool value);
+
 	bool isMoving();
 
 	bool isMovingX();
@@ -74,6 +71,30 @@ public:
 
 	std::array<bool, 4>& getDir();
 
+	uint32_t& getFacingDir();
+
+	void setVel(const int x, const int y);
+
+	float& getVelx();
+
+	float& getVely();
+
+	Vector* getVel_vector();
+
+	bool isMovingLeftVel();
+
+	bool isMovingRightVel();
+
+	bool isMovingUpVel();
+
+	bool isMovingDownVel();
+
+	bool isMovingVel();
+
+	bool isMovingVelX();
+
+	bool isMovingVelY();
+
 private: 
 
 	void apply_natural_deceleration();
@@ -82,7 +103,7 @@ private:
 
 	void cap_velocity();
 
-	void setVel(const int x, const int y);
+	void updateFacingDir();
 
 	void set_deltaTime_speedFix();
 

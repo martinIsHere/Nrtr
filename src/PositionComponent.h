@@ -74,6 +74,28 @@ public:
 
 	std::array<bool, 4>& getDir();
 
+	void setVel(const int x, const int y);
+
+	float& getVelx();
+
+	float& getVely();
+
+	Vector* getVel_vector();
+
+	bool isMovingLeftVel();
+
+	bool isMovingRightVel();
+
+	bool isMovingUpVel();
+
+	bool isMovingDownVel();
+
+	bool isMovingVel();
+
+	bool isMovingVelX();
+
+	bool isMovingVelY();
+
 private: 
 
 	void apply_natural_deceleration();
@@ -82,7 +104,6 @@ private:
 
 	void cap_velocity();
 
-	void setVel(const int x, const int y);
 
 	void set_deltaTime_speedFix();
 

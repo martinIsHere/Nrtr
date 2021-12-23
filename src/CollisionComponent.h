@@ -5,7 +5,9 @@
 
 class CollisionComponent : public Component{
 
-	PositionComponent* posComp;
+	PositionComponent* m_posComp;
+
+	GameMap* m_gameMap;
 	
 public:
 

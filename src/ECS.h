@@ -78,10 +78,18 @@ public:
 		// creates a new component
 		T* c = new T(args...);
 
+		if (!c) {
+			std::cout << "Failed in creating new component!\n";
+		}
+
 		// sets the component's instance of an entity to this one
 		c->ent = this;
 
 		// adds component to component array and activates it by setting active to true
+		if (m_ComponentArray[getComponentTypeID<T>()]) {
+			std::cout << "Component already added!\n";
+		}
+		log(getComponentTypeID<T>())
 		m_ComponentArray[getComponentTypeID<T>()] = c;
 		m_ComponentBitset[getComponentTypeID<T>()] = true;
 

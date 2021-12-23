@@ -204,3 +204,64 @@ bool PositionComponent::isMovingY() {
 	}
 	return false;
 }
+
+float& PositionComponent::getVelx() {
+	return m_velocity_vector->x;
+}
+
+float& PositionComponent::getVely() {
+	return m_velocity_vector->y;
+}
+
+Vector* PositionComponent::getVel_vector() {
+	return m_velocity_vector;
+}
+
+bool PositionComponent::isMovingLeftVel() {
+	if (m_velocity_vector->x < 0) {
+		return true;
+	}
+	return false;
+}
+
+bool PositionComponent::isMovingRightVel() {
+	if (m_velocity_vector->x > 0) {
+		return true;
+	}
+	return false;
+}
+
+bool PositionComponent::isMovingUpVel() {
+	if (m_velocity_vector->y < 0) {
+		return true;
+	}
+	return false;
+}
+
+bool PositionComponent::isMovingDownVel() {
+	if (m_velocity_vector->y > 0) {
+		return true;
+	}
+	return false;
+}
+
+bool PositionComponent::isMovingVel() {
+	if (m_velocity_vector->x != 0 && m_velocity_vector != 0) {
+		return true;
+	}
+	return false;
+}
+
+bool PositionComponent::isMovingVelX() {
+	if (m_velocity_vector->x != 0) {
+		return true;
+	}
+	return false;
+}
+
+bool PositionComponent::isMovingVelY() {
+	if (m_velocity_vector->y != 0) {
+		return true;
+	}
+	return false;
+}

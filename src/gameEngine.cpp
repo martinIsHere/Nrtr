@@ -61,12 +61,15 @@ GameEngine::GameEngine(const int nWidth, const int nHeight, const std::string& t
 		&(playerEntity->getComponent<PositionComponent>().gety())
 		);
 
+	map->get_drawingSolidStates_bool() = true;
+
 	playerEntity->addComponent<DrawingComponent>(
 		ren, 
 		"hero.bmp", 
 		3, 4, 
 		nFps, 
 		map->getCam()->getOffsetX(), map->getCam()->getOffsetY());
+	playerEntity->addComponent<CollisionComponent>(map);
 
 
 	m_entityManager.init();
@@ -124,6 +127,9 @@ void GameEngine::handleEvents() {
 				break;
 			case SDLK_d:
 				playerEntity->getComponent<PositionComponent>().setDirX_right(0);
+				break;
+			case SDLK_t:
+				map->get_drawingSolidStates_bool() = map->get_drawingSolidStates_bool() ? false : true;
 				break;
 			}
 			break;

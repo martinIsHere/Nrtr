@@ -147,7 +147,7 @@ void GameMap::draw() {
 	mousePositionX += offsetX;
 	mousePositionY += offsetY;
 
-	log((int)getBackMirrorState(mousePositionX / TILE_SIZE, mousePositionY / TILE_SIZE))
+	//log((int)getBackMirrorState(mousePositionX / TILE_SIZE, mousePositionY / TILE_SIZE))
 
 	dstRect2->x = int(mousePositionX/TILE_SIZE)*TILE_SIZE - offsetX;
 	dstRect2->y = int(mousePositionY/TILE_SIZE)* TILE_SIZE - offsetY,
@@ -210,10 +210,11 @@ void GameMap::draw() {
 				
 				
 			}
-
-			if (getState(x, y)) {
-				SDL_SetRenderDrawColor(m_ren, 255, 0, 0, 200);
-				SDL_RenderDrawRect(m_ren, m_tempDstRect);
+			if (m_isDrawingSolidStates) {
+				if (getState(x, y)) {
+					SDL_SetRenderDrawColor(m_ren, 255, 0, 0, 200);
+					SDL_RenderDrawRect(m_ren, m_tempDstRect);
+				}
 			}
 
 		}
@@ -273,4 +274,8 @@ uint32_t& GameMap::getBlockSize() {
 
 Camera* GameMap::getCam() {
 	return m_mainCamera;
+}
+
+bool& GameMap::get_drawingSolidStates_bool() {
+	return m_isDrawingSolidStates;
 }

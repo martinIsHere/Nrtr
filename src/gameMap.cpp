@@ -221,7 +221,7 @@ void GameMap::draw() {
 	}
 
 	SDL_SetRenderDrawColor(m_ren, 0, 255, 255, 255);
-	SDL_RenderDrawRect(m_ren, dstRect2);
+	//SDL_RenderDrawRect(m_ren, dstRect2);
 	
 }
 

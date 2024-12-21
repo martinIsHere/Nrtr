@@ -8,6 +8,7 @@ class Camera{
 
 	int m_xCameraOffset, m_yCameraOffset;
 	int* m_xPos, *m_yPos;
+	int m_xOffsetFromScreenEdge, m_yOffsetFromScreenEdge;
 	uint32_t m_winWidth, m_winHeight;
 	uint32_t m_mapWidth, m_mapHeight;
 

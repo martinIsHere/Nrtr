@@ -112,8 +112,8 @@ void PositionComponent::update(){
 
 	//NATURAL_DECELERATION = DEFAULT_NATURAL_DECELERATION * m_deltaTime_speedFix;
 	//m_speed = DEFAULT_SPEED * m_deltaTime_speedFix;
-	//m_acceleration_vector->x = 0;
-	//m_acceleration_vector->y = 0;
+	m_acceleration_vector->x = 0;
+	m_acceleration_vector->y = 0;
 	updateFacingDir();
 
 
@@ -153,6 +153,7 @@ void PositionComponent::normalize() {
 	// nevermind, not worth it
 	
 }
+
 float PositionComponent::getVelMagnitude(){
 	return m_velocity_vector->getMagnitude();
 }

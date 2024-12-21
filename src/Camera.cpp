@@ -1,14 +1,8 @@
 #include "Camera.h"
 
-#define X_OFFSET 300
-
 Camera::Camera(int* x, int* y, const uint32_t mapWidth, const uint32_t mapHeight, const uint32_t winWidth, const uint32_t winHeight) {
 	m_mapWidth = mapWidth;
 	m_mapHeight = mapHeight;
-
-	// because of vs
-	m_winWidth = 0;
-	m_winHeight = 0;
 
 	m_winWidth = winWidth;
 	m_winHeight = winHeight;
@@ -16,12 +10,14 @@ Camera::Camera(int* x, int* y, const uint32_t mapWidth, const uint32_t mapHeight
 	m_yPos = y;
 	m_xCameraOffset = 0;
 	m_yCameraOffset = 0;
+	m_xOffsetFromScreenEdge = (int)((float)winWidth * 0.5f);
+	m_yOffsetFromScreenEdge = (int)((float)winHeight * 0.5f);
 }
 
 void Camera::update() {
 
-	m_xCameraOffset = *m_xPos - X_OFFSET;
-	m_yCameraOffset = *m_yPos - X_OFFSET;
+	m_xCameraOffset = *m_xPos - m_xOffsetFromScreenEdge;
+	m_yCameraOffset = *m_yPos - m_yOffsetFromScreenEdge;
 
 	// check if offset is behind 0
 	

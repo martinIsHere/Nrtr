@@ -51,7 +51,7 @@ GameEngine::GameEngine(const int nWidth, const int nHeight, const std::string& t
 	//player1 = new Player(ren, map, 64, "res/imgs/hero.bmp", 16, 3, 4);
 
 	playerEntity = m_entityManager.addEntity();
-	playerEntity->addComponent<PositionComponent>(0, 0);
+	playerEntity->addComponent<PositionComponent>(60, 60);
 
 	map = new GameMap(
 		ren,

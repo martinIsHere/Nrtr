@@ -84,9 +84,9 @@ void PositionComponent::update_current_acceleration() {
 	log(m_acceleration_vector->x);
 	if ((m_Directions[DIR_LEFT] || m_Directions[DIR_RIGHT]) 
 		&& (m_Directions[DIR_UP] || m_Directions[DIR_DOWN])) {
-		m_acceleration_vector->x *= 0.9;
+		m_acceleration_vector->x *= 0.9f;
 		log(m_acceleration_vector->x);
-		m_acceleration_vector->y *= 0.9;
+		m_acceleration_vector->y *= 0.9f;
 	}
 }
 
@@ -112,7 +112,8 @@ void PositionComponent::update(){
 
 	//NATURAL_DECELERATION = DEFAULT_NATURAL_DECELERATION * m_deltaTime_speedFix;
 	//m_speed = DEFAULT_SPEED * m_deltaTime_speedFix;
-
+	//m_acceleration_vector->x = 0;
+	//m_acceleration_vector->y = 0;
 	updateFacingDir();
 
 

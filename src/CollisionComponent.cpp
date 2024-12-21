@@ -4,6 +4,13 @@
 
 CollisionComponent::CollisionComponent(GameMap* gameMap) {
 	m_gameMap = gameMap;
+}
+
+CollisionComponent::~CollisionComponent() {
+
+}
+
+void CollisionComponent::init() {
 	if (!ent) {
 		log("Component's entityPtr was nullptr!\n");
 	}
@@ -17,13 +24,6 @@ CollisionComponent::CollisionComponent(GameMap* gameMap) {
 			std::cout << "Entity does not have positionComponent!\n";
 		}
 	}
-}
-
-CollisionComponent::~CollisionComponent() {
-
-}
-
-void CollisionComponent::init() {
 }
 
 

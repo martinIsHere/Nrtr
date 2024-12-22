@@ -7,8 +7,8 @@ PositionComponent::PositionComponent(int x, int y) : m_X(x), m_Y(y) {
 	m_Magnitude = 0;
 	m_Directions = { false, false, false, false };
 	m_facingDir = 0;
-	DEFAULT_SPEED = 1.f;
-	DEFAULT_NATURAL_DECELERATION = 0.5f;
+	DEFAULT_SPEED = 1.4f; // DEFAULT ACCELERATION
+	DEFAULT_NATURAL_DECELERATION = 0.8f;
 	m_speed = DEFAULT_SPEED;
 	NATURAL_DECELERATION = DEFAULT_NATURAL_DECELERATION;
 	MAX_VEL = 10;
@@ -81,11 +81,9 @@ void PositionComponent::update_current_acceleration() {
 	else if (m_Directions[DIR_UP]) {
 		m_acceleration_vector->y = -m_speed;
 	}
-	log(m_acceleration_vector->x);
 	if ((m_Directions[DIR_LEFT] || m_Directions[DIR_RIGHT]) 
 		&& (m_Directions[DIR_UP] || m_Directions[DIR_DOWN])) {
 		m_acceleration_vector->x *= 0.9f;
-		log(m_acceleration_vector->x);
 		m_acceleration_vector->y *= 0.9f;
 	}
 }

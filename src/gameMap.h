@@ -16,7 +16,13 @@ public:
 
 	void draw();
 
+	void drawSecondLayer();
+
 	void update();
+
+	uint16_t getForegroundID(int x, int y);
+
+	void setForegroundID(int x, int y, int id);
 
 	uint16_t getBackID(int x, int y);
 
@@ -34,6 +40,8 @@ public:
 
 	uint8_t& getFrontMirrorState(int x, int y);
 
+	uint8_t& getForegroundMirrorState(int x, int y);
+
 	uint32_t& getBlockSize();
 
 	Camera* getCam();
@@ -44,7 +52,9 @@ private:
 
 	std::vector <uint16_t> m_backLayer_array;
 	std::vector <uint16_t> m_frontLayer_array;
+	std::vector <uint16_t> m_foregroundLayer_array;
 	std::vector <bool> m_blockState_array;
+	std::vector <uint8_t> m_foregroundMirrorState_array;
 	std::vector <uint8_t> m_frontMirrorState_array;
 	std::vector <uint8_t> m_backMirrorState_array;
 
@@ -57,7 +67,7 @@ private:
 
 	SDL_Rect* m_tempSrcRect, * m_tempDstRect;
 
-	uint32_t m_mapWidth, m_mapHeight;
+	uint16_t m_mapWidth, m_mapHeight;
 	uint32_t m_windowWidth, m_windowHeight;
 	uint16_t m_current_ID, m_xId, m_yId;
 	uint8_t m_currentState;

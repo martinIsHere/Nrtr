@@ -14,7 +14,7 @@ DrawingComponent::DrawingComponent(SDL_Renderer* inputRen, const std::string spr
 
 	// Load BMP into surface variable
 	//SDL_Surface* spriteSheetSurface = SDL_LoadBMP(std::string("../res/imgs/" + spriteTitle).c_str());
-	SDL_Surface* spriteSheetSurface = SDL_LoadBMP("res/imgs/hero.bmp");
+	SDL_Surface* spriteSheetSurface = SDL_LoadBMP(spriteTitle.c_str());
 
 	if (!spriteSheetSurface) {
 		std::cout << SDL_GetError();

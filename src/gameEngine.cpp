@@ -11,7 +11,7 @@ GameEngine::GameEngine(const int nWidth, const int nHeight, const std::string& t
 	currentKey = 0;
 	nDelay = 1000 / nFps;
 	mousePos[0] = 0, mousePos[1] = 0;
-	
+	numberOfFramesUntilNow = 0;
 
 
 	// game state related stuff
@@ -51,7 +51,9 @@ GameEngine::GameEngine(const int nWidth, const int nHeight, const std::string& t
 	//player1 = new Player(ren, map, 64, "res/imgs/hero.bmp", 16, 3, 4);
 
 	playerEntity = m_entityManager.addEntity();
+	NPCEntity = m_entityManager.addEntity();
 	playerEntity->addComponent<PositionComponent>(60, 60);
+	NPCEntity->addComponent<PositionComponent>(60, 60);
 
 	map = new GameMap(
 		ren,
@@ -61,15 +63,22 @@ GameEngine::GameEngine(const int nWidth, const int nHeight, const std::string& t
 		&(playerEntity->getComponent<PositionComponent>().gety())
 		);
 
+	// get reference actually
 	map->get_drawingSolidStates_bool() = true;
-
 	playerEntity->addComponent<DrawingComponent>(
 		ren, 
-		"hero.bmp", 
+		"res/imgs/hero.bmp",
 		3, 4, 
 		nFps, 
 		map->getCam()->getOffsetX(), map->getCam()->getOffsetY());
+	NPCEntity->addComponent<DrawingComponent>(
+		ren,
+		"res/imgs/npcOneByThree.bmp",
+		1, 3,
+		nFps,
+		map->getCam()->getOffsetX(), map->getCam()->getOffsetY());
 	playerEntity->addComponent<CollisionComponent>(map);
+	NPCEntity->addComponent<CollisionComponent>(map);
 	playerEntity->addComponent<InteractionComponent>(map);
 
 
@@ -146,8 +155,8 @@ void GameEngine::handleEvents() {
 }
 
 void GameEngine::update() {
+	log(numberOfFramesUntilNow);
 	unStartElapsedTime = SDL_GetTicks();
-
 	if (m_stateManager->get() == m_stateManager->state_gameRunning) {
 
 		handleEvents();
@@ -156,6 +165,36 @@ void GameEngine::update() {
 		// update all entities
 		m_entityManager.update();
 		playerEntity->getComponent<PositionComponent>().setAcc(0, 0);
+
+		if (numberOfFramesUntilNow < 280) {
+			NPCEntity->getComponent<PositionComponent>().setVel(4, 0);
+			NPCEntity->getComponent<PositionComponent>().setDir(DIR_RIGHT, true);
+		}
+		else if (numberOfFramesUntilNow < 680){
+			NPCEntity->getComponent<PositionComponent>().setVel(-3.7, 3.7);
+			NPCEntity->getComponent<PositionComponent>().setDir(DIR_RIGHT, false);
+			NPCEntity->getComponent<PositionComponent>().setDir(DIR_DOWN, true);
+			NPCEntity->getComponent<PositionComponent>().setDir(DIR_LEFT, true);
+		}
+		else if (numberOfFramesUntilNow < 1200){
+			NPCEntity->getComponent<PositionComponent>().setVel(3.5, 3.5);
+			NPCEntity->getComponent<PositionComponent>().setDir(DIR_RIGHT, true);
+			NPCEntity->getComponent<PositionComponent>().setDir(DIR_LEFT, false);
+		}
+		else if (numberOfFramesUntilNow < 1400){
+			NPCEntity->getComponent<PositionComponent>().setVel(-3.7, 0);
+			NPCEntity->getComponent<PositionComponent>().setDir(DIR_RIGHT, false);
+			NPCEntity->getComponent<PositionComponent>().setDir(DIR_DOWN, false);
+			NPCEntity->getComponent<PositionComponent>().setDir(DIR_LEFT, true);
+		}
+		else if(numberOfFramesUntilNow < 1500){
+			NPCEntity->getComponent<PositionComponent>().setVel(0, 3.7);
+			NPCEntity->getComponent<PositionComponent>().setDir(DIR_DOWN, true);
+			NPCEntity->getComponent<PositionComponent>().setDir(DIR_LEFT, false);
+		}
+		else {
+			NPCEntity->getComponent<PositionComponent>().setVel(0, 0);
+		}
 
 		// 
 		map->update(); 
@@ -173,6 +212,8 @@ void GameEngine::update() {
 		std::string bufTitle = "Tilebased Game, FPS: " + std::to_string(actualFPS);
 		SDL_SetWindowTitle(win, bufTitle.c_str());
 	}
+
+	numberOfFramesUntilNow++;
 }
 
 void GameEngine::draw() {
@@ -186,6 +227,8 @@ void GameEngine::draw() {
 		map->draw();
 
 		m_entityManager.draw();
+
+		map->drawSecondLayer();
 	}
 
 	SDL_RenderPresent(ren);

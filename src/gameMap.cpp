@@ -10,9 +10,11 @@ Map structure
 
 repeating:
 	
+	2 bytes foregourndLayer id TODO
 	2 bytes frontLayer id
 	2 bytes backLayer id
-	1 byte: 
+
+	1 byte: {
 	7
 	6
 	5
@@ -21,8 +23,9 @@ repeating:
 	2 = mirrorState 1 - front
 	1 = mirrorState 1
 	0 = solidState
+	}
 
-	mirrorState:
+	NOTE -> mirrorStates:
 	0 = nothing
 	1 = vertical mirroring
 	2 = horizontal mirroring
@@ -49,6 +52,12 @@ void GameMap::loadMap(std::string map) {
 	for (uint32_t y = 0; y < m_mapHeight; y++) {
 		for (uint32_t x = 0; x < m_mapWidth; x++) {
 			
+			// foreground id
+			m_mapFile.read(m_readingBuffer, 2);
+			m_current_ID = (m_readingBuffer[0] & 0xFF) << 8;
+			m_current_ID += m_readingBuffer[1] & 0xFF;
+			m_foregroundLayer_array.push_back(m_current_ID);
+
 			// front id
 			m_mapFile.read(m_readingBuffer, 2);
 			m_current_ID = (m_readingBuffer[0] & 0xFF)<<8;
@@ -76,6 +85,9 @@ void GameMap::loadMap(std::string map) {
 
 			m_currentMirrorState = (uint8_t)((m_readingBuffer[0] >> 3) & 0b11);
 			m_frontMirrorState_array.push_back(m_currentMirrorState);
+
+			m_currentMirrorState = (uint8_t)((m_readingBuffer[0] >> 5) & 0b11);
+			m_foregroundMirrorState_array.push_back(m_currentMirrorState);
 			
 			//m_blockState_array[x * y] = m_currentState;
 
@@ -221,8 +233,65 @@ void GameMap::draw() {
 	}
 
 	SDL_SetRenderDrawColor(m_ren, 0, 255, 255, 255);
-	//SDL_RenderDrawRect(m_ren, dstRect2);
+	SDL_RenderDrawRect(m_ren, dstRect2);
 	
+}
+
+void GameMap::drawSecondLayer() {
+
+	int offsetX = *m_mainCamera->getOffsetX();
+	int offsetY = *m_mainCamera->getOffsetY();
+
+	for (uint32_t y = offsetY / m_blockSize; y < (m_windowHeight + offsetY) / m_blockSize + 1; y++) {
+		for (uint32_t x = offsetX / m_blockSize; x < (m_windowWidth + offsetX) / m_blockSize + 1; x++) {
+
+
+			*m_tempDstRect = {
+				int((x * m_blockSize) - offsetX),
+				int((y * m_blockSize) - offsetY),
+				int(m_blockSize),
+				int(m_blockSize)
+			};
+
+			// foreground layer
+			int id = getForegroundID(x, y);
+			if (id != 0) {
+				m_xId = id % m_spriteSheet0->nWidth;
+				m_yId = (int)(id / m_spriteSheet0->nWidth);
+				*m_tempSrcRect = {
+					m_xId * m_spriteSheet0->nSize,
+					m_yId * m_spriteSheet0->nSize,
+					m_spriteSheet0->nSize,
+					m_spriteSheet0->nSize
+				};
+
+				SDL_RenderCopyEx(
+					m_ren,
+					m_spriteSheet0->tex,
+					m_tempSrcRect, m_tempDstRect,
+					0, 0,
+					(SDL_RendererFlip)getForegroundMirrorState(x, y)
+					);
+
+
+			}
+
+		}
+	}
+
+	SDL_SetRenderDrawColor(m_ren, 0, 255, 255, 255);
+	SDL_RenderDrawRect(m_ren, dstRect2);
+
+}
+
+uint16_t GameMap::getForegroundID(int x, int y) {
+	if (x >= 0 && x < int(m_mapWidth) && y >= 0 && y < int(m_mapHeight))
+		return m_foregroundLayer_array[(size_t(y) * m_mapWidth) + x];
+	return 0;
+}
+void GameMap::setForegroundID(int x, int y, int ID) {
+	if (x >= 0 && x < int(m_mapWidth) && y >= 0 && y < int(m_mapHeight))
+		m_foregroundLayer_array[(size_t(y) * m_mapWidth) + x] = ID;
 }
 
 uint16_t GameMap::getBackID(int x, int y) {
@@ -265,6 +334,14 @@ uint8_t& GameMap::getFrontMirrorState(int x, int y) {
 		return m_frontMirrorState_array[(size_t(y) * int(m_mapWidth)) + x];
 	else {
 		return m_frontMirrorState_array[0];
+		log("getBackMirrorState out of range");
+	}
+}
+uint8_t& GameMap::getForegroundMirrorState(int x, int y) {
+	if (x >= 0 && x < int(m_mapWidth) && y >= 0 && y < int(m_mapHeight))
+		return m_foregroundMirrorState_array[(size_t(y) * int(m_mapWidth)) + x];
+	else {
+		return m_foregroundMirrorState_array[0];
 		log("getBackMirrorState out of range");
 	}
 }

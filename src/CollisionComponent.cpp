@@ -30,7 +30,7 @@ void CollisionComponent::init() {
 
 void CollisionComponent::update() {
 	if (correct_possible_collision()) {
-		log("collision")
+		//log("collision")
 	}
 }
 
@@ -52,7 +52,6 @@ bool CollisionComponent::correct_possible_collision() {
 	bool collision = false;
 
 	int oldYPos = int(m_posComp->gety() - (int)m_posComp->getVely());
-	log(m_posComp->getVely())
 
 	// Offsets for hitbox
 	static int hitBoxOffsetX = 15;
@@ -82,7 +81,7 @@ bool CollisionComponent::correct_possible_collision() {
 				// Reset velocity to prevent movement into the collision
 				m_posComp->getVelx() = 0;
 
-				log("Collision left");
+				//log("Collision left");
 				collision = true;
 			}
 		}
@@ -102,7 +101,7 @@ bool CollisionComponent::correct_possible_collision() {
 				// Reset velocity to prevent movement into the collision
 				m_posComp->getVelx() = 0;
 
-				log("Collision right");
+				//log("Collision right");
 				collision = true;
 			}
 		}
@@ -126,7 +125,7 @@ bool CollisionComponent::correct_possible_collision() {
 				// Reset velocity to prevent movement into the collision
 				m_posComp->getVely() = 0;
 
-				log("Collision up");
+				//log("Collision up");
 				collision = true;
 			}
 		}
@@ -146,7 +145,7 @@ bool CollisionComponent::correct_possible_collision() {
 				// Reset velocity to prevent movement into the collision
 				m_posComp->getVely() = 0;
 
-				log("Collision down");
+				//log("Collision down");
 				collision = true;
 			}
 		}

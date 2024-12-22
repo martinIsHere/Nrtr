@@ -35,6 +35,7 @@ private:
 	//uint32_t unStartElapsedTime;
 	//int nElapsedTime;
 	int currentKey;
+	int numberOfFramesUntilNow;
 	int nFps;
 	int nDelay;
 	int mousePos[2];
@@ -43,6 +44,7 @@ private:
 	// game entities
 	Manager m_entityManager;
 	Entity* playerEntity;
+	Entity* NPCEntity;
 	
 	// state manager
 	GameStateManager* m_stateManager;

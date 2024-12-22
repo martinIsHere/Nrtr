@@ -52,7 +52,7 @@ public:
 
 	float getMagnitude();
 
-	void set(const float& x1, const float& y1);
+	void set(const float x1, const float y1);
 };
 
 

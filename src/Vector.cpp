@@ -74,7 +74,7 @@ float Vector::getMagnitude() {
 	return get_magnitude_from_vector(x, y);
 }
 
-void Vector::set(const float& x1, const float& y1) {
+void Vector::set(const float x1, const float y1) {
 	x = x1;
 	y = y1;
 }

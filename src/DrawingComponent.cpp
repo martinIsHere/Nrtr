@@ -6,7 +6,7 @@ SDL_Renderer* ren;
 spriteSheet* spriteSheet;
 */
 
-#define ANIMATION_INCREMENT 0.2f
+#define ANIMATION_INCREMENT 0.1f
 
 DrawingComponent::DrawingComponent(SDL_Renderer* inputRen, const std::string spriteTitle, int spriteSheetColumns, int spriteSheetRows, const unsigned int fps, int* cameraOffsetX, int* cameraOffsetY) {
 
@@ -38,7 +38,7 @@ DrawingComponent::DrawingComponent(SDL_Renderer* inputRen, const std::string spr
 	// specify other spritesheet values
 	m_spriteSheet->nWidth = spriteSheetColumns;
 	m_spriteSheet->nHeight = spriteSheetRows;
-	m_spriteSheet->nSize = 16;
+	m_spriteSheet->nSize = 16; // pixels i.e. here: 16x16
 
 	// NULL all other private variables that should be NULLed
 	m_destRect = new SDL_Rect{ 0, 0, 64, 64 };
@@ -56,11 +56,12 @@ DrawingComponent::DrawingComponent(SDL_Renderer* inputRen, const std::string spr
 
 	m_prevDir = 0;
 
+	m_animationTickIncrement = ANIMATION_INCREMENT;
+
 	// vs is complaining
 	m_maxFrameForAnimation = 0;
 	m_maxFrameForAnimation = m_framesPerState - m_animationTickIncrement;
 							// per
-	m_animationTickIncrement = ANIMATION_INCREMENT;
 
 	SDL_FreeSurface(spriteSheetSurface);
 
@@ -85,14 +86,12 @@ DrawingComponent::~DrawingComponent() {
 void DrawingComponent::update() {
 
 	if (m_posComp->isMoving()) {
-	if (m_animationTick < m_maxFrameForAnimation) {
-		m_animationTick += m_animationTickIncrement;
-	}
-	else {
-		m_animationTick = (float)m_currentFrame;
-	}
-	}
-	else {
+		if (m_animationTick < m_maxFrameForAnimation) {
+			m_animationTick += m_animationTickIncrement;
+		} else {
+			m_animationTick = (float)m_currentFrame;
+		}
+	} else {
 		m_animationTick = (float)m_currentFrame;
 	}
 }

@@ -142,7 +142,7 @@ GameMap::~GameMap() {
 }
 
 void GameMap::update() {
-	m_mainCamera->update();;
+	m_mainCamera->update();
 }
 
 int mousePositionX;

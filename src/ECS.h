@@ -89,7 +89,6 @@ public:
 		if (m_ComponentArray[getComponentTypeID<T>()]) {
 			std::cout << "Component already added!\n";
 		}
-		log(getComponentTypeID<T>())
 		m_ComponentArray[getComponentTypeID<T>()] = c;
 		m_ComponentBitset[getComponentTypeID<T>()] = true;
 
@@ -188,6 +187,10 @@ public:
 
 	size_t getSize() {
 		return m_EntityArray.size();
+	}
+
+	std::vector<Entity*>* getEntityArrayPointer() {
+		return &m_EntityArray;
 	}
 
 	void update() {

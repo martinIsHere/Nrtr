@@ -9,6 +9,11 @@ GameStateManager::~GameStateManager() {
 	delete state;
 }
 
-GameStateManager::GameState& GameStateManager::get() {
+void GameStateManager::set(GameState state) {
+	*this->state = state;
+}
+
+GameStateManager::GameState GameStateManager::get() {
 	return *state;
 }
+

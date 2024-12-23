@@ -17,16 +17,22 @@ GameEngine::GameEngine(const int nWidth, const int nHeight, const std::string& t
 	// game state related stuff
 	m_stateManager = new GameStateManager();
 
-	m_stateManager->get() = m_stateManager->state_startingScreen;
+	m_stateManager->set(m_stateManager->state_startingScreen);
 
 	// when game has fully started
-	m_stateManager->get() = m_stateManager->state_gameRunning;
+	m_stateManager->set(m_stateManager->state_gameRunning);
 
 
 
 	
 	//setup SDL stuff
 	if (SDL_Init(SDL_INIT_EVERYTHING) < 0) {
+		std::cout << "Failed to create window\n";
+		bRunning = false;
+		exit(1);
+	}
+
+	if (TTF_Init() < 0) {
 		std::cout << "Failed to create window\n";
 		bRunning = false;
 		exit(1);
@@ -74,7 +80,7 @@ GameEngine::GameEngine(const int nWidth, const int nHeight, const std::string& t
 	NPCEntity->addComponent<DrawingComponent>(
 		ren,
 		"res/imgs/npcOneByThree.bmp",
-		1, 3,
+		2, 3,
 		nFps,
 		map->getCam()->getOffsetX(), map->getCam()->getOffsetY());
 	playerEntity->addComponent<CollisionComponent>(map);
@@ -154,8 +160,40 @@ void GameEngine::handleEvents() {
 	}
 }
 
+void GameEngine::test_NPCMoveFunction() {
+	if (numberOfFramesUntilNow < 280) {
+		NPCEntity->getComponent<PositionComponent>().setVel(4, 0);
+		NPCEntity->getComponent<PositionComponent>().setDir(DIR_RIGHT, true);
+	}
+	else if (numberOfFramesUntilNow < 680) {
+		NPCEntity->getComponent<PositionComponent>().setVel(-3.7, 3.7);
+		NPCEntity->getComponent<PositionComponent>().setDir(DIR_RIGHT, false);
+		NPCEntity->getComponent<PositionComponent>().setDir(DIR_DOWN, true);
+		NPCEntity->getComponent<PositionComponent>().setDir(DIR_LEFT, true);
+	}
+	else if (numberOfFramesUntilNow < 1200) {
+		NPCEntity->getComponent<PositionComponent>().setVel(3.5, 3.5);
+		NPCEntity->getComponent<PositionComponent>().setDir(DIR_RIGHT, true);
+		NPCEntity->getComponent<PositionComponent>().setDir(DIR_LEFT, false);
+	}
+	else if (numberOfFramesUntilNow < 1400) {
+		NPCEntity->getComponent<PositionComponent>().setVel(-3.7, 0);
+		NPCEntity->getComponent<PositionComponent>().setDir(DIR_RIGHT, false);
+		NPCEntity->getComponent<PositionComponent>().setDir(DIR_DOWN, false);
+		NPCEntity->getComponent<PositionComponent>().setDir(DIR_LEFT, true);
+	}
+	else if (numberOfFramesUntilNow < 1500) {
+		NPCEntity->getComponent<PositionComponent>().setVel(0, 3.7);
+		NPCEntity->getComponent<PositionComponent>().setDir(DIR_DOWN, true);
+		NPCEntity->getComponent<PositionComponent>().setDir(DIR_LEFT, false);
+	}
+	else {
+		NPCEntity->getComponent<PositionComponent>().setVel(0, 0);
+		NPCEntity->getComponent<PositionComponent>().setDir(DIR_DOWN, false);
+	}
+}
+
 void GameEngine::update() {
-	log(numberOfFramesUntilNow);
 	unStartElapsedTime = SDL_GetTicks();
 	if (m_stateManager->get() == m_stateManager->state_gameRunning) {
 
@@ -166,38 +204,12 @@ void GameEngine::update() {
 		m_entityManager.update();
 		playerEntity->getComponent<PositionComponent>().setAcc(0, 0);
 
-		if (numberOfFramesUntilNow < 280) {
-			NPCEntity->getComponent<PositionComponent>().setVel(4, 0);
-			NPCEntity->getComponent<PositionComponent>().setDir(DIR_RIGHT, true);
-		}
-		else if (numberOfFramesUntilNow < 680){
-			NPCEntity->getComponent<PositionComponent>().setVel(-3.7, 3.7);
-			NPCEntity->getComponent<PositionComponent>().setDir(DIR_RIGHT, false);
-			NPCEntity->getComponent<PositionComponent>().setDir(DIR_DOWN, true);
-			NPCEntity->getComponent<PositionComponent>().setDir(DIR_LEFT, true);
-		}
-		else if (numberOfFramesUntilNow < 1200){
-			NPCEntity->getComponent<PositionComponent>().setVel(3.5, 3.5);
-			NPCEntity->getComponent<PositionComponent>().setDir(DIR_RIGHT, true);
-			NPCEntity->getComponent<PositionComponent>().setDir(DIR_LEFT, false);
-		}
-		else if (numberOfFramesUntilNow < 1400){
-			NPCEntity->getComponent<PositionComponent>().setVel(-3.7, 0);
-			NPCEntity->getComponent<PositionComponent>().setDir(DIR_RIGHT, false);
-			NPCEntity->getComponent<PositionComponent>().setDir(DIR_DOWN, false);
-			NPCEntity->getComponent<PositionComponent>().setDir(DIR_LEFT, true);
-		}
-		else if(numberOfFramesUntilNow < 1500){
-			NPCEntity->getComponent<PositionComponent>().setVel(0, 3.7);
-			NPCEntity->getComponent<PositionComponent>().setDir(DIR_DOWN, true);
-			NPCEntity->getComponent<PositionComponent>().setDir(DIR_LEFT, false);
-		}
-		else {
-			NPCEntity->getComponent<PositionComponent>().setVel(0, 0);
-		}
+		// move the npc
+		test_NPCMoveFunction();
 
-		// 
+
 		map->update(); 
+
 
 		draw();
 	
@@ -216,6 +228,30 @@ void GameEngine::update() {
 	numberOfFramesUntilNow++;
 }
 
+void GameEngine::sortEntityArray() {
+	// array of all entities to be sorted
+	arrayOfActiveEntities = m_entityManager.getEntityArrayPointer();
+	// empty the buffer
+	bufferArrayOfEntities.clear();
+	// sort the arrayOfActiveEntities going highest y-value to lowest y-value !!!!! TODO
+	while (arrayOfActiveEntities->size() > 0) {
+		int suspectedIndex = 0;
+		if (arrayOfActiveEntities->size() != 1) {
+			for (int i = 1; i < arrayOfActiveEntities->size(); i++) {
+				if (arrayOfActiveEntities->at(i)->hasComponent<PositionComponent>()) {
+					if (arrayOfActiveEntities->at(i)->getComponent<PositionComponent>().gety() <
+						arrayOfActiveEntities->at(suspectedIndex)->getComponent<PositionComponent>().gety()) {
+						suspectedIndex = i;
+					}
+				}
+			}
+		}
+		bufferArrayOfEntities.push_back(arrayOfActiveEntities->at(suspectedIndex));
+		arrayOfActiveEntities->erase(arrayOfActiveEntities->begin() + suspectedIndex);
+	}
+	*arrayOfActiveEntities = bufferArrayOfEntities;
+}
+
 void GameEngine::draw() {
 
 	// clear screen
@@ -225,11 +261,42 @@ void GameEngine::draw() {
 	if (m_stateManager->get() == m_stateManager->state_gameRunning) {
 
 		map->draw();
-
+		
+		// sort array in order to draw entities in front first
+		sortEntityArray();
 		m_entityManager.draw();
 
 		map->drawSecondLayer();
 	}
+
+	//this opens a font style and sets a size
+	TTF_Font* Sans = TTF_OpenFont("res/fonts/arial.ttf", 80);
+	if (Sans == nullptr) log(TTF_GetError());
+
+	// this is the color in rgb format,
+	// maxing out all would give you the color white,
+	// and it will be your text's color
+	SDL_Color White = { 255, 255, 255 };
+
+	// as TTF_RenderText_Solid could only be used on
+	// SDL_Surface then you have to create the surface first
+	SDL_Surface* surfaceMessage =
+		TTF_RenderText_Solid(Sans, "Broski", White);
+
+	// now you can convert it into a texture
+	SDL_Texture* Message = SDL_CreateTextureFromSurface(ren, surfaceMessage);
+
+	SDL_Rect Message_rect; //create a rect
+	Message_rect.x = 0;  //controls the text's x coordinate 
+	Message_rect.y = 0; // controls the text's y coordinte
+
+
+	TTF_SizeText(Sans, "Broski", &Message_rect.w, &Message_rect.h);
+
+	SDL_RenderCopy(ren, Message, NULL, &Message_rect);
+
+	SDL_FreeSurface(surfaceMessage);
+	//SDL_DestroyTexture(Message);
 
 	SDL_RenderPresent(ren);
 }

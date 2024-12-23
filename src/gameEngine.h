@@ -20,11 +20,15 @@ public:
 
 	void draw();
 
+	void sortEntityArray();
+
 	bool alive();
 
 	SDL_Renderer* getRen() const;
 
 	int getWinSize() const;
+
+	void test_NPCMoveFunction();
 
 private:
 
@@ -40,6 +44,8 @@ private:
 	int nDelay;
 	int mousePos[2];
 	std::string sTitle;
+	std::vector<Entity*>* arrayOfActiveEntities;
+	std::vector<Entity*> bufferArrayOfEntities;
 
 	// game entities
 	Manager m_entityManager;

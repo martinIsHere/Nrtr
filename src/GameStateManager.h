@@ -30,7 +30,9 @@ public:
 
 	~GameStateManager();
 
-	// getters
-	GameState& get();
+	// setget
+	void set(GameState state);
+
+	GameState get();
 };
 

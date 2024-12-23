@@ -6,6 +6,7 @@
 #include <cmath>
 #include <thread>
 #include "SDL.h"
+#include "SDL_ttf.h"
 #include "Vector.h"
 #include <stdint.h>
 #define PI 3.14159
@@ -30,7 +31,7 @@ extern uint32_t WIN_WIDTH;
 extern uint32_t WIN_HEIGHT;
 extern bool debugKeyDown;
 
-
+// struct containing info regarding some spritesheet
 struct SpriteSheet {
 	SDL_Texture* tex;
 	int nSize, nWidth, nHeight;

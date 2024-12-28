@@ -112,6 +112,7 @@ GameMap::GameMap(SDL_Renderer* ren,
 	m_yId = 0;
 	m_current_ID = 0;
 	m_currentState = 0;
+	m_isDrawingSolidStates = false;
 
 	// block width and height in pixels
 	m_blockSize = TILE_SIZE_PIXELS;

@@ -17,3 +17,6 @@ GameStateManager::GameState GameStateManager::get() {
 	return *state;
 }
 
+GameStateManager::GameState* GameStateManager::getPtr() {
+	return state;
+}

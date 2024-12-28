@@ -7,11 +7,12 @@ class GameStateManager{
 public:
 	// all possible gamestates
 	enum GameState : uint32_t {
-		state_noState=0,
+		state_noState,
 		state_currentlyLoading,
 		state_startingScreen,
 		state_startToGame_fade,
 		state_gameRunning,
+		state_theaterMode,
 		state_win,
 		state_death,
 		state_pauseMenu,
@@ -34,5 +35,7 @@ public:
 	void set(GameState state);
 
 	GameState get();
+
+	GameState* getPtr();
 };
 

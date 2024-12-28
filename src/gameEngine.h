@@ -44,7 +44,7 @@ private:
 	//uint32_t unStartElapsedTime;
 	//int nElapsedTime;
 	int currentKey;
-	int numberOfFramesUntilNow;
+	uint32_t numberOfFramesSinceStart;
 	uint32_t nFps;
 	uint32_t nDelay;
 	int mousePos[2];
@@ -74,7 +74,7 @@ private:
 	GameMap* map;
 
 	// theater engine instance
-	TheaterEngine theaterEngine;
+	TheaterEngine* theaterEngine;
 
 	bool bRunning;
 protected:

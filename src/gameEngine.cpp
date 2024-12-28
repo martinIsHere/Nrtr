@@ -12,7 +12,7 @@ GameEngine::GameEngine(const uint32_t nWidth, const uint32_t nHeight, const std:
 	currentKey = 0;
 	nDelay = 1000 / nFps;
 	mousePos[0] = 0, mousePos[1] = 0;
-	numberOfFramesUntilNow = 0;
+	numberOfFramesSinceStart = 0;
 
 
 	// game state related stuff
@@ -87,6 +87,8 @@ GameEngine::GameEngine(const uint32_t nWidth, const uint32_t nHeight, const std:
 		Mix_PlayMusic(gMusic, -1);
 	}
 
+	theaterEngine = new TheaterEngine();
+	theaterEngine->init(m_stateManager->getPtr());
 
 	playerEntity = m_entityManager.addEntity();
 	NPCEntity = m_entityManager.addEntity();
@@ -102,7 +104,7 @@ GameEngine::GameEngine(const uint32_t nWidth, const uint32_t nHeight, const std:
 		);
 
 	// get reference actually
-	map->get_drawingSolidStates_bool() = true;
+	map->get_drawingSolidStates_bool() = false;
 	playerEntity->addComponent<DrawingComponent>(
 		ren, 
 		"res/imgs/hero.bmp",
@@ -204,28 +206,28 @@ void GameEngine::handleEvents() {
 }
  // raw manual code for npc movement
 void GameEngine::test_NPCMoveFunction() {
-	if (numberOfFramesUntilNow < 240) {
+	if (numberOfFramesSinceStart < 240) {
 		NPCEntity->getComponent<PositionComponent>().setVel(4, 0);
 		NPCEntity->getComponent<PositionComponent>().setDir(DIR_RIGHT, true);
 	}
-	else if (numberOfFramesUntilNow < 580) {
+	else if (numberOfFramesSinceStart < 580) {
 		NPCEntity->getComponent<PositionComponent>().setVel(-2.8f, 2.8f);
 		NPCEntity->getComponent<PositionComponent>().setDir(DIR_RIGHT, false);
 		NPCEntity->getComponent<PositionComponent>().setDir(DIR_DOWN, true);
 		NPCEntity->getComponent<PositionComponent>().setDir(DIR_LEFT, true);
 	}
-	else if (numberOfFramesUntilNow < 1100) {
+	else if (numberOfFramesSinceStart < 1100) {
 		NPCEntity->getComponent<PositionComponent>().setVel(2.8f, 2.8f);
 		NPCEntity->getComponent<PositionComponent>().setDir(DIR_RIGHT, true);
 		NPCEntity->getComponent<PositionComponent>().setDir(DIR_LEFT, false);
 	}
-	else if (numberOfFramesUntilNow < 1350) {
+	else if (numberOfFramesSinceStart < 1350) {
 		NPCEntity->getComponent<PositionComponent>().setVel(-2.8f, 0);
 		NPCEntity->getComponent<PositionComponent>().setDir(DIR_RIGHT, false);
 		NPCEntity->getComponent<PositionComponent>().setDir(DIR_DOWN, false);
 		NPCEntity->getComponent<PositionComponent>().setDir(DIR_LEFT, true);
 	}
-	else if (numberOfFramesUntilNow < 1400) {
+	else if (numberOfFramesSinceStart < 1400) {
 		NPCEntity->getComponent<PositionComponent>().setVel(0, 2.8f);
 		NPCEntity->getComponent<PositionComponent>().setDir(DIR_DOWN, true);
 		NPCEntity->getComponent<PositionComponent>().setDir(DIR_LEFT, false);
@@ -247,22 +249,36 @@ void GameEngine::update() {
 	unStartElapsedTime = SDL_GetTicks();
 	if (m_stateManager->get() == m_stateManager->state_gameRunning) {
 
+
+		//
 		handleEvents();
+
 
 		// update all entities
 		m_entityManager.update();
 		playerEntity->getComponent<PositionComponent>().setAcc(0, 0);
 
+
 		// move the npc
 		test_NPCMoveFunction();
 
+
+		// teleportation mechanic
 		test_portalAnimationFunction();
 
+
+		//
 		map->update(); 
 
 
+		// 
+		theaterEngine->update(numberOfFramesSinceStart);
+
+
+		//
 		draw();
 	
+
 		// delay
 		nElapsedTime = SDL_GetTicks() - unStartElapsedTime;
 		if (nDelay > nElapsedTime) {
@@ -271,11 +287,11 @@ void GameEngine::update() {
 		if ((SDL_GetTicks() - unStartElapsedTime) != 0) {
 			actualFPS = 1000 / (SDL_GetTicks() - unStartElapsedTime);
 		}
-		std::string bufTitle = sTitle + " " + std::to_string(actualFPS);
+		std::string bufTitle = sTitle + "    FPS:" + std::to_string(actualFPS);
 		SDL_SetWindowTitle(win, bufTitle.c_str());
 	}
 
-	numberOfFramesUntilNow++;
+	numberOfFramesSinceStart++;
 }
 
 void GameEngine::sortEntityArray() {

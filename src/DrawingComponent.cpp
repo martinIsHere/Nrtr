@@ -106,6 +106,8 @@ const void DrawingComponent::initCustomAnimation(
 	bool isAbleToMoveDuringAnimation
 	) {
 	// TODO: add assertions
+	// so that custom animations cant be cancelled by custom animations
+	if (currentAnimationType == animationType::customAnimation) return;
 	yValueBeforeCustomAnimation = m_srcRect->y;
 	m_srcRect->y = customAnimationY * m_spriteSheet->nSize;
 	prevCustomAnimationY = customAnimationY;

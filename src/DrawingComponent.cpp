@@ -61,25 +61,15 @@ DrawingComponent::DrawingComponent(
 	m_posComp = nullptr;
 
 	m_animationTick = 0.f;
-	m_framesPerState = 3;
+	m_animationFramesPerState = m_spriteSheet->nWidth;
+	m_framesPerImage = 15;
 	m_animationTime = (float)m_FPS; // in ms
-	m_currentFrame = 0;
+	m_frameCounter = 0;
 
 	m_cameraOffsetX = m_cam->getOffsetXPtr();
 	m_cameraOffsetY = m_cam->getOffsetYPtr();
 
-
-	//m_cameraOffsetX = cameraOffsetX;
-	//m_cameraOffsetY = cameraOffsetY;
-
 	m_prevDir = 0;
-
-	m_animationTickIncrement = ANIMATION_INCREMENT;
-
-	// vs is complaining
-	m_maxFrameForAnimation = 0;
-	m_maxFrameForAnimation = m_framesPerState - m_animationTickIncrement;
-							// per
 
 	SDL_FreeSurface(spriteSheetSurface);
 
@@ -102,14 +92,21 @@ DrawingComponent::~DrawingComponent() {
 }
 
 void DrawingComponent::update() {
-	if (m_posComp->isMoving()) {
-		if (m_animationTick < m_maxFrameForAnimation) {
-			m_animationTick += m_animationTickIncrement;
+	if (m_posComp->isMoving()) { // if moving, update the animation frame
+		if (m_animationTick == 0) m_animationTick = 1;
+		if (m_frameCounter >= m_framesPerImage) { // if image has been shown for correct amount of frames
+			if (m_animationTick < m_animationFramesPerState-1) { // increment animationtick or reset if at limit. circular
+				m_animationTick += 1;
+			} else {
+				m_animationTick = 1;
+			}
+			m_frameCounter = 0;
 		} else {
-			m_animationTick = (float)m_currentFrame;
+			m_frameCounter++;
 		}
-	} else {
-		m_animationTick = (float)m_currentFrame;
+	} else {// if not moving, reset animation frame
+		m_animationTick = 0;
+		m_frameCounter = 0;
 	}
 }
 
@@ -132,16 +129,13 @@ void DrawingComponent::draw() {
 	m_destRect->y = m_posComp->gety() - *m_cameraOffsetY;
 
 	// Update src rect by animation tick
-	m_srcRect->x = m_spriteSheet->nSize * ((int)m_animationTick % m_spriteSheet->nWidth);
-
-	// image specific stuff: ------------------------------------------
-	/*
-	The source rect stuff position
-	*/
-	// -----------------------------------------------------------------
+	if (m_animationTick > m_spriteSheet->nWidth) log("m_animationTick > m_spriteSheet->nWidth");
+	m_srcRect->x = m_spriteSheet->nSize * (int)(m_animationTick);
 
 	if(is_in_viewable_area()){
 		draw_frame_according_to_direction();
+	} else {
+		updateWithoutDrawing_frame_according_to_direction();
 	}
 }
 
@@ -149,7 +143,6 @@ void DrawingComponent::draw_frame_according_to_direction() {
 	// draw texture 
 	// check direction and drawing accordingly
 	// X
-	// TODOTODOTODOTODOTODOTODOTODOTODOTODOTODOTODO change: do not repeat SDL_RenderCopy(m_ren, m_spriteSheet->tex, m_srcRect, m_destRect); bro...
 	// unsure if these get functions are inefficient :/
 	if (m_posComp->isMovingX()) {
 		m_srcRect->y = 0;
@@ -177,5 +170,21 @@ void DrawingComponent::draw_frame_according_to_direction() {
 	} else {
 	// in any other case where the entity is not moving and the previous direction is not right
 	SDL_RenderCopy(m_ren, m_spriteSheet->tex, m_srcRect, m_destRect);
+	}
+}
+
+void DrawingComponent::updateWithoutDrawing_frame_according_to_direction() {
+	// check direction and drawing accordingly
+	// unsure if these get functions are inefficient :/
+	if (m_posComp->isMovingX()) {
+		m_srcRect->y = 0;
+	}
+	else if (m_posComp->isMovingY()) {
+		if (m_posComp->getDir()[DIR_UP]) {
+			m_srcRect->y = m_spriteSheet->nSize;
+		}
+		if (m_posComp->getDir()[DIR_DOWN]) {
+			m_srcRect->y = 2 * m_spriteSheet->nSize;
+		}
 	}
 }

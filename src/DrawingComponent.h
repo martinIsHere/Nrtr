@@ -10,13 +10,12 @@ class DrawingComponent : public Component{
 	SpriteSheet* m_spriteSheet;
 	PositionComponent* m_posComp;
 	float m_animationTime;
-	float m_animationTick;
-	float m_animationTickIncrement;
+	int m_animationTick;
 	unsigned int m_FPS;
-	float m_framesPerState;
-	unsigned int m_currentFrame;
+	float m_animationFramesPerState;
+	int m_framesPerImage;
+	unsigned int m_frameCounter;
 	unsigned int m_prevDir;
-	float m_maxFrameForAnimation;
 	const int* m_cameraOffsetX, * m_cameraOffsetY;
 	const Camera* m_cam;
 
@@ -43,6 +42,8 @@ public:
 
 private:
 	void draw_frame_according_to_direction();
+
+	void updateWithoutDrawing_frame_according_to_direction(); // quick fix
 
 	const bool is_in_viewable_area()const;
 

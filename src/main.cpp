@@ -4,10 +4,12 @@
 
 // f12 moves into defenition   
 // f9 breakpoint 
+// 1280, 720
+// 1536, 896
 
 int main(int argc, char* argv[]) {
 
-	GameEngine* a = new GameEngine(1280, 720,"Tilebased", 60);
+	GameEngine* a = new GameEngine(1536, 896,"Tilebased", 60);
 	while (a->alive()) {
 		a->update();
 	}

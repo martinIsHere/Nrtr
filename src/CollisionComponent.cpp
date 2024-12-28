@@ -51,7 +51,7 @@ inline bool CollisionComponent::apply_correction_in_LEFT_COLLISION(int oldYPos, 
 
 		// Correct collision: move back to the left boundary
 		m_posComp->getx() =
-			(int(m_posComp->getx()) / TILE_SIZE_PIXELS) * TILE_SIZE_PIXELS + TILE_SIZE_PIXELS - hitBoxOffsetX;
+			int((m_posComp->getx() + COLSN_OFST + hitBoxOffsetX) / TILE_SIZE_PIXELS) * TILE_SIZE_PIXELS + TILE_SIZE_PIXELS - hitBoxOffsetX;
 
 		// Reset velocity to prevent movement into the collision
 		m_posComp->getVelx() = 0;
@@ -63,7 +63,7 @@ inline bool CollisionComponent::apply_correction_in_LEFT_COLLISION(int oldYPos, 
 
 inline bool CollisionComponent::apply_correction_in_RIGHT_COLLISION(int oldYPos, int hitBoxOffsetX, int hitBoxTopOffset) {
 	if (m_gameMap->getState(
-		int(((m_posComp->getx() + AVERAGE_ENTITY_SIZE_PIXELS - COLSN_OFST - hitBoxOffsetX - 1) / TILE_SIZE_PIXELS)),
+		int((m_posComp->getx() + AVERAGE_ENTITY_SIZE_PIXELS - COLSN_OFST - hitBoxOffsetX - 1) / TILE_SIZE_PIXELS),
 		int((oldYPos + COLSN_OFST + hitBoxTopOffset) / TILE_SIZE_PIXELS))
 		|| m_gameMap->getState(
 			int(((m_posComp->getx() + AVERAGE_ENTITY_SIZE_PIXELS - COLSN_OFST - hitBoxOffsetX - 1) / TILE_SIZE_PIXELS)),
@@ -71,7 +71,7 @@ inline bool CollisionComponent::apply_correction_in_RIGHT_COLLISION(int oldYPos,
 
 		// Correct collision: move back to the right boundary
 		m_posComp->getx() =
-			(int(m_posComp->getx()) / TILE_SIZE_PIXELS) * TILE_SIZE_PIXELS + hitBoxOffsetX;
+			int((m_posComp->getx() + AVERAGE_ENTITY_SIZE_PIXELS - COLSN_OFST - hitBoxOffsetX - 1) / TILE_SIZE_PIXELS) * TILE_SIZE_PIXELS - AVERAGE_ENTITY_SIZE_PIXELS + hitBoxOffsetX;
 
 		// Reset velocity to prevent movement into the collision
 		m_posComp->getVelx() = 0;
@@ -92,7 +92,7 @@ inline bool CollisionComponent::apply_correction_in_ABOVE_COLLISION(int hitBoxOf
 
 		// Correct collision: move back to the top boundary
 		m_posComp->gety() =
-			(int(m_posComp->gety()) / TILE_SIZE_PIXELS) * TILE_SIZE_PIXELS + TILE_SIZE_PIXELS - hitBoxTopOffset;
+			int((m_posComp->gety() + COLSN_OFST + hitBoxTopOffset) / TILE_SIZE_PIXELS) * TILE_SIZE_PIXELS + TILE_SIZE_PIXELS - hitBoxTopOffset;
 
 		// Reset velocity to prevent movement into the collision
 		m_posComp->getVely() = 0;
@@ -113,7 +113,7 @@ inline bool CollisionComponent::apply_correction_in_BELOW_COLLISION(int hitBoxOf
 
 		// Correct collision: move back to the bottom boundary
 		m_posComp->gety() =
-			(int(m_posComp->gety()) / TILE_SIZE_PIXELS) * TILE_SIZE_PIXELS;
+			int((m_posComp->gety() + AVERAGE_ENTITY_SIZE_PIXELS - COLSN_OFST - 1) / TILE_SIZE_PIXELS) * TILE_SIZE_PIXELS - AVERAGE_ENTITY_SIZE_PIXELS;
 
 		// Reset velocity to prevent movement into the collision
 		m_posComp->getVely() = 0;

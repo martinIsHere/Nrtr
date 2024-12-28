@@ -7,11 +7,11 @@ PositionComponent::PositionComponent(int x, int y) : m_X(x), m_Y(y) {
 	m_Magnitude = 0;
 	m_Directions = { false, false, false, false };
 	m_facingDir = 0;
-	DEFAULT_SPEED = 1.4f; // DEFAULT ACCELERATION
-	DEFAULT_NATURAL_DECELERATION = 0.8f;
+	DEFAULT_SPEED = float(0.0219 * TILE_SIZE_PIXELS); // DEFAULT ACCELERATION   // 1.4 if TILE_SIZE_PIXELS = 64
+	DEFAULT_NATURAL_DECELERATION = float(0.0125 * TILE_SIZE_PIXELS); // 0.8 if TILE_SIZE_PIXELS = 64
 	m_speed = DEFAULT_SPEED;
 	NATURAL_DECELERATION = DEFAULT_NATURAL_DECELERATION;
-	MAX_VEL = 10;
+	MAX_VEL = float(0.15 * TILE_SIZE_PIXELS); // 10 if TILE_SIZE_PIXELS = 64
 	m_deltaTime_speedFix = 0;
 }
 

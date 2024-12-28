@@ -9,10 +9,9 @@ class DrawingComponent : public Component{
 	SDL_Renderer* m_ren;
 	SpriteSheet* m_spriteSheet;
 	PositionComponent* m_posComp;
-	float m_animationTime;
 	int m_animationTick;
 	unsigned int m_FPS;
-	float m_animationFramesPerState;
+	int m_animationFramesPerState;
 	int m_framesPerImage;
 	unsigned int m_frameCounter;
 	unsigned int m_prevDir;
@@ -28,8 +27,6 @@ public:
 		const int spriteSheetRows, 
 		const unsigned int fps, 
 		const Camera* cam
-		//int* cameraOffsetX, // from camera class
-		//int* cameraOffsetY
 		);
 
 	~DrawingComponent();

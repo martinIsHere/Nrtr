@@ -18,8 +18,6 @@ DrawingComponent::DrawingComponent(
 	const int spriteSheetRows,
 	const unsigned int fps,
 	const Camera* cam
-	//int* cameraOffsetX, // from camera class
-	//int* cameraOffsetY
 	) {
 
 	m_FPS = fps;
@@ -62,7 +60,7 @@ DrawingComponent::DrawingComponent(
 
 	m_animationTick = 0.f;
 	m_animationFramesPerState = m_spriteSheet->nWidth;
-	m_framesPerImage = 15;
+	m_framesPerImage = (int)(targetFPS / fps);
 	m_frameCounter = 0;
 
 	m_cameraOffsetX = m_cam->getOffsetXPtr();

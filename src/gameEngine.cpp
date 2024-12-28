@@ -83,18 +83,18 @@ GameEngine::GameEngine(const uint32_t nWidth, const uint32_t nHeight, const std:
 	playerEntity->addComponent<DrawingComponent>(
 		ren, 
 		"res/imgs/secondNPC.bmp",
-		16,
+		16, 
 		3, 4, 
-		nFps, 
+		4,  // amount of animation frames per second
 		map->getCam()
 		//map->getCam()->getOffsetX(), map->getCam()->getOffsetY()
 		);
 	NPCEntity->addComponent<DrawingComponent>(
 		ren,
-		"res/imgs/npcOneByThree.bmp",
-		16,
-		2, 3,
-		nFps,
+		"res/imgs/hero.bmp",
+		16, 
+		4, 4,
+		8, // amount of animation frames per second
 		map->getCam()
 		//map->getCam()->getOffsetX(), map->getCam()->getOffsetY()
 		);

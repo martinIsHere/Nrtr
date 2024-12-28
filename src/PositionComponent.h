@@ -16,10 +16,10 @@ class PositionComponent : public Component{
 	float m_speed;
 	float m_deltaTime_speedFix;
 
-	float MAX_VEL;
-	float NATURAL_DECELERATION;
-	float DEFAULT_SPEED;
-	float DEFAULT_NATURAL_DECELERATION;
+	float max_vel;
+	float natural_deceleration;
+	float default_acceleration;
+	float default_natural_deceleration;
 
 public:
 

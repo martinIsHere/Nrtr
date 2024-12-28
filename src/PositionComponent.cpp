@@ -7,11 +7,10 @@ PositionComponent::PositionComponent(int x, int y) : m_X(x), m_Y(y) {
 	m_Magnitude = 0;
 	m_Directions = { false, false, false, false };
 	m_facingDir = 0;
-	DEFAULT_SPEED = float(1.314 / (double)targetFPS * (double)TILE_SIZE_PIXELS); // DEFAULT ACCELERATION   // 1.4 if TILE_SIZE_PIXELS = 64
-	DEFAULT_NATURAL_DECELERATION = float(0.75 / (double)targetFPS * (double)TILE_SIZE_PIXELS); // 0.8 if TILE_SIZE_PIXELS = 64 and targetFPS = 60
-	m_speed = DEFAULT_SPEED;
-	NATURAL_DECELERATION = DEFAULT_NATURAL_DECELERATION;
-	MAX_VEL = float(9 / (double)targetFPS * (double)TILE_SIZE_PIXELS); // 10 if TILE_SIZE_PIXELS = 64 and targetFPS = 60
+	default_acceleration = float(1.6 * (double)TILE_SIZE_PIXELS / (double)targetFPS); // DEFAULT ACCELERATION   // 1.4 if TILE_SIZE_PIXELS = 64
+	default_natural_deceleration = float(0.5 * (double)TILE_SIZE_PIXELS / (double)targetFPS); // 0.8 if TILE_SIZE_PIXELS = 64 and targetFPS = 60
+	natural_deceleration = default_natural_deceleration;
+	max_vel = float(8 * (double)TILE_SIZE_PIXELS / (double)targetFPS); // 10 if TILE_SIZE_PIXELS = 64 and targetFPS = 60
 	m_deltaTime_speedFix = 0;
 }
 
@@ -33,53 +32,53 @@ int& PositionComponent::gety(){
 }
 
 float PositionComponent::getMaxVel() const{
-	return MAX_VEL;
+	return max_vel;
 }
 
 void PositionComponent::apply_natural_deceleration() {
 	// check if abs of velocity x is less than NATURAL_DECELERATION
 	// if it is set velocity x to zero if not do nothing
-	if (abs(m_velocity_vector->x) < NATURAL_DECELERATION) {
+	if (abs(m_velocity_vector->x) < natural_deceleration) {
 		m_velocity_vector->x = 0;
 	}
 	else {
 		// check if velocity x is positive
 		if (m_velocity_vector->x > 0) {
 			// if velocity x is positive subtract else add
-			m_velocity_vector->x -= NATURAL_DECELERATION;
+			m_velocity_vector->x -= natural_deceleration;
 		}
 		else {
-			m_velocity_vector->x += NATURAL_DECELERATION;
+			m_velocity_vector->x += natural_deceleration;
 		}
 	}
 
-	if (abs(m_velocity_vector->y) < NATURAL_DECELERATION) {
+	if (abs(m_velocity_vector->y) < natural_deceleration) {
 		m_velocity_vector->y = 0;
 	}
 	else {
 		// repeat for y velocity
 		if (m_velocity_vector->y > 0) {
 			// if velocity y is positive subtract else add
-			m_velocity_vector->y -= NATURAL_DECELERATION;
+			m_velocity_vector->y -= natural_deceleration;
 		}
 		else {
-			m_velocity_vector->y += NATURAL_DECELERATION;
+			m_velocity_vector->y += natural_deceleration;
 		}
 	}
 }
 
 void PositionComponent::update_current_acceleration() {
 	if (m_Directions[DIR_LEFT]) {
-		m_acceleration_vector->x = -m_speed;
+		m_acceleration_vector->x = -default_acceleration;
 	} 
 	else if (m_Directions[DIR_RIGHT]) {
-		m_acceleration_vector->x = m_speed;
+		m_acceleration_vector->x = default_acceleration;
 	}
 	if (m_Directions[DIR_DOWN]) {
-		m_acceleration_vector->y = m_speed;
+		m_acceleration_vector->y = default_acceleration;
 	}
 	else if (m_Directions[DIR_UP]) {
-		m_acceleration_vector->y = -m_speed;
+		m_acceleration_vector->y = -default_acceleration;
 	}
 	if ((m_Directions[DIR_LEFT] || m_Directions[DIR_RIGHT]) 
 		&& (m_Directions[DIR_UP] || m_Directions[DIR_DOWN])) {
@@ -89,17 +88,17 @@ void PositionComponent::update_current_acceleration() {
 }
 
 void PositionComponent::cap_velocity() {
-	if (m_velocity_vector->x > MAX_VEL) {
-		m_velocity_vector->x = MAX_VEL;
+	if (m_velocity_vector->x > max_vel) {
+		m_velocity_vector->x = max_vel;
 	}
-	else if (m_velocity_vector->x < -MAX_VEL) {
-		m_velocity_vector->x = -MAX_VEL;
+	else if (m_velocity_vector->x < -max_vel) {
+		m_velocity_vector->x = -max_vel;
 	}
-	if (m_velocity_vector->y > MAX_VEL) {
-		m_velocity_vector->y = MAX_VEL;
+	if (m_velocity_vector->y > max_vel) {
+		m_velocity_vector->y = max_vel;
 	} 
-	else if (m_velocity_vector->y < -MAX_VEL) {
-		m_velocity_vector->y = -MAX_VEL;
+	else if (m_velocity_vector->y < -max_vel) {
+		m_velocity_vector->y = -max_vel;
 	}
 }
 
@@ -108,8 +107,8 @@ void PositionComponent::update(){
 	//set_deltaTime_speedFix();
 
 
-	//NATURAL_DECELERATION = DEFAULT_NATURAL_DECELERATION * m_deltaTime_speedFix;
-	//m_speed = DEFAULT_SPEED * m_deltaTime_speedFix;
+	//NATURAL_DECELERATION = default_natural_deceleration * m_deltaTime_speedFix;
+	//default_acceleration = DEFAULT_SPEED * m_deltaTime_speedFix;
 	m_acceleration_vector->x = 0;
 	m_acceleration_vector->y = 0;
 	updateFacingDir();

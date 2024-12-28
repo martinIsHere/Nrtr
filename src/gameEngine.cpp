@@ -86,7 +86,7 @@ GameEngine::GameEngine(const uint32_t nWidth, const uint32_t nHeight, const std:
 		16, 
 		6, 5, 
 		4, // amount of frames/imgs of walking animation
-		4,  // amount of animation frames per second
+		8,  // amount of animation frames per second
 		map->getCam()
 		);
 	NPCEntity->addComponent<DrawingComponent>(
@@ -95,7 +95,7 @@ GameEngine::GameEngine(const uint32_t nWidth, const uint32_t nHeight, const std:
 		16, 
 		3, 4,
 		2,// amount of animation frames per second
-		8, // amount of animation frames per second
+		4, // amount of animation frames per second
 		map->getCam()
 		);
 
@@ -170,6 +170,8 @@ void GameEngine::handleEvents() {
 				break;
 			case SDLK_SPACE:
 				playerEntity->getComponent<InteractionComponent>().interact();
+				break;
+			case SDLK_1:
 				playerEntity->getComponent<DrawingComponent>().initCustomAnimation(4, 0, 6, 1, false);
 				break;
 			}

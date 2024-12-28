@@ -8,7 +8,13 @@ class GameEngine;
 
 class GameMap {
 public:
-	GameMap(SDL_Renderer* ren, const std::string map, const uint32_t windowWidth, const uint32_t windowHeight, int* x, int* y);
+	GameMap(SDL_Renderer* ren,
+		const std::string map, 
+		const uint32_t windowWidth, 
+		const uint32_t windowHeight,
+		int* cameraPosx, 
+		int* cameraPosy
+		);
 	
 	~GameMap();
 	
@@ -48,6 +54,10 @@ public:
 
 	bool& get_drawingSolidStates_bool();
 
+	const int getXcoordOnscreen_fromMapcoord(const int x)const;
+
+	const int getYcoordOnscreen_fromMapcoord(const int y)const;
+
 private:
 
 	std::vector <uint16_t> m_backLayer_array;
@@ -74,8 +84,6 @@ private:
 	uint8_t m_currentMirrorState;
 	uint32_t m_blockSize;
 	Camera* m_mainCamera;
-
-	int* playerX,* playerY;
 
 	char m_readingBuffer[2];
 

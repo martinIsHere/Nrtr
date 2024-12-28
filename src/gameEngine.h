@@ -30,6 +30,8 @@ public:
 
 	void test_NPCMoveFunction();
 
+	void renderText();
+
 private:
 
 	int nWinWidth, nWinHeight;
@@ -54,6 +56,13 @@ private:
 	
 	// state manager
 	GameStateManager* m_stateManager;
+
+	// text
+	TTF_Font* arialFont;
+	std::string textMessage;
+	std::string lastMessage;
+	SDL_Surface* surfaceMessage;
+	SDL_Texture* Message;
 
 	GameMap* map;
 

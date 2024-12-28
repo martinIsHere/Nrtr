@@ -156,7 +156,7 @@ float PositionComponent::getVelMagnitude(){
 	return m_velocity_vector->getMagnitude();
 }
 
-void PositionComponent::setVel(const int x, const int y) {
+void PositionComponent::setVel(const float x, const float y) {
 	m_velocity_vector->set((float)x, (float)y);
 }
 

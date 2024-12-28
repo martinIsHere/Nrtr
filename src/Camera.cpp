@@ -31,19 +31,35 @@ void Camera::update() {
 
 	// check if offset + screen size is more than the map's length
 	
-	if (m_xCameraOffset > int((m_mapWidth * TILE_SIZE) - m_winWidth)) {
-		m_xCameraOffset = (m_mapWidth * TILE_SIZE) - m_winWidth;
+	if (m_xCameraOffset > int((m_mapWidth * TILE_SIZE_PIXELS) - m_winWidth)) {
+		m_xCameraOffset = (m_mapWidth * TILE_SIZE_PIXELS) - m_winWidth;
 	}
-	if (m_yCameraOffset > int((m_mapHeight * TILE_SIZE) - m_winHeight)) {
-		m_yCameraOffset = (m_mapHeight * TILE_SIZE) - m_winHeight;
+	if (m_yCameraOffset > int((m_mapHeight * TILE_SIZE_PIXELS) - m_winHeight)) {
+		m_yCameraOffset = (m_mapHeight * TILE_SIZE_PIXELS) - m_winHeight;
 	}
 	
 }
 
-int* Camera::getOffsetX() {
+const int* Camera::getOffsetXPtr() const {
 	return &m_xCameraOffset;
 }
 
-int* Camera::getOffsetY() {
+const int* Camera::getOffsetYPtr() const {
 	return &m_yCameraOffset;
+}
+
+uint32_t Camera::getWinWidth() const {
+	return m_winWidth;
+}
+
+uint32_t Camera::getWinHeight() const {
+	return m_winHeight;
+}
+
+int Camera::translateXcoordFromWinToMap(const int x) const {
+	return x + m_xCameraOffset;
+}
+
+int Camera::translateYcoordFromWinToMap(const int y) const {
+	return y + m_yCameraOffset;
 }

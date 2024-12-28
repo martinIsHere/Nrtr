@@ -97,34 +97,44 @@ void GameMap::loadMap(std::string map) {
 	m_mapFile.close();
 }
 
-GameMap::GameMap(SDL_Renderer* ren, const std::string map, const uint32_t windowWidth, const uint32_t windowHeight, int *x, int *y) {
-	
-	playerX = x;
-	playerY = y;
+GameMap::GameMap(SDL_Renderer* ren, 
+	const std::string map, 
+	const uint32_t windowWidth, 
+	const uint32_t windowHeight, 
+	int *cameraPosx, 
+	int * cameraPosy
+	) {
 	m_ren = ren;
 	m_windowWidth = windowWidth;
 	m_windowHeight = windowHeight;
+	// buffers for drawing
 	m_xId = 0;
 	m_yId = 0;
 	m_current_ID = 0;
 	m_currentState = 0;
-	m_blockSize = TILE_SIZE;
+
+	// block width and height in pixels
+	m_blockSize = TILE_SIZE_PIXELS;
+
+	// sdl renderer
 	m_ren = m_ren;
+
+	// sdl rect structs
 	m_tempSrcRect = new SDL_Rect;
 	m_tempDstRect = new SDL_Rect;
 
 	//load spriteSheet
-	
 	m_spriteSheet0 = new SpriteSheet{SDL_CreateTextureFromSurface(m_ren, SDL_LoadBMP("res/imgs/sh1.bmp")),  16, 12, 18};
 	if (!m_spriteSheet0->tex) log("Failed to load texture.");
 
 	// load map
 	loadMap(map);
 
+	// create camera at players position
 	m_mainCamera = new Camera(
-		playerX, playerY, // position
-		m_mapWidth, m_mapHeight, // map size
-		m_windowWidth, m_windowHeight // window size
+		cameraPosx, cameraPosy, // position
+		m_mapWidth, m_mapHeight, // map size (for bounds)
+		m_windowWidth, m_windowHeight // window size (for bounds)
 		);
 
 }
@@ -150,25 +160,25 @@ int mousePositionY;
 
 SDL_Rect* dstRect2 = new SDL_Rect;
 
+
 void GameMap::draw() {
 
-	int offsetX = *m_mainCamera->getOffsetX();
-	int offsetY = *m_mainCamera->getOffsetY();
+	// offset from camera body to top left corner of viewing area
+	int offsetX = *m_mainCamera->getOffsetXPtr();
+	int offsetY = *m_mainCamera->getOffsetYPtr();
+
 
 	SDL_GetMouseState(&mousePositionX, &mousePositionY);
 	mousePositionX += offsetX;
 	mousePositionY += offsetY;
 
-	//log((int)getBackMirrorState(mousePositionX / TILE_SIZE, mousePositionY / TILE_SIZE))
+	dstRect2->x = int(mousePositionX/ TILE_SIZE_PIXELS)* TILE_SIZE_PIXELS - offsetX;
+	dstRect2->y = int(mousePositionY/ TILE_SIZE_PIXELS)* TILE_SIZE_PIXELS - offsetY,
+	dstRect2->w = TILE_SIZE_PIXELS;
+	dstRect2->h = TILE_SIZE_PIXELS;
 
-	dstRect2->x = int(mousePositionX/TILE_SIZE)*TILE_SIZE - offsetX;
-	dstRect2->y = int(mousePositionY/TILE_SIZE)* TILE_SIZE - offsetY,
-	dstRect2->w = TILE_SIZE;
-	dstRect2->h = TILE_SIZE;
-
-	for (uint32_t y = offsetY / m_blockSize; y < (m_windowHeight + offsetY) / m_blockSize + 1; y++) {
-		for (uint32_t x = offsetX / m_blockSize; x < (m_windowWidth + offsetX) / m_blockSize + 1; x++) {
-
+	for (uint32_t y = uint32_t(offsetY / m_blockSize); y < (m_windowHeight + offsetY) / m_blockSize + 1; y++) {
+		for (uint32_t x = uint32_t(offsetX / m_blockSize); x < (m_windowWidth + offsetX) / m_blockSize + 1; x++) {
 
 			*m_tempDstRect = { 
 				int((x * m_blockSize) - offsetX),
@@ -224,7 +234,7 @@ void GameMap::draw() {
 			}
 			if (m_isDrawingSolidStates) {
 				if (getState(x, y)) {
-					SDL_SetRenderDrawColor(m_ren, 255, 0, 0, 200);
+					SDL_SetRenderDrawColor(m_ren, 255, 0, 0, 255);
 					SDL_RenderDrawRect(m_ren, m_tempDstRect);
 				}
 			}
@@ -239,8 +249,8 @@ void GameMap::draw() {
 
 void GameMap::drawSecondLayer() {
 
-	int offsetX = *m_mainCamera->getOffsetX();
-	int offsetY = *m_mainCamera->getOffsetY();
+	int offsetX = *m_mainCamera->getOffsetXPtr();
+	int offsetY = *m_mainCamera->getOffsetYPtr();
 
 	for (uint32_t y = offsetY / m_blockSize; y < (m_windowHeight + offsetY) / m_blockSize + 1; y++) {
 		for (uint32_t x = offsetX / m_blockSize; x < (m_windowWidth + offsetX) / m_blockSize + 1; x++) {
@@ -355,4 +365,12 @@ Camera* GameMap::getCam() {
 
 bool& GameMap::get_drawingSolidStates_bool() {
 	return m_isDrawingSolidStates;
+}
+
+const int GameMap::getXcoordOnscreen_fromMapcoord(const int x) const {
+	return x * m_blockSize;
+}
+
+const int GameMap::getYcoordOnscreen_fromMapcoord(const int y) const {
+	return y * m_blockSize;
 }

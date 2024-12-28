@@ -24,7 +24,6 @@ GameEngine::GameEngine(const int nWidth, const int nHeight, const std::string& t
 
 
 
-	
 	//setup SDL stuff
 	if (SDL_Init(SDL_INIT_EVERYTHING) < 0) {
 		std::cout << "Failed to create window\n";
@@ -38,6 +37,15 @@ GameEngine::GameEngine(const int nWidth, const int nHeight, const std::string& t
 		exit(1);
 	}
 
+	// load font
+	arialFont = TTF_OpenFont("res/fonts/arial.ttf", 80);
+	if (arialFont == nullptr) { log(TTF_GetError()); log("failed to load font")}
+	textMessage = "";
+	lastMessage = "";
+	surfaceMessage = nullptr;
+	Message = nullptr;
+	
+	//win stuff
 	Event = new SDL_Event();
 	win = SDL_CreateWindow(title.c_str(), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, nWinWidth, nWinHeight, 0);
 	if (win == 0) {
@@ -73,18 +81,26 @@ GameEngine::GameEngine(const int nWidth, const int nHeight, const std::string& t
 	map->get_drawingSolidStates_bool() = true;
 	playerEntity->addComponent<DrawingComponent>(
 		ren, 
-		"res/imgs/hero.bmp",
+		"res/imgs/secondNPC.bmp",
+		16,
 		3, 4, 
 		nFps, 
-		map->getCam()->getOffsetX(), map->getCam()->getOffsetY());
+		map->getCam()
+		//map->getCam()->getOffsetX(), map->getCam()->getOffsetY()
+		);
 	NPCEntity->addComponent<DrawingComponent>(
 		ren,
 		"res/imgs/npcOneByThree.bmp",
+		16,
 		2, 3,
 		nFps,
-		map->getCam()->getOffsetX(), map->getCam()->getOffsetY());
+		map->getCam()
+		//map->getCam()->getOffsetX(), map->getCam()->getOffsetY()
+		);
+
 	playerEntity->addComponent<CollisionComponent>(map);
 	NPCEntity->addComponent<CollisionComponent>(map);
+
 	playerEntity->addComponent<InteractionComponent>(map);
 
 
@@ -159,31 +175,31 @@ void GameEngine::handleEvents() {
 		}
 	}
 }
-
+ // raw manual code for npc movement
 void GameEngine::test_NPCMoveFunction() {
-	if (numberOfFramesUntilNow < 280) {
+	if (numberOfFramesUntilNow < 240) {
 		NPCEntity->getComponent<PositionComponent>().setVel(4, 0);
 		NPCEntity->getComponent<PositionComponent>().setDir(DIR_RIGHT, true);
 	}
-	else if (numberOfFramesUntilNow < 680) {
-		NPCEntity->getComponent<PositionComponent>().setVel(-3.7, 3.7);
+	else if (numberOfFramesUntilNow < 580) {
+		NPCEntity->getComponent<PositionComponent>().setVel(-2.8f, 2.8f);
 		NPCEntity->getComponent<PositionComponent>().setDir(DIR_RIGHT, false);
 		NPCEntity->getComponent<PositionComponent>().setDir(DIR_DOWN, true);
 		NPCEntity->getComponent<PositionComponent>().setDir(DIR_LEFT, true);
 	}
-	else if (numberOfFramesUntilNow < 1200) {
-		NPCEntity->getComponent<PositionComponent>().setVel(3.5, 3.5);
+	else if (numberOfFramesUntilNow < 1100) {
+		NPCEntity->getComponent<PositionComponent>().setVel(2.8f, 2.8f);
 		NPCEntity->getComponent<PositionComponent>().setDir(DIR_RIGHT, true);
 		NPCEntity->getComponent<PositionComponent>().setDir(DIR_LEFT, false);
 	}
-	else if (numberOfFramesUntilNow < 1400) {
-		NPCEntity->getComponent<PositionComponent>().setVel(-3.7, 0);
+	else if (numberOfFramesUntilNow < 1350) {
+		NPCEntity->getComponent<PositionComponent>().setVel(-2.8f, 0);
 		NPCEntity->getComponent<PositionComponent>().setDir(DIR_RIGHT, false);
 		NPCEntity->getComponent<PositionComponent>().setDir(DIR_DOWN, false);
 		NPCEntity->getComponent<PositionComponent>().setDir(DIR_LEFT, true);
 	}
-	else if (numberOfFramesUntilNow < 1500) {
-		NPCEntity->getComponent<PositionComponent>().setVel(0, 3.7);
+	else if (numberOfFramesUntilNow < 1400) {
+		NPCEntity->getComponent<PositionComponent>().setVel(0, 2.8f);
 		NPCEntity->getComponent<PositionComponent>().setDir(DIR_DOWN, true);
 		NPCEntity->getComponent<PositionComponent>().setDir(DIR_LEFT, false);
 	}
@@ -252,6 +268,40 @@ void GameEngine::sortEntityArray() {
 	*arrayOfActiveEntities = bufferArrayOfEntities;
 }
 
+void GameEngine::renderText() {
+
+	// this is the color in rgb format,
+	// maxing out all would give you the color white,
+	// and it will be your text's color
+	SDL_Color White = { 255, 255, 255 };
+
+
+	textMessage = "Broski";
+	// as TTF_RenderText_Solid could only be used on
+	// SDL_Surface then you have to create the surface first
+	if (textMessage != lastMessage) {
+		surfaceMessage =
+			TTF_RenderText_Solid(arialFont, textMessage.c_str(), White);
+		if (surfaceMessage == nullptr)log("surfaceMessage surface failed load!");
+		// now you can convert it into a texture
+		Message = SDL_CreateTextureFromSurface(ren, surfaceMessage);
+		if (Message == nullptr)log("Message tex failed load!");
+		lastMessage = textMessage;
+	}
+
+	SDL_Rect Message_rect; //create a rect
+	Message_rect.x = 0;  //controls the text's x coordinate 
+	Message_rect.y = 0; // controls the text's y coordinte
+
+
+	TTF_SizeText(arialFont, "Broski", &Message_rect.w, &Message_rect.h);
+
+	SDL_RenderCopy(ren, Message, NULL, &Message_rect);
+
+	//SDL_FreeSurface(surfaceMessage);
+	//SDL_DestroyTexture(Message);
+}
+
 void GameEngine::draw() {
 
 	// clear screen
@@ -269,35 +319,9 @@ void GameEngine::draw() {
 		map->drawSecondLayer();
 	}
 
-	//this opens a font style and sets a size
-	TTF_Font* Sans = TTF_OpenFont("res/fonts/arial.ttf", 80);
-	if (Sans == nullptr) log(TTF_GetError());
+	renderText();
 
-	// this is the color in rgb format,
-	// maxing out all would give you the color white,
-	// and it will be your text's color
-	SDL_Color White = { 255, 255, 255 };
-
-	// as TTF_RenderText_Solid could only be used on
-	// SDL_Surface then you have to create the surface first
-	SDL_Surface* surfaceMessage =
-		TTF_RenderText_Solid(Sans, "Broski", White);
-
-	// now you can convert it into a texture
-	SDL_Texture* Message = SDL_CreateTextureFromSurface(ren, surfaceMessage);
-
-	SDL_Rect Message_rect; //create a rect
-	Message_rect.x = 0;  //controls the text's x coordinate 
-	Message_rect.y = 0; // controls the text's y coordinte
-
-
-	TTF_SizeText(Sans, "Broski", &Message_rect.w, &Message_rect.h);
-
-	SDL_RenderCopy(ren, Message, NULL, &Message_rect);
-
-	SDL_FreeSurface(surfaceMessage);
-	//SDL_DestroyTexture(Message);
-
+	if (ren == nullptr) log("sug min ljlævla fokicnig jcukuk brro");
 	SDL_RenderPresent(ren);
 }
 

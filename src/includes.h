@@ -11,7 +11,7 @@
 #include <stdint.h>
 #define PI 3.14159
 #define log(a){std::cout << a << "\n";}
-#define logh(a){std::cout << std:hex << a << "\n";}
+#define logh(a){std::cout << std::hex << a << "\n";}
 #define assertN(v, t) { if (v == t){std::cout << "Error: "; exit(-1);} }
 //#define assert(v, t) { if (v != t){std::cout << "Error: "; exit(-1);} }
 #define assert(v){if(v==nullptr){std::cout << "!---nullptr---!\n";}}
@@ -19,7 +19,8 @@
 #define DIR_RIGHT 1
 #define DIR_UP 2
 #define DIR_DOWN 3
-#define TILE_SIZE 64
+#define TILE_SIZE_PIXELS 64
+#define AVERAGE_ENTITY_SIZE_PIXELS 64
 class GameEngine;
 class GameMap;
 extern uint32_t unStartElapsedTime;

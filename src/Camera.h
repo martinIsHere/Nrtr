@@ -22,9 +22,16 @@ public:
 
 	void update(const int& x, const int& y);
 
-	int* getOffsetX();
+	const int* getOffsetXPtr()const;
 
-	int* getOffsetY();
+	const int* getOffsetYPtr()const;
 
+	uint32_t getWinWidth()const;
+
+	uint32_t getWinHeight()const;
+
+	int translateXcoordFromWinToMap(const int x) const;
+
+	int translateYcoordFromWinToMap(const int y) const;
 };
 

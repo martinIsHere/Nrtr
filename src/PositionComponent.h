@@ -73,7 +73,7 @@ public:
 
 	uint32_t& getFacingDir();
 
-	void setVel(const int x, const int y);
+	void setVel(const float x, const float y);
 
 	float& getVelx();
 

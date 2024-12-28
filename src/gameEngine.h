@@ -3,6 +3,7 @@
 #include "ECS.H"
 #include "Components.h"
 #include "GameStateManager.h"
+#include "TheaterEngine.h"
 #include "includes.h"
 
 class GameMap;
@@ -69,7 +70,11 @@ private:
 	// music
 	Mix_Music* gMusic;
 
+	// gamemap instance
 	GameMap* map;
+
+	// theater engine instance
+	TheaterEngine theaterEngine;
 
 	bool bRunning;
 protected:

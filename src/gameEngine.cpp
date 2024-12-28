@@ -248,7 +248,6 @@ void GameEngine::update() {
 	if (m_stateManager->get() == m_stateManager->state_gameRunning) {
 
 		handleEvents();
-		//player1->move();
 
 		// update all entities
 		m_entityManager.update();

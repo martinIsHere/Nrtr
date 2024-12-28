@@ -160,8 +160,8 @@
     <ClCompile Include="src\gameMap.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\includesGlobalVariables.cpp" />
+    <ClCompile Include="src\TheaterEngine.cpp" />
     <ClCompile Include="src\Vector.cpp" />
-    <ClCompile Include="TheaterEngine.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\InteractionComponent.h" />
@@ -175,16 +175,25 @@
     <ClInclude Include="src\gameEngine.h" />
     <ClInclude Include="src\gameMap.h" />
     <ClInclude Include="src\includes.h" />
+    <ClInclude Include="src\TheaterEngine.h" />
     <ClInclude Include="src\Vector.h" />
-    <ClInclude Include="TheaterEngine.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include=".gitattributes" />
+    <None Include=".gitignore" />
+    <None Include="et" />
+    <None Include="ourcereposTileBasedGameresimgsD%EF%80%BAsourcereposTileBasedGameresimgs" />
     <None Include="SDL2.dll" />
+    <None Include="SDL2_mixer.dll" />
+    <None Include="SDL2_ttf.dll" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\imgs\hero.bmp" />
     <Image Include="res\imgs\npc.bmp" />
+    <Image Include="res\imgs\npcOneByThree.bmp" />
+    <Image Include="res\imgs\secondNpc.bmp" />
     <Image Include="res\imgs\sh1.bmp" />
+    <Image Include="res\imgs\sh1_OldVersion.bmp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

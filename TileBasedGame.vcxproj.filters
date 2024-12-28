@@ -48,7 +48,7 @@
     <ClCompile Include="src\InteractionComponent.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="TheaterEngine.cpp">
+    <ClCompile Include="src\TheaterEngine.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -89,12 +89,18 @@
     <ClInclude Include="src\InteractionComponent.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="TheaterEngine.h">
+    <ClInclude Include="src\TheaterEngine.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="SDL2.dll" />
+    <None Include="SDL2_mixer.dll" />
+    <None Include="SDL2_ttf.dll" />
+    <None Include=".gitattributes" />
+    <None Include=".gitignore" />
+    <None Include="et" />
+    <None Include="ourcereposTileBasedGameresimgsD%EF%80%BAsourcereposTileBasedGameresimgs" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\imgs\hero.bmp">
@@ -104,6 +110,15 @@
       <Filter>Resource Files</Filter>
     </Image>
     <Image Include="res\imgs\sh1.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\imgs\secondNpc.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\imgs\npcOneByThree.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\imgs\sh1_OldVersion.bmp">
       <Filter>Resource Files</Filter>
     </Image>
   </ItemGroup>

@@ -63,7 +63,6 @@ DrawingComponent::DrawingComponent(
 	m_animationTick = 0.f;
 	m_animationFramesPerState = m_spriteSheet->nWidth;
 	m_framesPerImage = 15;
-	m_animationTime = (float)m_FPS; // in ms
 	m_frameCounter = 0;
 
 	m_cameraOffsetX = m_cam->getOffsetXPtr();

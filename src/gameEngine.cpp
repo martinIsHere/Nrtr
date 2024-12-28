@@ -72,7 +72,7 @@ GameEngine::GameEngine(const uint32_t nWidth, const uint32_t nHeight, const std:
 
 	map = new GameMap(
 		ren,
-		"res/map/map.bin",
+		"res/map/Town1.bin",
 		nWinWidth, nWinHeight,
 		&(playerEntity->getComponent<PositionComponent>().getx()),
 		&(playerEntity->getComponent<PositionComponent>().gety())

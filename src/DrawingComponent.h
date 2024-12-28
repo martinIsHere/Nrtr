@@ -9,6 +9,8 @@ class DrawingComponent : public Component{
 	SDL_Renderer* m_ren;
 	SpriteSheet* m_spriteSheet;
 	PositionComponent* m_posComp;
+	enum animationType {walkingAnimation, swordSwingAnimation, customAnimation};
+	int currentAnimationType;
 	int m_animationTick;
 	unsigned int m_FPS;
 	int m_animationFramesPerState;

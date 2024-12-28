@@ -40,6 +40,8 @@ DrawingComponent::DrawingComponent(
 		exit(-1);
 	}
 
+	currentAnimationType = animationType::walkingAnimation;
+
 	// init spritesheet ------------
 	m_spriteSheet = new SpriteSheet{};
 
@@ -129,10 +131,20 @@ void DrawingComponent::draw() {
 	if (m_animationTick > m_spriteSheet->nWidth) log("m_animationTick > m_spriteSheet->nWidth");
 	m_srcRect->x = m_spriteSheet->nSize * (int)(m_animationTick);
 
-	if(is_in_viewable_area()){
-		draw_frame_according_to_direction();
-	} else {
-		updateWithoutDrawing_frame_according_to_direction();
+	if (currentAnimationType == animationType::walkingAnimation) {
+		if(is_in_viewable_area()){
+			draw_frame_according_to_direction();
+		} else {
+			updateWithoutDrawing_frame_according_to_direction();
+		}
+	} 
+	else if(currentAnimationType == animationType::customAnimation) {
+		if (is_in_viewable_area()) {
+			draw_frame_according_to_direction();
+		}
+		else {
+			updateWithoutDrawing_frame_according_to_direction();
+		}
 	}
 }
 

@@ -34,8 +34,6 @@ public:
 	int& getx();
 
 	int& gety();
-	
-	int getPos() const;
 
 	float getMaxVel() const;
 
@@ -44,6 +42,10 @@ public:
 	void draw() override;
 
 	void normalize();
+
+	void moveForward(int d);
+
+	void setPos(const int x, const int y);
 
 	void setAcc(const float& xAcc, const float& yAcc);
 	

@@ -213,8 +213,8 @@ void GameEngine::test_NPCMoveFunction() {
 
 const void  GameEngine::test_portalAnimationFunction() {
 	if (playerEntity->getComponent<DrawingComponent>().customAnimationHasEnded()
-		|| playerEntity->getComponent<DrawingComponent>().getPrevCustomAnimationY() == 4) {
-		playerEntity->getComponent<PositionComponent>();//.getPos();
+		&& playerEntity->getComponent<DrawingComponent>().getPrevCustomAnimationY() == 4) {
+		playerEntity->getComponent<PositionComponent>().moveForward(2*TILE_SIZE_PIXELS);
 	}
 }
 
@@ -232,6 +232,7 @@ void GameEngine::update() {
 		// move the npc
 		test_NPCMoveFunction();
 
+		test_portalAnimationFunction();
 
 		map->update(); 
 

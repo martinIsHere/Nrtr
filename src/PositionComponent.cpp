@@ -166,6 +166,18 @@ void PositionComponent::setVel(const float x, const float y) {
 	m_velocity_vector->set((float)x, (float)y);
 }
 
+void PositionComponent::setPos(const int x, const int y) {
+	m_X = x;
+	m_Y = y;
+}
+
+void PositionComponent::moveForward(int d) {
+	if (m_facingDir == DIR_LEFT) m_X -= d;
+	else if (m_facingDir == DIR_RIGHT) m_X += d;
+	else if (m_facingDir == DIR_DOWN) m_Y += d;
+	else m_Y -= d; 
+}
+
 void PositionComponent::setAcc(const float& xAcc, const float& yAcc) {
 	m_acceleration_vector->set(xAcc, yAcc);
 }

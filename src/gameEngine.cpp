@@ -84,7 +84,8 @@ GameEngine::GameEngine(const uint32_t nWidth, const uint32_t nHeight, const std:
 		ren, 
 		"res/imgs/hero.bmp",
 		16, 
-		4, 4, 
+		6, 5, 
+		4, // amount of frames/imgs of walking animation
 		4,  // amount of animation frames per second
 		map->getCam()
 		);
@@ -93,6 +94,7 @@ GameEngine::GameEngine(const uint32_t nWidth, const uint32_t nHeight, const std:
 		"res/imgs/secondNPC.bmp",
 		16, 
 		3, 4,
+		2,// amount of animation frames per second
 		8, // amount of animation frames per second
 		map->getCam()
 		);
@@ -168,7 +170,7 @@ void GameEngine::handleEvents() {
 				break;
 			case SDLK_SPACE:
 				playerEntity->getComponent<InteractionComponent>().interact();
-				playerEntity->getComponent<DrawingComponent>().initCustomAnimation(3, 0, 3, 5);
+				playerEntity->getComponent<DrawingComponent>().initCustomAnimation(4, 0, 6, 1, false);
 				break;
 			}
 			break;
@@ -206,6 +208,13 @@ void GameEngine::test_NPCMoveFunction() {
 	else {
 		NPCEntity->getComponent<PositionComponent>().setVel(0, 0);
 		NPCEntity->getComponent<PositionComponent>().setDir(DIR_DOWN, false);
+	}
+}
+
+const void  GameEngine::test_portalAnimationFunction() {
+	if (playerEntity->getComponent<DrawingComponent>().customAnimationHasEnded()
+		|| playerEntity->getComponent<DrawingComponent>().getPrevCustomAnimationY() == 4) {
+		playerEntity->getComponent<PositionComponent>();//.getPos();
 	}
 }
 

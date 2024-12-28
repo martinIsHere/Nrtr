@@ -32,6 +32,8 @@ public:
 
 	void renderText();
 
+	const void test_portalAnimationFunction();
+
 private:
 
 	uint32_t nWinWidth, nWinHeight;

@@ -61,6 +61,8 @@ public:
 
 	void setDir(uint32_t dir, bool value);
 
+	void set_isAbleToMove(bool a);
+
 	bool isMoving();
 
 	bool isMovingX();

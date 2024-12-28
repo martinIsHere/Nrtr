@@ -24,6 +24,9 @@ class DrawingComponent : public Component{
 	int amountOfFramesForCustomAnimation;
 	int currentRepetition;
 	int yValueBeforeCustomAnimation;
+	int prevCustomAnimationY;
+	bool isAbleToMoveDuringAnimation; // for custom animation
+	bool customAnimationHasEnded_notifier;
 
 public:
 	DrawingComponent(
@@ -32,6 +35,7 @@ public:
 		const int walkSpriteWidthNHeight,
 		const int spriteSheetColumns, 
 		const int spriteSheetRows, 
+		const int amountOfWalkingAnimationFrames,
 		const unsigned int fps, 
 		const Camera* cam
 		);
@@ -48,8 +52,13 @@ public:
 		uint32_t customAnimationY,
 		uint32_t startX,
 		uint32_t amountOfFrames,
-		uint32_t amountOfRepetitions
+		uint32_t amountOfRepetitions,
+		bool isAbleToMoveDuringAnimation
 		);
+
+	const bool customAnimationHasEnded();
+
+	const int getPrevCustomAnimationY() const;
 
 private:
 	void update_walkingAnimation();

@@ -16,7 +16,8 @@ DrawingComponent::DrawingComponent(
 	const int walkSpriteWidthNHeight,
 	const int spriteSheetColumns,
 	const int spriteSheetRows,
-	const unsigned int fps,
+	const int amountOfWalkingAnimationFrames,
+	const unsigned int fps, // frames per state of animation
 	const Camera* cam
 	) {
 
@@ -64,9 +65,11 @@ DrawingComponent::DrawingComponent(
 	startX = 0; 
 	amountOfRepetitions = 0;
 	currentRepetition = 0;
+	customAnimationHasEnded_notifier = false;
+	prevCustomAnimationY = 0;
 
 	m_animationTick = 0;
-	m_animationFramesPerState = m_spriteSheet->nWidth;
+	m_animationFramesPerState = amountOfWalkingAnimationFrames;
 	m_framesPerImage = (int)(targetFPS / fps);
 	m_frameCounter = 0;
 
@@ -99,17 +102,22 @@ const void DrawingComponent::initCustomAnimation(
 	uint32_t customAnimationY, // of source image
 	uint32_t startX,  // to start animation from
 	uint32_t amountOfFrames, // for animation
-	uint32_t amountOfRepetitions // to be looped
+	uint32_t amountOfRepetitions, // to be looped
+	bool isAbleToMoveDuringAnimation
 	) {
 	// TODO: add assertions
 	yValueBeforeCustomAnimation = m_srcRect->y;
 	m_srcRect->y = customAnimationY * m_spriteSheet->nSize;
+	prevCustomAnimationY = customAnimationY;
 	m_animationTick = startX;
 	this->startX = startX;
 	this->amountOfFramesForCustomAnimation = amountOfFrames;
 	this->amountOfRepetitions = amountOfRepetitions;
+	this->isAbleToMoveDuringAnimation = isAbleToMoveDuringAnimation;
 	currentRepetition = 0;
 	currentAnimationType = animationType::customAnimation;
+	ent->getComponent<PositionComponent>().set_isAbleToMove(isAbleToMoveDuringAnimation);
+	customAnimationHasEnded_notifier = false;
 }
 
 void DrawingComponent::update() {
@@ -127,7 +135,7 @@ void DrawingComponent::update_walkingAnimation() {
 	if (m_posComp->isMoving()) { // if moving, update the animation frame
 		if (m_animationTick == 0) m_animationTick = 1; // quick fix
 		if (m_frameCounter >= m_framesPerImage) { // if image has been shown for correct amount of frames
-			if (m_animationTick < m_animationFramesPerState - 1) { // increment animationtick or reset if at limit. circular
+			if (m_animationTick-1 < m_animationFramesPerState - 1) { // increment animationtick or reset if at limit. circular
 				m_animationTick += 1;
 			}
 			else {
@@ -165,6 +173,8 @@ void DrawingComponent::update_customAnimation() {
 		m_srcRect->y = yValueBeforeCustomAnimation;
 		m_animationTick = 0;
 		m_frameCounter = 0;
+		if(!isAbleToMoveDuringAnimation) ent->getComponent<PositionComponent>().set_isAbleToMove(true);
+		customAnimationHasEnded_notifier = true;
 	}
 }
 
@@ -257,4 +267,15 @@ void DrawingComponent::updateWalkingAnimationWithoutDrawing_frame_according_to_d
 
 void DrawingComponent::draw_customAnimationFrame() {
 	SDL_RenderCopy(m_ren, m_spriteSheet->tex, m_srcRect, m_destRect);
+}
+
+const bool DrawingComponent::customAnimationHasEnded() {
+	if (customAnimationHasEnded_notifier) {
+		customAnimationHasEnded_notifier = false;
+		return true;
+	}
+	return false;
+}
+const int DrawingComponent::getPrevCustomAnimationY() const {
+	return prevCustomAnimationY;
 }

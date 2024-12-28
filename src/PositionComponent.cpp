@@ -110,22 +110,28 @@ void PositionComponent::update(){
 
 	//NATURAL_DECELERATION = default_natural_deceleration * m_deltaTime_speedFix;
 	//default_acceleration = DEFAULT_SPEED * m_deltaTime_speedFix;
-	m_acceleration_vector->x = 0;
-	m_acceleration_vector->y = 0;
-	updateFacingDir();
+	if (isAbleToMove) {
+		m_acceleration_vector->x = 0;
+		m_acceleration_vector->y = 0;
+		updateFacingDir();
 
 
-	update_current_acceleration();
+		update_current_acceleration();
 
-	// update velocity by acceleration/decelaration
-	m_velocity_vector = *m_velocity_vector + m_acceleration_vector;
-	apply_natural_deceleration();
+		// update velocity by acceleration/decelaration
+		m_velocity_vector = *m_velocity_vector + m_acceleration_vector;
+		apply_natural_deceleration();
 
-	cap_velocity();
+		cap_velocity();
 
-	// update position by updated velocity
-	m_X += (int)m_velocity_vector->x;
-	m_Y += (int)m_velocity_vector->y;
+		// update position by updated velocity
+		m_X += (int)m_velocity_vector->x;
+		m_Y += (int)m_velocity_vector->y;
+	}
+	else {
+		setAcc(0, 0);
+		setVel(0, 0);
+	}
 }
 
 // rendered pointless
@@ -309,4 +315,8 @@ bool PositionComponent::isMovingVelY() {
 		return true;
 	}
 	return false;
+}
+
+void PositionComponent::set_isAbleToMove(bool a) {
+	isAbleToMove = a;
 }

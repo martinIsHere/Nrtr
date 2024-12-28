@@ -1,0 +1,75 @@
+[33mcommit 5fb22fdac9f8d8a589d2d02cfa757dea0a3afafb[m[33m ([m[1;36mHEAD[m[33m)[m
+Author: martinIsHere <marty.havardsen@gmail.com>
+Date:   Sat Dec 28 17:00:14 2024 +0100
+
+    made progress on update of drawingcomp
+
+[33mcommit adcc68dde236faacfe994e684dbab01766e3dea1[m[33m ([m[1;32mupdatingDrawingComponent[m[33m, [m[1;32mAllowForVariableAnimationSpeed[m[33m)[m
+Author: martinIsHere <marty.havardsen@gmail.com>
+Date:   Sat Dec 28 15:21:54 2024 +0100
+
+    added global variable targetFPS. Made position components default speeds relative to target fps and from previous commit also relative to tile size. Some problems arise for large FPS values but works fine elsewhere.
+
+[33mcommit 2839e47a9cd4796ba286cf8fca0e230e2db4971f[m
+Author: martinIsHere <marty.havardsen@gmail.com>
+Date:   Sat Dec 28 14:59:10 2024 +0100
+
+    fixed collision and changed screen size. Speed is now relative to tile size but not FPS
+
+[33mcommit 82a7dbf08a142ed286b60393d987df1bdd7eec0a[m
+Author: martinIsHere <marty.havardsen@gmail.com>
+Date:   Sat Dec 28 14:14:55 2024 +0100
+
+    commit before attempting to fix collision bug for dynamic sizes
+
+[33mcommit 46001e99083dc628710c0c236684cfe2ceacaeba[m
+Author: martinIsHere <marty.havardsen@gmail.com>
+Date:   Sat Dec 28 01:55:18 2024 +0100
+
+    Some aspects like collision and enity drawing had non-dynamically coded sections. Fixed these. Added new resources. drawingComponent yet to be updated.
+
+[33mcommit 0425dffa7727dbf33ca837fa6c58dfc81b0e9cfc[m[33m ([m[1;31mnrtr/entityDrawingPriority[m[33m, [m[1;32mentityDrawingPriority[m[33m)[m
+Author: martinIsHere <marty.havardsen@gmail.com>
+Date:   Mon Dec 23 22:36:17 2024 +0100
+
+    Done! started updating drawing component
+
+[33mcommit 759aad894f11f8ad815f248c8cb6aab9e6eb970e[m[33m ([m[1;31mnrtr/TilesDrawnAboveEntities[m[33m, [m[1;32mTilesDrawnAboveEntities[m[33m)[m
+Author: martinIsHere <marty.havardsen@gmail.com>
+Date:   Sun Dec 22 21:27:59 2024 +0100
+
+    done
+    also added another entity
+
+[33mcommit 6ad4d43dcd4899043bd239ec99b284feb391cbde[m[33m ([m[1;31mnrtr/aganeBaby[m[33m, [m[1;32maganeBaby[m[33m)[m
+Author: martinIsHere <marty.havardsen@gmail.com>
+Date:   Sat Dec 21 23:35:49 2024 +0100
+
+    changed map
+    adjusted camera
+
+[33mcommit e9e172da7bb3d82c08bc77c214b33d2d34e72b1b[m
+Author: martinIsHere <marty.havardsen@gmail.com>
+Date:   Sat Dec 21 21:26:28 2024 +0100
+
+    sumshit
+
+[33mcommit ca41e8662ca0bc5776f674e8cf1bfc9db1114fb8[m[33m ([m[1;32mCollisionAddition[m[33m)[m
+Author: martinIsHere <martin.havardsen@gmail.com>
+Date:   Thu Dec 23 16:39:40 2021 +0100
+
+    Added solidstate drawing button, and tweaked player hitbox
+    
+    Signed-off-by: martinIsHere <martin.havardsen@gmail.com>
+
+[33mcommit bec9206e7848f0bb5159c52789657e8e1e21d67c[m[33m ([m[1;32mmain[m[33m)[m
+Author: martinIsHere <martin.havardsen@gmail.com>
+Date:   Sun Dec 19 14:07:17 2021 +0100
+
+    Started on collision and implemented stuff
+
+[33mcommit d9af944f23b8c9aac055c99f576da67529af28c4[m[33m ([m[1;32msuperMaster[m[33m, [m[1;32mmaster[m[33m)[m
+Author: martinIsHere <martin.havardsen@gmail.com>
+Date:   Sat Dec 18 12:39:20 2021 +0100
+
+    figuring stuff out

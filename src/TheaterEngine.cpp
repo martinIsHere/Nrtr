@@ -1,4 +1,5 @@
 #include "TheaterEngine.h"
+#include "PositionComponent.h"
 
 TheaterEngine::TheaterEngine() {
 
@@ -13,10 +14,12 @@ void TheaterEngine::makeEntityMove_constantSpeedNoDiagonalMovement(
 	int xDest,
 	int yDest,
 	float speed,
-	int waitTimeFirstStop,
-	int waitTimeSecondStop,
+	const int waitTimeFirstStop_inSeconds, 
+	const int waitTimeSecondStop_inSeconds, 
 	bool xMove_before_yMove
 	) {
+	int waitTimeFirstStop_inFrames = waitTimeFirstStop_inSeconds * targetFPS;
+	int waitTimeSecondStop_inFrames = waitTimeSecondStop_inSeconds * targetFPS;
 
 }
 void TheaterEngine::teleportEntity(
@@ -24,7 +27,7 @@ void TheaterEngine::teleportEntity(
 	int xDest,
 	int yDest
 	) {
-
+	ent->getComponent<PositionComponent>().setPos(xDest, yDest);
 }
 
 void TheaterEngine::update(

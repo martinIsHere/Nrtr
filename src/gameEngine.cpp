@@ -82,17 +82,17 @@ GameEngine::GameEngine(const uint32_t nWidth, const uint32_t nHeight, const std:
 	map->get_drawingSolidStates_bool() = true;
 	playerEntity->addComponent<DrawingComponent>(
 		ren, 
-		"res/imgs/secondNPC.bmp",
+		"res/imgs/hero.bmp",
 		16, 
-		3, 4, 
+		4, 4, 
 		4,  // amount of animation frames per second
 		map->getCam()
 		);
 	NPCEntity->addComponent<DrawingComponent>(
 		ren,
-		"res/imgs/hero.bmp",
+		"res/imgs/secondNPC.bmp",
 		16, 
-		4, 4,
+		3, 4,
 		8, // amount of animation frames per second
 		map->getCam()
 		);
@@ -168,6 +168,7 @@ void GameEngine::handleEvents() {
 				break;
 			case SDLK_SPACE:
 				playerEntity->getComponent<InteractionComponent>().interact();
+				playerEntity->getComponent<DrawingComponent>().initCustomAnimation(3, 0, 3, 5);
 				break;
 			}
 			break;

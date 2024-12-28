@@ -12,6 +12,7 @@ PositionComponent::PositionComponent(int x, int y) : m_X(x), m_Y(y) {
 	natural_deceleration = default_natural_deceleration;
 	max_vel = float(8 * (double)TILE_SIZE_PIXELS / (double)targetFPS); // 10 if TILE_SIZE_PIXELS = 64 and targetFPS = 60
 	m_deltaTime_speedFix = 0;
+	isAbleToMove = true;
 }
 
 void PositionComponent::init() {

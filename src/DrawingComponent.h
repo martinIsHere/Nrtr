@@ -19,6 +19,11 @@ class DrawingComponent : public Component{
 	unsigned int m_prevDir;
 	const int* m_cameraOffsetX, * m_cameraOffsetY;
 	const Camera* m_cam;
+	int startX; // for animation. the x value to draw from the source
+	int amountOfRepetitions; // for animation. 
+	int amountOfFramesForCustomAnimation;
+	int currentRepetition;
+	int yValueBeforeCustomAnimation;
 
 public:
 	DrawingComponent(
@@ -39,10 +44,23 @@ public:
 
 	void init() override;
 
-private:
-	void draw_frame_according_to_direction();
+	const void initCustomAnimation(
+		uint32_t customAnimationY,
+		uint32_t startX,
+		uint32_t amountOfFrames,
+		uint32_t amountOfRepetitions
+		);
 
-	void updateWithoutDrawing_frame_according_to_direction(); // quick fix
+private:
+	void update_walkingAnimation();
+
+	void update_customAnimation();
+
+	void draw_WalkingAnimationframe_according_to_direction();
+
+	void updateWalkingAnimationWithoutDrawing_frame_according_to_direction(); // quick fix
+
+	void draw_customAnimationFrame();
 
 	const bool is_in_viewable_area()const;
 

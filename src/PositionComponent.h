@@ -8,12 +8,12 @@
 class PositionComponent : public Component{
 
 	int m_X, m_Y;
+	bool isAbleToMove;
 	Vector *m_velocity_vector;
 	Vector *m_acceleration_vector;
 	float m_Magnitude;
 	std::array<bool, 4> m_Directions;
 	uint32_t m_facingDir;
-	float m_speed;
 	float m_deltaTime_speedFix;
 
 	float max_vel;

@@ -28,6 +28,7 @@ DrawingComponent::DrawingComponent(
 
 	if (!spriteSheetSurface) {
 		std::cout << SDL_GetError();
+		log("SDL_Surface* spriteSheetSurface = SDL_LoadBMP(spriteTitle.c_str()); failed");
 		exit(-1);
 	}
 
@@ -60,7 +61,11 @@ DrawingComponent::DrawingComponent(
 
 	m_posComp = nullptr;
 
-	m_animationTick = 0.f;
+	startX = 0; 
+	amountOfRepetitions = 0;
+	currentRepetition = 0;
+
+	m_animationTick = 0;
 	m_animationFramesPerState = m_spriteSheet->nWidth;
 	m_framesPerImage = (int)(targetFPS / fps);
 	m_frameCounter = 0;
@@ -90,24 +95,79 @@ DrawingComponent::~DrawingComponent() {
 
 }
 
+const void DrawingComponent::initCustomAnimation(
+	uint32_t customAnimationY, // of source image
+	uint32_t startX,  // to start animation from
+	uint32_t amountOfFrames, // for animation
+	uint32_t amountOfRepetitions // to be looped
+	) {
+	// TODO: add assertions
+	yValueBeforeCustomAnimation = m_srcRect->y;
+	m_srcRect->y = customAnimationY * m_spriteSheet->nSize;
+	m_animationTick = startX;
+	this->startX = startX;
+	this->amountOfFramesForCustomAnimation = amountOfFrames;
+	this->amountOfRepetitions = amountOfRepetitions;
+	currentRepetition = 0;
+	currentAnimationType = animationType::customAnimation;
+}
+
 void DrawingComponent::update() {
+	switch (currentAnimationType) {
+		case animationType::walkingAnimation:
+			update_walkingAnimation();
+			break;
+		case animationType::customAnimation:
+			update_customAnimation();
+			break;
+	}
+}
+
+void DrawingComponent::update_walkingAnimation() {
 	if (m_posComp->isMoving()) { // if moving, update the animation frame
-		if (m_animationTick == 0) m_animationTick = 1;
+		if (m_animationTick == 0) m_animationTick = 1; // quick fix
 		if (m_frameCounter >= m_framesPerImage) { // if image has been shown for correct amount of frames
-			if (m_animationTick < m_animationFramesPerState-1) { // increment animationtick or reset if at limit. circular
+			if (m_animationTick < m_animationFramesPerState - 1) { // increment animationtick or reset if at limit. circular
 				m_animationTick += 1;
-			} else {
-				m_animationTick = 1;
+			}
+			else {
+				m_animationTick = 1; // 1 because the spritesheet walking animation starts one over. idle is 0
 			}
 			m_frameCounter = 0;
-		} else {
+		}
+		else {
 			m_frameCounter++;
 		}
-	} else {// if not moving, reset animation frame
+	}
+	else {// if not moving, reset animation frame
 		m_animationTick = 0;
 		m_frameCounter = 0;
 	}
 }
+
+void DrawingComponent::update_customAnimation() {
+	if (currentRepetition < amountOfRepetitions) { // if not moving, update the animation frame
+		if (m_frameCounter >= m_framesPerImage) { // if image has been shown for correct amount of frames
+			if (m_animationTick < amountOfFramesForCustomAnimation - 1) { // increment animationtick or reset if at limit. circular
+				m_animationTick += 1;
+			}
+			else {
+				m_animationTick = startX;
+				currentRepetition++;
+			}
+			m_frameCounter = 0;
+		}
+		else {
+			m_frameCounter++;
+		}
+	} else { // if done with animation
+		currentAnimationType = animationType::walkingAnimation;
+		m_srcRect->y = yValueBeforeCustomAnimation;
+		m_animationTick = 0;
+		m_frameCounter = 0;
+	}
+}
+
 
 const bool DrawingComponent::is_in_viewable_area() const {
 	if (m_posComp->getx() + MAX_SPRITE_SIZE > * m_cameraOffsetX // m_cameraOffsetX being translateXcoordFromWinToMap(0)
@@ -133,22 +193,19 @@ void DrawingComponent::draw() {
 
 	if (currentAnimationType == animationType::walkingAnimation) {
 		if(is_in_viewable_area()){
-			draw_frame_according_to_direction();
+			draw_WalkingAnimationframe_according_to_direction();
 		} else {
-			updateWithoutDrawing_frame_according_to_direction();
+			updateWalkingAnimationWithoutDrawing_frame_according_to_direction();
 		}
 	} 
 	else if(currentAnimationType == animationType::customAnimation) {
 		if (is_in_viewable_area()) {
-			draw_frame_according_to_direction();
-		}
-		else {
-			updateWithoutDrawing_frame_according_to_direction();
+			draw_customAnimationFrame();
 		}
 	}
 }
 
-void DrawingComponent::draw_frame_according_to_direction() {
+void DrawingComponent::draw_WalkingAnimationframe_according_to_direction() {
 	// draw texture 
 	// check direction and drawing accordingly
 	// X
@@ -182,7 +239,7 @@ void DrawingComponent::draw_frame_according_to_direction() {
 	}
 }
 
-void DrawingComponent::updateWithoutDrawing_frame_according_to_direction() {
+void DrawingComponent::updateWalkingAnimationWithoutDrawing_frame_according_to_direction() {
 	// check direction and drawing accordingly
 	// unsure if these get functions are inefficient :/
 	if (m_posComp->isMovingX()) {
@@ -196,4 +253,8 @@ void DrawingComponent::updateWithoutDrawing_frame_according_to_direction() {
 			m_srcRect->y = 2 * m_spriteSheet->nSize;
 		}
 	}
+}
+
+void DrawingComponent::draw_customAnimationFrame() {
+	SDL_RenderCopy(m_ren, m_spriteSheet->tex, m_srcRect, m_destRect);
 }

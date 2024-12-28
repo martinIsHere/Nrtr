@@ -7,6 +7,7 @@
 #include <thread>
 #include "SDL.h"
 #include "SDL_ttf.h"
+#include "SDL_mixer.h"
 #include "Vector.h"
 #include <stdint.h>
 #define PI 3.1416   //59

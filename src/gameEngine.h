@@ -66,6 +66,9 @@ private:
 	SDL_Surface* surfaceMessage;
 	SDL_Texture* Message;
 
+	// music
+	Mix_Music* gMusic;
+
 	GameMap* map;
 
 	bool bRunning;

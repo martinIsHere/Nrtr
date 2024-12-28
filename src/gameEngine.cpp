@@ -63,7 +63,30 @@ GameEngine::GameEngine(const uint32_t nWidth, const uint32_t nHeight, const std:
 	}
 	
 
-	//player1 = new Player(ren, map, 64, "res/imgs/hero.bmp", 16, 3, 4);
+	//music ------------------------
+
+	//Initialize SDL_mixer
+	if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048) < 0)
+	{
+		printf("SDL_mixer could not initialize! SDL_mixer Error: %s\n", Mix_GetError());
+		bRunning = false;
+	}
+
+	gMusic = Mix_LoadMUS("res/audio/Sorry im late, traffic.wav");
+	if (gMusic == NULL)
+	{
+		printf("Failed to load beat music! SDL_mixer Error: %s\n", Mix_GetError());
+		bRunning = false;
+	}
+
+	Mix_VolumeMusic(MIX_MAX_VOLUME * 0.5);
+
+	if (Mix_PlayingMusic() == 0)
+	{
+		//Play the music
+		Mix_PlayMusic(gMusic, -1);
+	}
+
 
 	playerEntity = m_entityManager.addEntity();
 	NPCEntity = m_entityManager.addEntity();

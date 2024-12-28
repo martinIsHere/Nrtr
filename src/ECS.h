@@ -250,29 +250,3 @@ public:
 	}
 
 };
-
-
-// test components
-
-class aComp : public Component {
-public:
-
-	void update() {
-		
-		
-		log("Just now, I updated myself. You're welcome!")
-	}
-	void draw() {
-		log("Just now, I drew to the screen. You're welcome!")
-	}
-};
-
-class anotherComp : public Component {
-public:
-	void update() {
-		log("Another component just updated. How do you feel about this?")
-	}
-	void draw() {
-		log("Once again another component has performed an action. This time it drew. This unknown component is in fact me. ")
-	}
-};

@@ -63,10 +63,10 @@ DrawingComponent::DrawingComponent(
 	m_posComp = nullptr;
 
 	startX = 0; 
-	amountOfRepetitions = 0;
+	amountOfRepetitions = NULL;
 	currentRepetition = 0;
 	customAnimationHasEnded_notifier = false;
-	prevCustomAnimationY = 0;
+	prevCustomAnimationY = NULL;
 
 	m_animationTick = 0;
 	m_animationFramesPerState = amountOfWalkingAnimationFrames;

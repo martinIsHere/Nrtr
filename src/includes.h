@@ -9,7 +9,7 @@
 #include "SDL_ttf.h"
 #include "Vector.h"
 #include <stdint.h>
-#define PI 3.14159
+#define PI 3.1416   //59
 #define log(a){std::cout << a << "\n";}
 #define logh(a){std::cout << std::hex << a << "\n";}
 #define assertN(v, t) { if (v == t){std::cout << "Error: "; exit(-1);} }
@@ -26,6 +26,7 @@ class GameMap;
 extern uint32_t unStartElapsedTime;
 extern int nElapsedTime;
 extern uint32_t actualFPS;
+extern uint32_t targetFPS;
 
 // unused
 extern uint32_t WIN_WIDTH;

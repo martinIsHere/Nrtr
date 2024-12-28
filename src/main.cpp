@@ -9,7 +9,7 @@
 
 int main(int argc, char* argv[]) {
 
-	GameEngine* a = new GameEngine(1536, 896,"Tilebased", 60);
+	GameEngine* a = new GameEngine(1536, 896,"Le Narrateur", 60);
 	while (a->alive()) {
 		a->update();
 	}

@@ -1,12 +1,13 @@
 #include "GameEngine.h"
 
-GameEngine::GameEngine(const int nWidth, const int nHeight, const std::string& title, const int fps) {
+GameEngine::GameEngine(const uint32_t nWidth, const uint32_t nHeight, const std::string& title, const uint32_t fps) {
 	nElapsedTime = 0;
 	unStartElapsedTime = 0;
 	nWinWidth = nWidth;
 	nWinHeight = nHeight;
 	bRunning = true;
 	nFps = fps;
+	targetFPS = fps; // quickfix
 	sTitle = title;
 	currentKey = 0;
 	nDelay = 1000 / nFps;
@@ -237,7 +238,7 @@ void GameEngine::update() {
 		if ((SDL_GetTicks() - unStartElapsedTime) != 0) {
 			actualFPS = 1000 / (SDL_GetTicks() - unStartElapsedTime);
 		}
-		std::string bufTitle = "Tilebased Game, FPS: " + std::to_string(actualFPS);
+		std::string bufTitle = sTitle + " " + std::to_string(actualFPS);
 		SDL_SetWindowTitle(win, bufTitle.c_str());
 	}
 
@@ -335,6 +336,6 @@ SDL_Renderer* GameEngine::getRen() const {
 	return ren;
 }
 
-int GameEngine::getWinSize() const {
+const uint32_t GameEngine::getWinSize() const {
 	return nWinWidth, nWinHeight;
 }

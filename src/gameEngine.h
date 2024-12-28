@@ -10,7 +10,7 @@ class GameMap;
 class GameEngine
 {
 public:
-	GameEngine(int nWidth, int nHeight, const std::string& title, int fps);
+	GameEngine(uint32_t nWidth, uint32_t nHeight, const std::string& title, uint32_t fps);
 
 	~GameEngine();
 
@@ -26,7 +26,7 @@ public:
 
 	SDL_Renderer* getRen() const;
 
-	int getWinSize() const;
+	const uint32_t getWinSize() const;
 
 	void test_NPCMoveFunction();
 
@@ -34,7 +34,7 @@ public:
 
 private:
 
-	int nWinWidth, nWinHeight;
+	uint32_t nWinWidth, nWinHeight;
 	SDL_Window* win;
 	SDL_Renderer* ren;
 	SDL_Event* Event;
@@ -42,8 +42,8 @@ private:
 	//int nElapsedTime;
 	int currentKey;
 	int numberOfFramesUntilNow;
-	int nFps;
-	int nDelay;
+	uint32_t nFps;
+	uint32_t nDelay;
 	int mousePos[2];
 	std::string sTitle;
 	std::vector<Entity*>* arrayOfActiveEntities;

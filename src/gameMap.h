@@ -8,8 +8,12 @@ class GameEngine;
 
 class GameMap {
 public:
-	GameMap(SDL_Renderer* ren,
+	GameMap(
+		SDL_Renderer* ren,
 		const std::string map, 
+		const std::string spriteSheetPath,
+		const int spriteSheetTilesX,
+		const int spriteSheetTilesY,
 		const int windowWidth,
 		const int windowHeight,
 		int* cameraPosx, 

@@ -11,7 +11,12 @@ class GameMap;
 class GameEngine
 {
 public:
-	GameEngine(uint32_t nWidth, uint32_t nHeight, const std::string& title, uint32_t fps);
+	GameEngine(
+		uint32_t nWidth, 
+		uint32_t nHeight, 
+		const std::string& title, 
+		uint32_t fps
+		);
 
 	~GameEngine();
 

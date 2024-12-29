@@ -97,16 +97,22 @@ GameEngine::GameEngine(const uint32_t nWidth, const uint32_t nHeight, const std:
 
 	Town1 = new GameMap(
 		ren,
-		"res/map/Town1.bin",
-		nWinWidth, nWinHeight,
-		&(playerEntity->getComponent<PositionComponent>().getx()),
-		&(playerEntity->getComponent<PositionComponent>().gety()),
-		false
+		"res/map/Town1.bin", // path to map file
+		"res/imgs/sh1.bmp",  // path to spritesheet file
+		12, // amount of tiles horizontally
+		18, // amount of tiles vertically
+		nWinWidth, nWinHeight, // window-to-be-displayed-on's width and heigth
+		&(playerEntity->getComponent<PositionComponent>().getx()), // pointer to coordinates for camera
+		&(playerEntity->getComponent<PositionComponent>().gety()), // here: just equal to the player position
+		false // if the map is very small, like a house -> set to true
 		);
 
 	House1 = new GameMap(
 		ren,
 		"res/map/House1.bin",
+		"res/imgs/sh2.bmp",
+		7,
+		12,
 		nWinWidth, nWinHeight,
 		&(playerEntity->getComponent<PositionComponent>().getx()),
 		&(playerEntity->getComponent<PositionComponent>().gety()),
@@ -409,7 +415,6 @@ void GameEngine::draw() {
 
 	renderText();
 
-	if (ren == nullptr) log("sug min ljlævla fokicnig jcukuk brro");
 	SDL_RenderPresent(ren);
 }
 
@@ -423,7 +428,7 @@ const bool GameEngine::changeCurrentMap(size_t newId) {
 				entity->getComponent<DrawingComponent>().loadNewCamera(mapArray_firstSection[newId]->getCam());
 			}
 			if (entity->hasComponent<PositionComponent>()) {
-				entity->getComponent<PositionComponent>().setPos(TILE_SIZE_PIXELS, TILE_SIZE_PIXELS);
+				entity->getComponent<PositionComponent>().setPos(TILE_SIZE_PIXELS*2, TILE_SIZE_PIXELS*3);
 			}
 		}
 		currentMapId = newId;

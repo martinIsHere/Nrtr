@@ -100,6 +100,9 @@ void GameMap::loadMap(std::string map) {
 GameMap::GameMap(
 	SDL_Renderer* ren, 
 	const std::string map, 
+	const std::string spriteSheetPath,
+	const int spriteSheetTilesX,
+	const int spriteSheetTilesY,
 	const int windowWidth,
 	const int windowHeight,
 	int *cameraPosx, 
@@ -129,10 +132,10 @@ GameMap::GameMap(
 	//load spriteSheet
 	m_spriteSheet0 = 
 		new SpriteSheet{
-		SDL_CreateTextureFromSurface(m_ren, SDL_LoadBMP("res/imgs/sh1.bmp")),
+		SDL_CreateTextureFromSurface(m_ren, SDL_LoadBMP(spriteSheetPath.c_str())),
 		16, 
-		12, 
-		18
+		spriteSheetTilesX,   // 12
+		spriteSheetTilesX    // 18
 		};
 
 	if (!m_spriteSheet0->tex) log("Failed to load texture.");

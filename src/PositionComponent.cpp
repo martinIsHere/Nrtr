@@ -4,7 +4,6 @@
 PositionComponent::PositionComponent(int x, int y) : m_X(x), m_Y(y) {
 	m_velocity_vector = nullptr;
 	m_acceleration_vector = nullptr;
-	m_Magnitude = 0;
 	m_Directions = { false, false, false, false };
 	m_facingDir = 0;
 	default_acceleration = float(1.6 * (double)TILE_SIZE_PIXELS / (double)targetFPS); // DEFAULT ACCELERATION   // 1.4 if TILE_SIZE_PIXELS = 64
@@ -38,6 +37,7 @@ float PositionComponent::getMaxVel() const{
 void PositionComponent::apply_natural_deceleration() {
 	// check if abs of velocity x is less than NATURAL_DECELERATION
 	// if it is set velocity x to zero if not do nothing
+
 	if (abs(m_velocity_vector->x) < natural_deceleration) {
 		m_velocity_vector->x = 0;
 	}
@@ -82,8 +82,8 @@ void PositionComponent::update_current_acceleration() {
 	}
 	if ((m_Directions[DIR_LEFT] || m_Directions[DIR_RIGHT]) 
 		&& (m_Directions[DIR_UP] || m_Directions[DIR_DOWN])) {
-		m_acceleration_vector->x *= 0.9f;
-		m_acceleration_vector->y *= 0.9f;
+		m_acceleration_vector->x *= 0.7071f; // cos(45deg)
+		m_acceleration_vector->y *= 0.7071f; // sin(45deg)
 	}
 }
 

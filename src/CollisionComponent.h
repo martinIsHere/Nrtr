@@ -8,6 +8,12 @@ class CollisionComponent : public Component{
 	PositionComponent* m_posComp;
 
 	GameMap* m_gameMap;
+
+	int hitBoxOffsetX;
+
+	int hitBoxTopOffset;
+
+	int oldYPos;
 	
 public:
 
@@ -28,16 +34,16 @@ private:
 	bool correct_possible_collision();
 
 	// true = entity has collided
-	inline bool apply_correction_in_LEFT_COLLISION(int oldYPos, int hitBoxOffsetX, int hitBoxTopOffset);
+	inline bool apply_correction_in_LEFT_COLLISION();
 
 	// true = entity has collided
-	inline bool apply_correction_in_RIGHT_COLLISION(int oldYPos, int hitBoxOffsetX, int hitBoxTopOffset);
+	inline bool apply_correction_in_RIGHT_COLLISION();
 
 	// true = entity has collided
-	inline bool apply_correction_in_ABOVE_COLLISION(int hitBoxOffsetX, int hitBoxTopOffset);
+	inline bool apply_correction_in_ABOVE_COLLISION();
 
 	// true = entity has collided
-	inline bool apply_correction_in_BELOW_COLLISION(int hitBoxOffsetX, int hitBoxTopOffset);
+	inline bool apply_correction_in_BELOW_COLLISION();
 
 
 };

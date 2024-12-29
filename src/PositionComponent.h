@@ -14,7 +14,6 @@ class PositionComponent : public Component{
 	bool isFrictionless;
 	Vector *m_velocity_vector;
 	Vector *m_acceleration_vector;
-	float m_Magnitude;
 
 	/*
 	m_Directions describe the direction the entity will move.

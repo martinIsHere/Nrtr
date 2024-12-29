@@ -229,7 +229,6 @@ void GameEngine::handeKeyInputBools() {
  // raw manual code for npc movement
 void GameEngine::test_NPCMoveFunction() {
 	if (numberOfFramesSinceStart < 228) {
-		log(NPCEntity->getComponent<PositionComponent>().getx());
 		NPCEntity->getComponent<PositionComponent>().setVel(4, 0);
 		NPCEntity->getComponent<PositionComponent>().setDir(DIR_RIGHT, true);
 		NPCEntity->getComponent<PositionComponent>().setFacingDir(DIR_RIGHT);

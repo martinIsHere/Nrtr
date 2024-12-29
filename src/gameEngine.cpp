@@ -283,11 +283,14 @@ void GameEngine::update() {
 		// move the npc
 		test_NPCMoveFunction();
 
+		if (NPCEntity->getComponent<PositionComponent>().getFacingDir() == DIR_LEFT) log("npc facing left");
+		if (NPCEntity->getComponent<PositionComponent>().getFacingDir() == DIR_RIGHT) log("npc facing right");
+		if (NPCEntity->getComponent<PositionComponent>().getFacingDir() == DIR_DOWN) log("npc facing down");
+		if (NPCEntity->getComponent<PositionComponent>().getFacingDir() == DIR_UP) log("npc facing up");
+
 
 		// teleportation mechanic
 		test_portalAnimationFunction();
-
-		log(playerEntity->getComponent<PositionComponent>().getDir()[DIR_RIGHT]);
 
 		//
 		map->update(); 

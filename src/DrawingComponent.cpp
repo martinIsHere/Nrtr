@@ -76,8 +76,6 @@ DrawingComponent::DrawingComponent(
 	m_cameraOffsetX = m_cam->getOffsetXPtr();
 	m_cameraOffsetY = m_cam->getOffsetYPtr();
 
-	m_prevDir = 0;
-
 	SDL_FreeSurface(spriteSheetSurface);
 
 }
@@ -203,15 +201,11 @@ void DrawingComponent::draw() {
 	if (m_animationTick > m_spriteSheet->nWidth) log("m_animationTick > m_spriteSheet->nWidth");
 	m_srcRect->x = m_spriteSheet->nSize * (int)(m_animationTick);
 
-	if (currentAnimationType == animationType::walkingAnimation) {
-		if(is_in_viewable_area()){
+	if (is_in_viewable_area()) {
+		if (currentAnimationType == animationType::walkingAnimation) {
 			draw_WalkingAnimationframe_according_to_direction();
-		} else {
-			updateWalkingAnimationWithoutDrawing_frame_according_to_direction();
-		}
-	} 
-	else if(currentAnimationType == animationType::customAnimation) {
-		if (is_in_viewable_area()) {
+		} 
+		else if(currentAnimationType == animationType::customAnimation) {
 			draw_customAnimationFrame();
 		}
 	}
@@ -220,52 +214,30 @@ void DrawingComponent::draw() {
 void DrawingComponent::draw_WalkingAnimationframe_according_to_direction() {
 	// draw texture 
 	// check direction and drawing accordingly
+
+	m_facingDir = m_posComp->getFacingDir();
+
 	// X
-	// unsure if these get functions are inefficient :/
-	if (m_posComp->isMovingX()) {
+	if (m_facingDir == DIR_LEFT) {
 		m_srcRect->y = 0;
-		if (m_posComp->getDir()[DIR_LEFT]) {
-			SDL_RenderCopy(m_ren, m_spriteSheet->tex, m_srcRect, m_destRect);
-			m_prevDir = DIR_LEFT;
-		}
-		else if (m_posComp->getDir()[DIR_RIGHT]) {
-			SDL_RenderCopyEx(m_ren, m_spriteSheet->tex, m_srcRect, m_destRect, 0, 0, SDL_FLIP_HORIZONTAL);
-			m_prevDir = DIR_RIGHT;
-		}
-	}		// Check for previous directions  
-	// Y 
-	else if (m_posComp->isMovingY()) {
-		if (m_posComp->getDir()[DIR_UP]) {
-			m_srcRect->y = m_spriteSheet->nSize;
-			SDL_RenderCopy(m_ren, m_spriteSheet->tex, m_srcRect, m_destRect);
-		}
-		if (m_posComp->getDir()[DIR_DOWN]) {
-			m_srcRect->y = 2 * m_spriteSheet->nSize;
-			SDL_RenderCopy(m_ren, m_spriteSheet->tex, m_srcRect, m_destRect);
-		}
-	} else if (m_prevDir == DIR_RIGHT) {
+		SDL_RenderCopy(m_ren, m_spriteSheet->tex, m_srcRect, m_destRect);
+	}
+	else if (m_facingDir == DIR_RIGHT) {
+		m_srcRect->y = 0;
 		SDL_RenderCopyEx(m_ren, m_spriteSheet->tex, m_srcRect, m_destRect, 0, 0, SDL_FLIP_HORIZONTAL);
-	} else {
-	// in any other case where the entity is not moving and the previous direction is not right
-	SDL_RenderCopy(m_ren, m_spriteSheet->tex, m_srcRect, m_destRect);
+	}
+	// Y 
+	if (m_facingDir == DIR_UP) {
+		m_srcRect->y = m_spriteSheet->nSize;
+		SDL_RenderCopy(m_ren, m_spriteSheet->tex, m_srcRect, m_destRect);
+	}
+	if (m_facingDir == DIR_DOWN) {
+		m_srcRect->y = 2 * m_spriteSheet->nSize;
+		SDL_RenderCopy(m_ren, m_spriteSheet->tex, m_srcRect, m_destRect);
 	}
 }
 
-void DrawingComponent::updateWalkingAnimationWithoutDrawing_frame_according_to_direction() {
-	// check direction and drawing accordingly
-	// unsure if these get functions are inefficient :/
-	if (m_posComp->isMovingX()) {
-		m_srcRect->y = 0;
-	}
-	else if (m_posComp->isMovingY()) {
-		if (m_posComp->getDir()[DIR_UP]) {
-			m_srcRect->y = m_spriteSheet->nSize;
-		}
-		if (m_posComp->getDir()[DIR_DOWN]) {
-			m_srcRect->y = 2 * m_spriteSheet->nSize;
-		}
-	}
-}
+
 
 void DrawingComponent::draw_customAnimationFrame() {
 	SDL_RenderCopy(m_ren, m_spriteSheet->tex, m_srcRect, m_destRect);

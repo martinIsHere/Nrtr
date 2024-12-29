@@ -16,7 +16,7 @@ class DrawingComponent : public Component{
 	int m_animationFramesPerState;
 	int m_framesPerImage;
 	unsigned int m_frameCounter;
-	unsigned int m_prevDir;
+	unsigned int m_facingDir;
 	const int* m_cameraOffsetX, * m_cameraOffsetY;
 	const Camera* m_cam;
 	int startX; // for animation. the x value to draw from the source
@@ -66,8 +66,6 @@ private:
 	void update_customAnimation();
 
 	void draw_WalkingAnimationframe_according_to_direction();
-
-	void updateWalkingAnimationWithoutDrawing_frame_according_to_direction(); // quick fix
 
 	void draw_customAnimationFrame();
 

@@ -215,25 +215,27 @@ void DrawingComponent::draw_WalkingAnimationframe_according_to_direction() {
 	// draw texture 
 	// check direction and drawing accordingly
 
+	// the direction of the entity
 	m_facingDir = m_posComp->getFacingDir();
 
-	// X
-	if (m_facingDir == DIR_LEFT) {
-		m_srcRect->y = 0;
+	//switch through directions
+	switch (m_facingDir) {
+	case DIR_LEFT:
+		m_srcRect->y = 0; // y coordinate corrosponding to spritesheet walking left animation
 		SDL_RenderCopy(m_ren, m_spriteSheet->tex, m_srcRect, m_destRect);
-	}
-	else if (m_facingDir == DIR_RIGHT) {
-		m_srcRect->y = 0;
+		break;
+	case DIR_RIGHT:
+		m_srcRect->y = 0; // ---||---
 		SDL_RenderCopyEx(m_ren, m_spriteSheet->tex, m_srcRect, m_destRect, 0, 0, SDL_FLIP_HORIZONTAL);
-	}
-	// Y 
-	if (m_facingDir == DIR_UP) {
+		break;
+	case DIR_UP:
 		m_srcRect->y = m_spriteSheet->nSize;
 		SDL_RenderCopy(m_ren, m_spriteSheet->tex, m_srcRect, m_destRect);
-	}
-	if (m_facingDir == DIR_DOWN) {
+		break;
+	case DIR_DOWN:
 		m_srcRect->y = 2 * m_spriteSheet->nSize;
 		SDL_RenderCopy(m_ren, m_spriteSheet->tex, m_srcRect, m_destRect);
+		break;
 	}
 }
 

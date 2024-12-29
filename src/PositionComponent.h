@@ -6,15 +6,24 @@
 
 
 class PositionComponent : public Component{
-
+	// coordinates of entity in pixels on the map not the screen.
 	int m_X, m_Y;
+	// if unable to move -> acceleration and velocity will be set to zero 
+	// and nothing else will be updated. Primarily used in animations.
 	bool isAbleToMove;
 	Vector *m_velocity_vector;
 	Vector *m_acceleration_vector;
 	float m_Magnitude;
+
+	/*
+	m_Directions describe the direction the entity will move.
+	In update function, m_Directions will be used to determine 
+	the acceleration and also then the velocity and position.
+	*/
 	std::array<bool, 4> m_Directions;
+
+	// the direction that the entity is currently facing.
 	uint32_t m_facingDir;
-	float m_deltaTime_speedFix;
 
 	float max_vel;
 	float natural_deceleration;
@@ -40,8 +49,6 @@ public:
 	void update() override;
 
 	void draw() override;
-
-	void normalize();
 
 	void moveForward(int d);
 
@@ -106,9 +113,5 @@ private:
 	void update_current_acceleration();
 
 	void cap_velocity();
-
-	void updateFacingDir();
-
-	void set_deltaTime_speedFix();
 
 };

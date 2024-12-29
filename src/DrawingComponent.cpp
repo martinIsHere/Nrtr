@@ -212,9 +212,6 @@ void DrawingComponent::draw() {
 }
 
 void DrawingComponent::draw_WalkingAnimationframe_according_to_direction() {
-	// draw texture 
-	// check direction and drawing accordingly
-
 	// the direction of the entity
 	m_facingDir = m_posComp->getFacingDir();
 
@@ -252,6 +249,7 @@ const bool DrawingComponent::customAnimationHasEnded() {
 	}
 	return false;
 }
+
 const int DrawingComponent::getPrevCustomAnimationY() const {
 	return prevCustomAnimationY;
 }

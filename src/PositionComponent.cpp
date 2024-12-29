@@ -11,7 +11,6 @@ PositionComponent::PositionComponent(int x, int y) : m_X(x), m_Y(y) {
 	default_natural_deceleration = float(0.5 * (double)TILE_SIZE_PIXELS / (double)targetFPS); // 0.8 if TILE_SIZE_PIXELS = 64 and targetFPS = 60
 	natural_deceleration = default_natural_deceleration;
 	max_vel = float(8 * (double)TILE_SIZE_PIXELS / (double)targetFPS); // 10 if TILE_SIZE_PIXELS = 64 and targetFPS = 60
-	m_deltaTime_speedFix = 0;
 	isAbleToMove = true;
 }
 
@@ -104,16 +103,9 @@ void PositionComponent::cap_velocity() {
 }
 
 void PositionComponent::update(){
-
-	//set_deltaTime_speedFix();
-
-
-	//NATURAL_DECELERATION = default_natural_deceleration * m_deltaTime_speedFix;
-	//default_acceleration = DEFAULT_SPEED * m_deltaTime_speedFix;
 	if (isAbleToMove) {
 		m_acceleration_vector->x = 0;
 		m_acceleration_vector->y = 0;
-		updateFacingDir();
 
 
 		update_current_acceleration();
@@ -134,28 +126,8 @@ void PositionComponent::update(){
 	}
 }
 
-// rendered pointless
-void PositionComponent::updateFacingDir() {
-	
-}
-
 void PositionComponent::draw(){
 
-}
-
-void PositionComponent::set_deltaTime_speedFix() {
-	/*
-	if (local != 0) {
-		m_deltaTime_speedFix =  (((SDL_GetTicks() - unStartElapsedTime)*0.0001));
-		log(nElapsedTime);
-	}
-	*/
-}
-
-void PositionComponent::normalize() {
-	// normalize EZ
-	// nevermind, not worth it
-	
 }
 
 float PositionComponent::getVelMagnitude(){

@@ -11,6 +11,7 @@ class PositionComponent : public Component{
 	// if unable to move -> acceleration and velocity will be set to zero 
 	// and nothing else will be updated. Primarily used in animations.
 	bool isAbleToMove;
+	bool isFrictionless;
 	Vector *m_velocity_vector;
 	Vector *m_acceleration_vector;
 	float m_Magnitude;
@@ -72,6 +73,8 @@ public:
 
 	void set_isAbleToMove(bool a);
 
+	void set_isFrictionless(bool a);
+
 	bool isMoving();
 
 	bool isMovingX();
@@ -84,7 +87,11 @@ public:
 
 	uint32_t& getFacingDir();
 
+	void setFacingDir(uint32_t dir); // doesnt have safety
+
 	void setVel(const float x, const float y);
+
+	void set_default_acceleration(float tilesPerSecond);
 
 	float& getVelx();
 

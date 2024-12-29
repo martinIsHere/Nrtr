@@ -126,6 +126,8 @@ GameEngine::GameEngine(const uint32_t nWidth, const uint32_t nHeight, const std:
 
 	playerEntity->addComponent<CollisionComponent>(map);
 	NPCEntity->addComponent<CollisionComponent>(map);
+	NPCEntity->getComponent<PositionComponent>().set_isFrictionless(true);
+	NPCEntity->getComponent<PositionComponent>().set_default_acceleration(0);
 
 	playerEntity->addComponent<InteractionComponent>(map);
 
@@ -226,35 +228,39 @@ void GameEngine::handeKeyInputBools() {
 
  // raw manual code for npc movement
 void GameEngine::test_NPCMoveFunction() {
-	if (numberOfFramesSinceStart < 240) {
+	if (numberOfFramesSinceStart < 228) {
+		log(NPCEntity->getComponent<PositionComponent>().getx());
 		NPCEntity->getComponent<PositionComponent>().setVel(4, 0);
 		NPCEntity->getComponent<PositionComponent>().setDir(DIR_RIGHT, true);
+		NPCEntity->getComponent<PositionComponent>().setFacingDir(DIR_RIGHT);
 	}
 	else if (numberOfFramesSinceStart < 580) {
 		NPCEntity->getComponent<PositionComponent>().setVel(-2.8f, 2.8f);
 		NPCEntity->getComponent<PositionComponent>().setDir(DIR_RIGHT, false);
-		NPCEntity->getComponent<PositionComponent>().setDir(DIR_DOWN, true);
 		NPCEntity->getComponent<PositionComponent>().setDir(DIR_LEFT, true);
+		NPCEntity->getComponent<PositionComponent>().setFacingDir(DIR_LEFT);
 	}
 	else if (numberOfFramesSinceStart < 1100) {
 		NPCEntity->getComponent<PositionComponent>().setVel(2.8f, 2.8f);
-		NPCEntity->getComponent<PositionComponent>().setDir(DIR_RIGHT, true);
 		NPCEntity->getComponent<PositionComponent>().setDir(DIR_LEFT, false);
+		NPCEntity->getComponent<PositionComponent>().setDir(DIR_RIGHT, true);
+		NPCEntity->getComponent<PositionComponent>().setFacingDir(DIR_RIGHT);
 	}
 	else if (numberOfFramesSinceStart < 1350) {
 		NPCEntity->getComponent<PositionComponent>().setVel(-2.8f, 0);
 		NPCEntity->getComponent<PositionComponent>().setDir(DIR_RIGHT, false);
-		NPCEntity->getComponent<PositionComponent>().setDir(DIR_DOWN, false);
 		NPCEntity->getComponent<PositionComponent>().setDir(DIR_LEFT, true);
+		NPCEntity->getComponent<PositionComponent>().setFacingDir(DIR_LEFT);
 	}
 	else if (numberOfFramesSinceStart < 1400) {
 		NPCEntity->getComponent<PositionComponent>().setVel(0, 2.8f);
-		NPCEntity->getComponent<PositionComponent>().setDir(DIR_DOWN, true);
 		NPCEntity->getComponent<PositionComponent>().setDir(DIR_LEFT, false);
+		NPCEntity->getComponent<PositionComponent>().setDir(DIR_DOWN, true);
+		NPCEntity->getComponent<PositionComponent>().setFacingDir(DIR_DOWN);
 	}
 	else {
-		NPCEntity->getComponent<PositionComponent>().setVel(0, 0);
 		NPCEntity->getComponent<PositionComponent>().setDir(DIR_DOWN, false);
+		NPCEntity->getComponent<PositionComponent>().setVel(0, 0);
 	}
 }
 
@@ -282,12 +288,6 @@ void GameEngine::update() {
 
 		// move the npc
 		test_NPCMoveFunction();
-
-		if (NPCEntity->getComponent<PositionComponent>().getFacingDir() == DIR_LEFT) log("npc facing left");
-		if (NPCEntity->getComponent<PositionComponent>().getFacingDir() == DIR_RIGHT) log("npc facing right");
-		if (NPCEntity->getComponent<PositionComponent>().getFacingDir() == DIR_DOWN) log("npc facing down");
-		if (NPCEntity->getComponent<PositionComponent>().getFacingDir() == DIR_UP) log("npc facing up");
-
 
 		// teleportation mechanic
 		test_portalAnimationFunction();

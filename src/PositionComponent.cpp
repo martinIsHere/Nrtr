@@ -112,7 +112,9 @@ void PositionComponent::update(){
 
 		// update velocity by acceleration/decelaration
 		m_velocity_vector = *m_velocity_vector + m_acceleration_vector;
-		apply_natural_deceleration();
+		if (!isFrictionless) {
+			apply_natural_deceleration();
+		}
 
 		cap_velocity();
 
@@ -219,6 +221,10 @@ uint32_t& PositionComponent::getFacingDir() {
 	return m_facingDir;
 }
 
+void PositionComponent::setFacingDir(uint32_t dir) {
+	m_facingDir = dir;
+}
+
 bool PositionComponent::isMoving() {
 	if (m_Directions[DIR_LEFT] || m_Directions[DIR_RIGHT] || m_Directions[DIR_UP] || m_Directions[DIR_DOWN]) {
 		return true;
@@ -303,4 +309,12 @@ bool PositionComponent::isMovingVelY() {
 
 void PositionComponent::set_isAbleToMove(bool a) {
 	isAbleToMove = a;
+}
+
+void PositionComponent::set_isFrictionless(bool a) {
+	isFrictionless = a;
+}
+
+void PositionComponent::set_default_acceleration(float tilesPerSecond) {
+	default_acceleration = tilesPerSecond;
 }

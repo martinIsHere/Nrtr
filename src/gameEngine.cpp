@@ -153,38 +153,40 @@ void GameEngine::handleEvents() {
 		case SDL_MOUSEBUTTONDOWN:
 			break;
 		case SDL_KEYDOWN:
-			switch (Event->key.keysym.sym) {
-			case SDLK_w:
-				// set to up
-				playerEntity->getComponent<PositionComponent>().setDirY_down(0);
-				playerEntity->getComponent<PositionComponent>().setDirY_up(1);
-				break;
-			case SDLK_s:
-				// set to down
-				playerEntity->getComponent<PositionComponent>().setDirY_down(1);
-				break;
-			case SDLK_a:
-				playerEntity->getComponent<PositionComponent>().setDirX_left(1);
-				break;
-			case SDLK_d:
-				playerEntity->getComponent<PositionComponent>().setDirX_left(0);
-				playerEntity->getComponent<PositionComponent>().setDirX_right(1);
-				break;
+			if (Event->key.repeat == 0) {
+				switch (Event->key.keysym.sym) {
+				case SDLK_w:
+					w_keyDown = true;
+					break;
+				case SDLK_s:
+					s_keyDown = true;
+					break;
+				case SDLK_a:
+					a_keyDown = true;
+					break;
+				case SDLK_d:
+					d_keyDown = true;
+					break;
+				}
 			}
 			break;
 		case SDL_KEYUP:
 			switch (Event->key.keysym.sym) {
 			case SDLK_w:
 				playerEntity->getComponent<PositionComponent>().setDirY_up(0);
+				w_keyDown = false;
 				break;
 			case SDLK_s:
 				playerEntity->getComponent<PositionComponent>().setDirY_down(0);
+				s_keyDown = false;
 				break;
 			case SDLK_a:
 				playerEntity->getComponent<PositionComponent>().setDirX_left(0);
+				a_keyDown = false;
 				break;
 			case SDLK_d:
 				playerEntity->getComponent<PositionComponent>().setDirX_right(0);
+				d_keyDown = false;
 				break;
 			case SDLK_t:
 				map->get_drawingSolidStates_bool() = map->get_drawingSolidStates_bool() ? false : true;
@@ -204,6 +206,24 @@ void GameEngine::handleEvents() {
 		}
 	}
 }
+
+void GameEngine::handeKeyInputBools() {
+	if (w_keyDown) playerEntity->getComponent<PositionComponent>().setDirY_up(1);
+	if (s_keyDown) playerEntity->getComponent<PositionComponent>().setDirY_down(1);
+
+	if (w_keyDown && s_keyDown) { 
+		playerEntity->getComponent<PositionComponent>().setDirY_up(0); 
+		playerEntity->getComponent<PositionComponent>().setDirY_down(0);
+	}
+
+	if (a_keyDown) playerEntity->getComponent<PositionComponent>().setDirX_left(1);
+	if (d_keyDown) playerEntity->getComponent<PositionComponent>().setDirX_right(1);
+	if (a_keyDown && d_keyDown) {
+		playerEntity->getComponent<PositionComponent>().setDirX_left(0);
+		playerEntity->getComponent<PositionComponent>().setDirX_right(0);
+	}
+}
+
  // raw manual code for npc movement
 void GameEngine::test_NPCMoveFunction() {
 	if (numberOfFramesSinceStart < 240) {
@@ -253,6 +273,7 @@ void GameEngine::update() {
 		//
 		handleEvents();
 
+		handeKeyInputBools();
 
 		// update all entities
 		m_entityManager.update();
@@ -266,6 +287,7 @@ void GameEngine::update() {
 		// teleportation mechanic
 		test_portalAnimationFunction();
 
+		log(playerEntity->getComponent<PositionComponent>().getDir()[DIR_RIGHT]);
 
 		//
 		map->update(); 

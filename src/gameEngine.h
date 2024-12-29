@@ -17,6 +17,8 @@ public:
 
 	void handleEvents();
 
+	void handeKeyInputBools();
+
 	void update();
 
 	void draw();
@@ -29,9 +31,9 @@ public:
 
 	const uint32_t getWinSize() const;
 
-	void test_NPCMoveFunction();
-
 	void renderText();
+
+	void test_NPCMoveFunction();
 
 	const void test_portalAnimationFunction();
 
@@ -51,6 +53,12 @@ private:
 	std::string sTitle;
 	std::vector<Entity*>* arrayOfActiveEntities;
 	std::vector<Entity*> bufferArrayOfEntities;
+
+	// key down bools
+	bool w_keyDown;
+	bool a_keyDown;
+	bool s_keyDown;
+	bool d_keyDown;
 
 	// game entities
 	Manager m_entityManager;

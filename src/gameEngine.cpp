@@ -92,8 +92,8 @@ GameEngine::GameEngine(const uint32_t nWidth, const uint32_t nHeight, const std:
 
 	playerEntity = m_entityManager.addEntity();
 	NPCEntity = m_entityManager.addEntity();
-	playerEntity->addComponent<PositionComponent>(60, 60);
-	NPCEntity->addComponent<PositionComponent>(60, 60);
+	playerEntity->addComponent<PositionComponent>(TILE_SIZE_PIXELS, TILE_SIZE_PIXELS);
+	NPCEntity->addComponent<PositionComponent>(TILE_SIZE_PIXELS, TILE_SIZE_PIXELS);
 
 	map = new GameMap(
 		ren,

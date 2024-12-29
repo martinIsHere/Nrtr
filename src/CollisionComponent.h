@@ -33,6 +33,7 @@ public:
 
 	void draw() override;
 
+	void loadNewMap(GameMap* gameMap);
 
 private:
 

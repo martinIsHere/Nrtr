@@ -92,6 +92,10 @@ void DrawingComponent::init() {
 	}
 }
 
+void DrawingComponent::loadNewCamera(Camera* cam) {
+	m_cam = cam;
+}
+
 DrawingComponent::~DrawingComponent() {
 
 }

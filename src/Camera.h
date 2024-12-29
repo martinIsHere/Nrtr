@@ -11,16 +11,30 @@ class Camera{
 	int m_xOffsetFromScreenEdge, m_yOffsetFromScreenEdge;
 	uint32_t m_winWidth, m_winHeight;
 	uint32_t m_mapWidth, m_mapHeight;
+	uint32_t m_visibleTilesX, m_visibleTilesY;
+	bool m_isSmallMap;
 
 public:
 
-	Camera(int* x, int* y, const uint32_t mapWidth, const uint32_t mapHeight, const uint32_t winWidth, const uint32_t winHeight);
+	Camera(
+		int* x, 
+		int* y, 
+		const uint32_t mapWidth, 
+		const uint32_t mapHeight, 
+		const uint32_t winWidth, 
+		const uint32_t winHeight,
+		bool isSmallMap
+		);
 
 	Camera() = default;
 	
 	void update();
 
 	void update(const int& x, const int& y);
+
+	const uint32_t& getVisibleTilesX() const;
+
+	const uint32_t& getVisibleTilesY() const;
 
 	const int* getOffsetXPtr()const;
 

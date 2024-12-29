@@ -135,9 +135,12 @@ GameMap::GameMap(SDL_Renderer* ren,
 	m_mainCamera = new Camera(
 		cameraPosx, cameraPosy, // position
 		m_mapWidth, m_mapHeight, // map size (for bounds)
-		m_windowWidth, m_windowHeight // window size (for bounds)
+		m_windowWidth, m_windowHeight, // window size (for bounds)
+		true  // if it is a small map i.e. in one screen
 		);
 
+	m_visibleTilesX_pixels = m_mainCamera->getVisibleTilesX() * TILE_SIZE_PIXELS;
+	m_visibleTilesY_pixels = m_mainCamera->getVisibleTilesY() * TILE_SIZE_PIXELS;
 }
 
 
@@ -176,18 +179,8 @@ void GameMap::draw() {
 	int offsetY = *m_mainCamera->getOffsetYPtr();
 
 
-	SDL_GetMouseState(&mousePositionX, &mousePositionY);
-	mousePositionX += offsetX;
-	mousePositionY += offsetY;
-
-	dstRect2->x = int(mousePositionX/ TILE_SIZE_PIXELS)* TILE_SIZE_PIXELS - offsetX;
-	dstRect2->y = int(mousePositionY/ TILE_SIZE_PIXELS)* TILE_SIZE_PIXELS - offsetY,
-	dstRect2->w = TILE_SIZE_PIXELS;
-	dstRect2->h = TILE_SIZE_PIXELS;
-
-	for (uint32_t y = uint32_t(offsetY / m_blockSize); y < (m_windowHeight + offsetY) / m_blockSize + 1; y++) {
-		for (uint32_t x = uint32_t(offsetX / m_blockSize); x < (m_windowWidth + offsetX) / m_blockSize + 1; x++) {
-
+	for (int y = int(offsetY / m_blockSize); y < (m_visibleTilesY_pixels + offsetY) / m_blockSize; y++) {
+		for (int x = int(offsetX / m_blockSize); x < (m_visibleTilesX_pixels + offsetX) / m_blockSize; x++) {
 			*m_tempDstRect = { 
 				int((x * m_blockSize) - offsetX),
 				int((y * m_blockSize) - offsetY),
@@ -249,9 +242,6 @@ void GameMap::draw() {
 
 		}
 	}
-
-	SDL_SetRenderDrawColor(m_ren, 0, 255, 255, 255);
-	SDL_RenderDrawRect(m_ren, dstRect2);
 	
 }
 
@@ -260,8 +250,17 @@ void GameMap::drawSecondLayer() {
 	int offsetX = *m_mainCamera->getOffsetXPtr();
 	int offsetY = *m_mainCamera->getOffsetYPtr();
 
-	for (uint32_t y = offsetY / m_blockSize; y < (m_windowHeight + offsetY) / m_blockSize + 1; y++) {
-		for (uint32_t x = offsetX / m_blockSize; x < (m_windowWidth + offsetX) / m_blockSize + 1; x++) {
+	SDL_GetMouseState(&mousePositionX, &mousePositionY);
+	mousePositionX += offsetX;
+	mousePositionY += offsetY;
+
+	dstRect2->x = int(mousePositionX / TILE_SIZE_PIXELS) * TILE_SIZE_PIXELS - offsetX;
+	dstRect2->y = int(mousePositionY / TILE_SIZE_PIXELS) * TILE_SIZE_PIXELS - offsetY,
+	dstRect2->w = TILE_SIZE_PIXELS;
+	dstRect2->h = TILE_SIZE_PIXELS;
+
+	for (uint32_t y = offsetY / m_blockSize; y < (m_visibleTilesY_pixels + offsetY) / m_blockSize; y++) {
+		for (uint32_t x = offsetX / m_blockSize; x < (m_visibleTilesX_pixels + offsetX) / m_blockSize; x++) {
 
 
 			*m_tempDstRect = {
@@ -342,26 +341,17 @@ void GameMap::setState(int x, int y, bool state) {
 uint8_t& GameMap::getBackMirrorState(int x, int y) {
 	if (x >= 0 && x < int(m_mapWidth) && y >= 0 && y < int(m_mapHeight))
 		return m_backMirrorState_array[(size_t(y) * m_mapWidth) + x];
-	else {
-		return m_backMirrorState_array[0];
-		log("getBackMirrorState out of range");
-	}
+	return m_backMirrorState_array[0];
 }
 uint8_t& GameMap::getFrontMirrorState(int x, int y) {
 	if (x >= 0 && x < int(m_mapWidth) && y >= 0 && y < int(m_mapHeight))
 		return m_frontMirrorState_array[(size_t(y) * int(m_mapWidth)) + x];
-	else {
-		return m_frontMirrorState_array[0];
-		log("getBackMirrorState out of range");
-	}
+	return m_frontMirrorState_array[0];
 }
 uint8_t& GameMap::getForegroundMirrorState(int x, int y) {
 	if (x >= 0 && x < int(m_mapWidth) && y >= 0 && y < int(m_mapHeight))
 		return m_foregroundMirrorState_array[(size_t(y) * int(m_mapWidth)) + x];
-	else {
-		return m_foregroundMirrorState_array[0];
-		log("getBackMirrorState out of range");
-	}
+	return m_foregroundMirrorState_array[0];
 }
 uint32_t& GameMap::getBlockSize() {
 	return m_blockSize;

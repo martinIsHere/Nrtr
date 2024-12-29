@@ -51,6 +51,8 @@ public:
 
 	void init() override;
 
+	void loadNewCamera(Camera* m_cam);
+
 	const void initCustomAnimation(
 		uint32_t customAnimationY,
 		uint32_t startX,

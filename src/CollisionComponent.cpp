@@ -29,7 +29,11 @@ void CollisionComponent::init() {
 	gameMapHeight_pixels = m_gameMap->getMapHeight_tiles() * TILE_SIZE_PIXELS;
 }
 
-
+void CollisionComponent::loadNewMap(GameMap* gameMap) {
+	m_gameMap = gameMap;
+	gameMapWidth_pixels = m_gameMap->getMapWidth_tiles() * TILE_SIZE_PIXELS;
+	gameMapHeight_pixels = m_gameMap->getMapHeight_tiles() * TILE_SIZE_PIXELS;
+}
 
 void CollisionComponent::update() {
 	if (correct_possible_collision()) {
@@ -127,6 +131,8 @@ inline bool CollisionComponent::apply_correction_in_BELOW_COLLISION() {
 }
 
 inline bool CollisionComponent::apply_correction_in_MAP_EDGE_COLLISION() {
+	// unsure if the use of buf is efficient :/
+
 	bool collision = false;
 	if (m_posComp->getx() < 0) {
 		m_posComp->getx() = 0;

@@ -87,7 +87,10 @@ private:
 	uint8_t m_currentState;
 	uint8_t m_currentMirrorState;
 	uint32_t m_blockSize;
+	// amount of visible tiles in pixels. tiles * TILE_SIZE_PIXELS
+	uint32_t m_visibleTilesX_pixels, m_visibleTilesY_pixels;
 	Camera* m_mainCamera;
+
 
 	char m_readingBuffer[2];
 

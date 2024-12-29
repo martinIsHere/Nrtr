@@ -28,6 +28,9 @@ class DrawingComponent : public Component{
 	bool isAbleToMoveDuringAnimation; // for custom animation
 	bool customAnimationHasEnded_notifier;
 
+	// versatile buffer
+	int buf;
+
 public:
 	DrawingComponent(
 		SDL_Renderer* inputRen, // for drawing

@@ -9,6 +9,12 @@ class CollisionComponent : public Component{
 
 	GameMap* m_gameMap;
 
+	uint32_t gameMapWidth_pixels;
+	uint32_t gameMapHeight_pixels;
+
+	// versatile buffer
+	int buf;
+
 	int hitBoxOffsetX;
 
 	int hitBoxTopOffset;
@@ -45,6 +51,7 @@ private:
 	// true = entity has collided
 	inline bool apply_correction_in_BELOW_COLLISION();
 
-
+	// true = entity has collided
+	inline bool apply_correction_in_MAP_EDGE_COLLISION();
 };
 

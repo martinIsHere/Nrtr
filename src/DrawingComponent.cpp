@@ -8,7 +8,7 @@ spriteSheet* spriteSheet;
 */
 
 #define ANIMATION_INCREMENT 0.1f
-#define MAX_SPRITE_SIZE 2*AVERAGE_ENTITY_SIZE_PIXELS
+#define MAX_SPRITE_SIZE 128
 
 DrawingComponent::DrawingComponent(
 	SDL_Renderer* inputRen, // for drawing
@@ -181,9 +181,9 @@ void DrawingComponent::update_customAnimation() {
 
 const bool DrawingComponent::is_in_viewable_area() const {
 	if (m_posComp->getx() + MAX_SPRITE_SIZE > * m_cameraOffsetX // m_cameraOffsetX being translateXcoordFromWinToMap(0)
-		&& m_posComp->getx() < *m_cameraOffsetX + m_cam->getWinWidth()) {
+		&& m_posComp->getx() < *m_cameraOffsetX + (int)m_cam->getWinWidth()) {
 		if (m_posComp->gety() + MAX_SPRITE_SIZE > * m_cameraOffsetY // m_cameraOffsetY being translateYcoordFromWinToMap(0)
-			&& m_posComp->gety() < *m_cameraOffsetY + m_cam->getWinHeight()) {
+			&& m_posComp->gety() < *m_cameraOffsetY + (int)m_cam->getWinHeight()) {
 			return true;
 		}
 	}

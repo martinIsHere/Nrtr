@@ -25,6 +25,8 @@ void CollisionComponent::init() {
 			std::cout << "Entity does not have positionComponent!\n";
 		}
 	}
+	gameMapWidth_pixels = m_gameMap->getMapWidth_tiles() * TILE_SIZE_PIXELS;
+	gameMapHeight_pixels = m_gameMap->getMapHeight_tiles() * TILE_SIZE_PIXELS;
 }
 
 
@@ -124,6 +126,33 @@ inline bool CollisionComponent::apply_correction_in_BELOW_COLLISION() {
 	return false;
 }
 
+inline bool CollisionComponent::apply_correction_in_MAP_EDGE_COLLISION() {
+	bool collision = false;
+	if (m_posComp->getx() < 0) {
+		m_posComp->getx() = 0;
+		m_posComp->getVelx() = 0;
+		collision = true;
+	}
+	if (m_posComp->gety() < 0) {
+		m_posComp->gety() = 0;
+		m_posComp->getVely() = 0;
+		collision = true;
+	}
+	buf = gameMapWidth_pixels - AVERAGE_ENTITY_SIZE_PIXELS;
+	if (m_posComp->getx() > buf) {
+		m_posComp->getx() = buf;
+		m_posComp->getVelx() = 0;
+		collision = true;
+	}
+	buf = gameMapHeight_pixels - AVERAGE_ENTITY_SIZE_PIXELS;
+	if (m_posComp->gety() > buf) {
+		m_posComp->gety() = buf;
+		m_posComp->getVely() = 0;
+		collision = true;
+	}
+	return collision;
+}
+
 bool CollisionComponent::correct_possible_collision() {
 
 	bool collision = false;
@@ -144,13 +173,13 @@ bool CollisionComponent::correct_possible_collision() {
 			// Check collision for top left and bottom left points and apply correction in case of collsion
 			// collision is set to true if correction is needed
 			// this check is done with previous y position
-			collision = apply_correction_in_LEFT_COLLISION();
+			if (apply_correction_in_LEFT_COLLISION()) collision = true;
 		}
 		else if (m_posComp->isMovingRightVel()) {
 			// Check collision for top right and bottom right points and apply correction in case of collsion
 			// collision is set to true if correction is needed
 			// this check is done with previous y position
-			collision = apply_correction_in_RIGHT_COLLISION();
+			if (apply_correction_in_RIGHT_COLLISION()) collision = true;
 		}
 	}
 
@@ -160,15 +189,18 @@ bool CollisionComponent::correct_possible_collision() {
 			// Check collision for top left and top right points and apply correction in case of collsion
 			// collision is set to true if correction is needed
 			// this check is done with updated y position
-			collision = apply_correction_in_ABOVE_COLLISION();
+			if (apply_correction_in_ABOVE_COLLISION()) collision = true;
 		}
 		else if (m_posComp->isMovingDownVel()) {
 			// Check collision for bottom left and bottom right points and apply correction in case of collsion
 			// collision is set to true if correction is needed
 			// this check is done with updated y position
-			collision = apply_correction_in_BELOW_COLLISION();
+			if (apply_correction_in_BELOW_COLLISION()) collision = true;
 		}
 	}
+
+	// collision agains edges of map
+	if (apply_correction_in_MAP_EDGE_COLLISION()) collision = true;
 
 	return collision;
 }

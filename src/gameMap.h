@@ -26,6 +26,10 @@ public:
 
 	void update();
 
+	const uint32_t& getMapWidth_tiles();
+
+	const uint32_t& getMapHeight_tiles();
+
 	uint16_t getForegroundID(int x, int y);
 
 	void setForegroundID(int x, int y, int id);

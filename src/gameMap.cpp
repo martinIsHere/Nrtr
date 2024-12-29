@@ -161,6 +161,13 @@ int mousePositionY;
 
 SDL_Rect* dstRect2 = new SDL_Rect;
 
+const uint32_t& GameMap::getMapWidth_tiles(){
+	return m_mapWidth;
+}
+
+const uint32_t& GameMap::getMapHeight_tiles() {
+	return m_mapHeight;
+}
 
 void GameMap::draw() {
 

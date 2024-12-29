@@ -2,7 +2,11 @@
 #include "PositionComponent.h"
 
 TheaterEngine::TheaterEngine() {
+	gameState = nullptr;
+}
 
+TheaterEngine::~TheaterEngine() {
+	delete gameState;
 }
 
 void TheaterEngine::init(GameStateManager::GameState* gameState) {
@@ -30,8 +34,6 @@ void TheaterEngine::teleportEntity(
 	ent->getComponent<PositionComponent>().setPos(xDest, yDest);
 }
 
-void TheaterEngine::update(
-	const uint32_t numberOfFramesSinceStart
-	) {
+void TheaterEngine::update() {
 
 }

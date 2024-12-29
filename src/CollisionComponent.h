@@ -9,8 +9,8 @@ class CollisionComponent : public Component{
 
 	GameMap* m_gameMap;
 
-	uint32_t gameMapWidth_pixels;
-	uint32_t gameMapHeight_pixels;
+	int gameMapWidth_pixels;
+	int gameMapHeight_pixels;
 
 	// versatile buffer
 	int buf;

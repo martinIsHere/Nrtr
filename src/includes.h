@@ -25,7 +25,7 @@
 class GameEngine;
 class GameMap;
 extern uint32_t unStartElapsedTime;
-extern int nElapsedTime;
+extern uint32_t nElapsedTime;
 extern uint32_t actualFPS;
 extern uint32_t targetFPS;
 
@@ -34,7 +34,7 @@ extern uint32_t WIN_WIDTH;
 extern uint32_t WIN_HEIGHT;
 extern bool debugKeyDown;
 
-// struct containing info regarding some spritesheet
+// SDL_Texture* tex, int nSize, int nWidth, int nHeight;
 struct SpriteSheet {
 	SDL_Texture* tex;
 	int nSize, nWidth, nHeight;

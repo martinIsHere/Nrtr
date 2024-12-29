@@ -79,7 +79,7 @@ GameEngine::GameEngine(const uint32_t nWidth, const uint32_t nHeight, const std:
 		bRunning = false;
 	}
 
-	Mix_VolumeMusic(MIX_MAX_VOLUME * 0.5);
+	Mix_VolumeMusic(int((float)MIX_MAX_VOLUME * 0.5f));
 
 	if (Mix_PlayingMusic() == 0)
 	{
@@ -95,16 +95,28 @@ GameEngine::GameEngine(const uint32_t nWidth, const uint32_t nHeight, const std:
 	playerEntity->addComponent<PositionComponent>(TILE_SIZE_PIXELS, TILE_SIZE_PIXELS);
 	NPCEntity->addComponent<PositionComponent>(TILE_SIZE_PIXELS, TILE_SIZE_PIXELS);
 
-	map = new GameMap(
+	Town1 = new GameMap(
+		ren,
+		"res/map/Town1.bin",
+		nWinWidth, nWinHeight,
+		&(playerEntity->getComponent<PositionComponent>().getx()),
+		&(playerEntity->getComponent<PositionComponent>().gety()),
+		false
+		);
+
+	House1 = new GameMap(
 		ren,
 		"res/map/House1.bin",
 		nWinWidth, nWinHeight,
 		&(playerEntity->getComponent<PositionComponent>().getx()),
-		&(playerEntity->getComponent<PositionComponent>().gety())
+		&(playerEntity->getComponent<PositionComponent>().gety()),
+		true
 		);
 
-	// get reference actually
-	map->get_drawingSolidStates_bool() = false;
+	currentMapId = 0; // for Town1
+	mapArray_firstSection = { Town1, House1 };
+
+
 	playerEntity->addComponent<DrawingComponent>(
 		ren, 
 		"res/imgs/hero.bmp",
@@ -112,7 +124,7 @@ GameEngine::GameEngine(const uint32_t nWidth, const uint32_t nHeight, const std:
 		6, 5, 
 		4, // amount of frames/imgs of walking animation
 		8,  // amount of animation frames per second
-		map->getCam()
+		Town1->getCam()
 		);
 	NPCEntity->addComponent<DrawingComponent>(
 		ren,
@@ -121,19 +133,20 @@ GameEngine::GameEngine(const uint32_t nWidth, const uint32_t nHeight, const std:
 		3, 4,
 		2,// amount of animation frames per second
 		4, // amount of animation frames per second
-		map->getCam()
+		Town1->getCam()
 		);
 
-	playerEntity->addComponent<CollisionComponent>(map);
-	NPCEntity->addComponent<CollisionComponent>(map);
+	playerEntity->addComponent<CollisionComponent>(Town1);
+	NPCEntity->addComponent<CollisionComponent>(Town1);
 	NPCEntity->getComponent<PositionComponent>().set_isFrictionless(true);
 	NPCEntity->getComponent<PositionComponent>().set_default_acceleration(0);
 
-	playerEntity->addComponent<InteractionComponent>(map);
+	playerEntity->addComponent<InteractionComponent>(Town1);
 
 
 	m_entityManager.init();
 
+	arrayOfActiveEntities = m_entityManager.getEntityArrayPointer();
 }
 
 GameEngine::~GameEngine() {
@@ -191,7 +204,7 @@ void GameEngine::handleEvents() {
 				d_keyDown = false;
 				break;
 			case SDLK_t:
-				map->get_drawingSolidStates_bool() = map->get_drawingSolidStates_bool() ? false : true;
+				mapArray_firstSection[currentMapId]->get_drawingSolidStates_bool() = mapArray_firstSection[currentMapId]->get_drawingSolidStates_bool() ? false : true;
 				break;
 			case SDLK_l:
 				// help key for debugging
@@ -199,6 +212,7 @@ void GameEngine::handleEvents() {
 				break;
 			case SDLK_SPACE:
 				playerEntity->getComponent<InteractionComponent>().interact();
+				if (!changeCurrentMap(0)) changeCurrentMap(1);
 				break;
 			case SDLK_1:
 				playerEntity->getComponent<DrawingComponent>().initCustomAnimation(4, 0, 6, 1, false);
@@ -292,11 +306,11 @@ void GameEngine::update() {
 		test_portalAnimationFunction();
 
 		//
-		map->update(); 
+		mapArray_firstSection[currentMapId]->update();
 
 
 		// 
-		theaterEngine->update(numberOfFramesSinceStart);
+		theaterEngine->update();
 
 
 		//
@@ -384,13 +398,13 @@ void GameEngine::draw() {
 
 	if (m_stateManager->get() == m_stateManager->state_gameRunning) {
 
-		map->draw();
+		mapArray_firstSection[currentMapId]->draw();
 		
 		// sort array in order to draw entities in front first
 		sortEntityArray();
 		m_entityManager.draw();
 
-		map->drawSecondLayer();
+		mapArray_firstSection[currentMapId]->drawSecondLayer();
 	}
 
 	renderText();
@@ -399,6 +413,24 @@ void GameEngine::draw() {
 	SDL_RenderPresent(ren);
 }
 
+const bool GameEngine::changeCurrentMap(size_t newId) {
+	if (newId != currentMapId && newId < mapArray_firstSection.size()) {
+		for (Entity* entity : *arrayOfActiveEntities) {
+			if (entity->hasComponent<CollisionComponent>()) {
+				entity->getComponent<CollisionComponent>().loadNewMap(mapArray_firstSection[newId]);
+			}
+			if (entity->hasComponent<DrawingComponent>()) {
+				entity->getComponent<DrawingComponent>().loadNewCamera(mapArray_firstSection[newId]->getCam());
+			}
+			if (entity->hasComponent<PositionComponent>()) {
+				entity->getComponent<PositionComponent>().setPos(TILE_SIZE_PIXELS, TILE_SIZE_PIXELS);
+			}
+		}
+		currentMapId = newId;
+		return true;
+	}
+	return false;
+}
 
 
 bool GameEngine::alive() {

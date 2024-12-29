@@ -60,6 +60,11 @@ DrawingComponent::DrawingComponent(
 	m_destRect = new SDL_Rect{ 0, 0, AVERAGE_ENTITY_SIZE_PIXELS, AVERAGE_ENTITY_SIZE_PIXELS };
 	m_srcRect = new SDL_Rect{ 0, 0, m_spriteSheet->nSize, m_spriteSheet->nSize };
 
+	yValueBeforeCustomAnimation = NULL;
+	m_facingDir = NULL;
+	isAbleToMoveDuringAnimation = NULL;
+	buf = NULL;
+
 	m_posComp = nullptr;
 
 	startX = 0; 
@@ -67,6 +72,8 @@ DrawingComponent::DrawingComponent(
 	currentRepetition = 0;
 	customAnimationHasEnded_notifier = false;
 	prevCustomAnimationY = NULL;
+	amountOfRepetitions = NULL;
+	amountOfFramesForCustomAnimation = NULL;
 
 	m_animationTick = 0;
 	m_animationFramesPerState = amountOfWalkingAnimationFrames;
@@ -94,17 +101,19 @@ void DrawingComponent::init() {
 
 void DrawingComponent::loadNewCamera(Camera* cam) {
 	m_cam = cam;
+	m_cameraOffsetX = cam->getOffsetXPtr();
+	m_cameraOffsetY = cam->getOffsetYPtr();
 }
 
 DrawingComponent::~DrawingComponent() {
-
+	delete m_destRect, m_srcRect, m_spriteSheet;
 }
 
 const void DrawingComponent::initCustomAnimation(
-	uint32_t customAnimationY, // of source image
-	uint32_t startX,  // to start animation from
-	uint32_t amountOfFrames, // for animation
-	uint32_t amountOfRepetitions, // to be looped
+	int customAnimationY, // of source image
+	int startX,  // to start animation from
+	int amountOfFrames, // for animation
+	int amountOfRepetitions, // to be looped
 	bool isAbleToMoveDuringAnimation
 	) {
 	// TODO: add assertions

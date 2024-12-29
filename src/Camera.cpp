@@ -3,10 +3,10 @@
 Camera::Camera(
 	int* x, 
 	int* y, 
-	const uint32_t mapWidth, 
-	const uint32_t mapHeight, 
-	const uint32_t winWidth, 
-	const uint32_t winHeight, 
+	const int mapWidth,
+	const int mapHeight,
+	const int winWidth,
+	const int winHeight,
 	bool isSmallMap
 	) {
 	m_mapWidth = mapWidth;
@@ -22,16 +22,14 @@ Camera::Camera(
 	m_yOffsetFromScreenEdge = (int)((float)winHeight * 0.5f);
 	m_visibleTilesX = int((float)winWidth / (float)TILE_SIZE_PIXELS)+1; // one extra in case of decimal
 	m_visibleTilesY = int((float)winHeight / (float)TILE_SIZE_PIXELS)+1;
-	//if (m_visibleTilesX > mapWidth) m_visibleTilesX = mapWidth;
-	//if (m_visibleTilesY > mapHeight) m_visibleTilesY = mapHeight;
 	m_isSmallMap = isSmallMap;
 }
 
-const uint32_t& Camera::getVisibleTilesX() const {
+const int& Camera::getVisibleTilesX() const {
 	return m_visibleTilesX;
 }
 
-const uint32_t& Camera::getVisibleTilesY() const {
+const int& Camera::getVisibleTilesY() const {
 	return m_visibleTilesY;
 }
 

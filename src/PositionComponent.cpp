@@ -4,13 +4,16 @@
 PositionComponent::PositionComponent(int x, int y) : m_X(x), m_Y(y) {
 	m_velocity_vector = nullptr;
 	m_acceleration_vector = nullptr;
+
+	// defaults
 	m_Directions = { false, false, false, false };
 	m_facingDir = 0;
 	default_acceleration = float(1.6 * (double)TILE_SIZE_PIXELS / (double)targetFPS); // DEFAULT ACCELERATION   // 1.4 if TILE_SIZE_PIXELS = 64
 	default_natural_deceleration = float(0.5 * (double)TILE_SIZE_PIXELS / (double)targetFPS); // 0.8 if TILE_SIZE_PIXELS = 64 and targetFPS = 60
 	natural_deceleration = default_natural_deceleration;
 	max_vel = float(8 * (double)TILE_SIZE_PIXELS / (double)targetFPS); // 10 if TILE_SIZE_PIXELS = 64 and targetFPS = 60
-	isAbleToMove = true;
+	isAbleToMove = true; 
+	isFrictionless = false;
 }
 
 void PositionComponent::init() {
@@ -21,6 +24,7 @@ void PositionComponent::init() {
 }
 
 PositionComponent::~PositionComponent() {
+	delete m_velocity_vector, m_acceleration_vector;
 }
 
 int& PositionComponent::getx(){

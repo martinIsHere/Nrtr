@@ -9,9 +9,9 @@ class Camera{
 	int m_xCameraOffset, m_yCameraOffset;
 	int* m_xPos, *m_yPos;
 	int m_xOffsetFromScreenEdge, m_yOffsetFromScreenEdge;
-	uint32_t m_winWidth, m_winHeight;
-	uint32_t m_mapWidth, m_mapHeight;
-	uint32_t m_visibleTilesX, m_visibleTilesY;
+	int m_winWidth, m_winHeight;
+	int m_mapWidth, m_mapHeight;
+	int m_visibleTilesX, m_visibleTilesY;
 	bool m_isSmallMap;
 
 public:
@@ -19,10 +19,10 @@ public:
 	Camera(
 		int* x, 
 		int* y, 
-		const uint32_t mapWidth, 
-		const uint32_t mapHeight, 
-		const uint32_t winWidth, 
-		const uint32_t winHeight,
+		const int mapWidth,
+		const int mapHeight,
+		const int winWidth,
+		const int winHeight,
 		bool isSmallMap
 		);
 
@@ -32,9 +32,9 @@ public:
 
 	void update(const int& x, const int& y);
 
-	const uint32_t& getVisibleTilesX() const;
+	const int& getVisibleTilesX() const;
 
-	const uint32_t& getVisibleTilesY() const;
+	const int& getVisibleTilesY() const;
 
 	const int* getOffsetXPtr()const;
 

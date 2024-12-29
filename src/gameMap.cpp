@@ -49,8 +49,8 @@ void GameMap::loadMap(std::string map) {
 	//m_backLayer_array = new uint16_t[m_mapWidth*m_mapHeight];
 	//m_blockState_array = new bool[m_mapWidth * m_mapHeight];
 	
-	for (uint32_t y = 0; y < m_mapHeight; y++) {
-		for (uint32_t x = 0; x < m_mapWidth; x++) {
+	for (int y = 0; y < m_mapHeight; y++) {
+		for (int x = 0; x < m_mapWidth; x++) {
 			
 			// foreground id
 			m_mapFile.read(m_readingBuffer, 2);
@@ -97,12 +97,14 @@ void GameMap::loadMap(std::string map) {
 	m_mapFile.close();
 }
 
-GameMap::GameMap(SDL_Renderer* ren, 
+GameMap::GameMap(
+	SDL_Renderer* ren, 
 	const std::string map, 
-	const uint32_t windowWidth, 
-	const uint32_t windowHeight, 
+	const int windowWidth,
+	const int windowHeight,
 	int *cameraPosx, 
-	int * cameraPosy
+	int *cameraPosy,
+	bool smallMap
 	) {
 	m_ren = ren;
 	m_windowWidth = windowWidth;
@@ -125,7 +127,14 @@ GameMap::GameMap(SDL_Renderer* ren,
 	m_tempDstRect = new SDL_Rect;
 
 	//load spriteSheet
-	m_spriteSheet0 = new SpriteSheet{SDL_CreateTextureFromSurface(m_ren, SDL_LoadBMP("res/imgs/sh1.bmp")),  16, 12, 18};
+	m_spriteSheet0 = 
+		new SpriteSheet{
+		SDL_CreateTextureFromSurface(m_ren, SDL_LoadBMP("res/imgs/sh1.bmp")),
+		16, 
+		12, 
+		18
+		};
+
 	if (!m_spriteSheet0->tex) log("Failed to load texture.");
 
 	// load map
@@ -136,7 +145,7 @@ GameMap::GameMap(SDL_Renderer* ren,
 		cameraPosx, cameraPosy, // position
 		m_mapWidth, m_mapHeight, // map size (for bounds)
 		m_windowWidth, m_windowHeight, // window size (for bounds)
-		true  // if it is a small map i.e. in one screen
+		smallMap  // if it is a small map i.e. in one screen
 		);
 
 	m_visibleTilesX_pixels = m_mainCamera->getVisibleTilesX() * TILE_SIZE_PIXELS;
@@ -164,11 +173,11 @@ int mousePositionY;
 
 SDL_Rect* dstRect2 = new SDL_Rect;
 
-const uint32_t& GameMap::getMapWidth_tiles(){
+const int& GameMap::getMapWidth_tiles(){
 	return m_mapWidth;
 }
 
-const uint32_t& GameMap::getMapHeight_tiles() {
+const int& GameMap::getMapHeight_tiles() {
 	return m_mapHeight;
 }
 
@@ -178,8 +187,8 @@ void GameMap::draw() {
 	int offsetX = *m_mainCamera->getOffsetXPtr();
 	int offsetY = *m_mainCamera->getOffsetYPtr();
 
-	for (int y = int(offsetY / (int)m_blockSize); y < ((int)m_visibleTilesY_pixels + offsetY) / (int)m_blockSize; y++) {
-		for (int x = int(offsetX / (int)m_blockSize); x < ((int)m_visibleTilesX_pixels + offsetX) / (int)m_blockSize; x++) {
+	for (int y = int(offsetY / m_blockSize); y < (m_visibleTilesY_pixels + offsetY) / m_blockSize; y++) {
+		for (int x = int(offsetX / m_blockSize); x < (m_visibleTilesX_pixels + offsetX) / m_blockSize; x++) {
 			*m_tempDstRect = { 
 				int((x * m_blockSize) - offsetX),
 				int((y * m_blockSize) - offsetY),
@@ -258,8 +267,8 @@ void GameMap::drawSecondLayer() {
 	dstRect2->w = TILE_SIZE_PIXELS;
 	dstRect2->h = TILE_SIZE_PIXELS;
 
-	for (int y = (int)(offsetY / (int)m_blockSize); y < ((int)m_visibleTilesY_pixels + offsetY) / (int)m_blockSize; y++) {
-		for (int x = (int)(offsetX / (int)m_blockSize); x < ((int)m_visibleTilesX_pixels + offsetX) / (int)m_blockSize; x++) {
+	for (int y = (int)(offsetY / m_blockSize); y < (m_visibleTilesY_pixels + offsetY) / m_blockSize; y++) {
+		for (int x = (int)(offsetX / m_blockSize); x < (m_visibleTilesX_pixels + offsetX) / m_blockSize; x++) {
 
 
 			*m_tempDstRect = {
@@ -359,7 +368,7 @@ uint8_t& GameMap::getForegroundMirrorState(int x, int y) {
 	}
 	return m_foregroundMirrorState_array[0];
 }
-uint32_t& GameMap::getBlockSize() {
+int& GameMap::getBlockSize() {
 	return m_blockSize;
 }
 

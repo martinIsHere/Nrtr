@@ -4,10 +4,11 @@
 #include "GameStateManager.h"
 
 class TheaterEngine {
-	uint32_t numberOfFramesSinceStart;
-	GameStateManager::GameState* gameState;
+	 GameStateManager::GameState* gameState;
 public:
 	TheaterEngine();
+
+	~TheaterEngine();
 
 	void init(GameStateManager::GameState* gameState);
 
@@ -26,9 +27,7 @@ public:
 		int yDest
 		);
 
-	void update(
-		const uint32_t numberOfFramesSinceStart
-		);
+	void update();
 private:
 
 };

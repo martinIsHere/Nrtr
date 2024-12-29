@@ -10,10 +10,11 @@ class GameMap {
 public:
 	GameMap(SDL_Renderer* ren,
 		const std::string map, 
-		const uint32_t windowWidth, 
-		const uint32_t windowHeight,
+		const int windowWidth,
+		const int windowHeight,
 		int* cameraPosx, 
-		int* cameraPosy
+		int* cameraPosy,
+		bool smallMap
 		);
 	
 	~GameMap();
@@ -26,9 +27,9 @@ public:
 
 	void update();
 
-	const uint32_t& getMapWidth_tiles();
+	const int& getMapWidth_tiles();
 
-	const uint32_t& getMapHeight_tiles();
+	const int& getMapHeight_tiles();
 
 	uint16_t getForegroundID(int x, int y);
 
@@ -52,7 +53,7 @@ public:
 
 	uint8_t& getForegroundMirrorState(int x, int y);
 
-	uint32_t& getBlockSize();
+	int& getBlockSize();
 
 	Camera* getCam();
 
@@ -76,19 +77,18 @@ private:
 	//uint16_t* m_frontLayer_array;
 	//bool* m_blockState_array;
 
-	GameEngine* m_gameEngine_instance;
 	SDL_Renderer* m_ren;
 
 	SDL_Rect* m_tempSrcRect, * m_tempDstRect;
 
-	uint16_t m_mapWidth, m_mapHeight;
-	uint32_t m_windowWidth, m_windowHeight;
+	int m_mapWidth, m_mapHeight;
+	int m_windowWidth, m_windowHeight;
 	uint16_t m_current_ID, m_xId, m_yId;
 	uint8_t m_currentState;
 	uint8_t m_currentMirrorState;
-	uint32_t m_blockSize;
+	int m_blockSize;
 	// amount of visible tiles in pixels. tiles * TILE_SIZE_PIXELS
-	uint32_t m_visibleTilesX_pixels, m_visibleTilesY_pixels;
+	int m_visibleTilesX_pixels, m_visibleTilesY_pixels;
 	Camera* m_mainCamera;
 
 

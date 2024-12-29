@@ -37,6 +37,9 @@ public:
 
 	const void test_portalAnimationFunction();
 
+	// return true if successful change
+	const bool changeCurrentMap(size_t newId);
+
 private:
 
 	uint32_t nWinWidth, nWinHeight;
@@ -79,7 +82,11 @@ private:
 	Mix_Music* gMusic;
 
 	// gamemap instance
-	GameMap* map;
+	GameMap* Town1;
+	GameMap* House1;
+
+	size_t currentMapId;
+	std::array<GameMap*, 2> mapArray_firstSection;
 
 	// theater engine instance
 	TheaterEngine* theaterEngine;

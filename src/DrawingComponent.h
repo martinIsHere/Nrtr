@@ -14,7 +14,7 @@ class DrawingComponent : public Component{
 	int m_animationTick;
 	unsigned int m_FPS;
 	int m_animationFramesPerState;
-	int m_framesPerImage;
+	unsigned int m_framesPerImage;
 	unsigned int m_frameCounter;
 	unsigned int m_facingDir;
 	const int* m_cameraOffsetX, * m_cameraOffsetY;
@@ -54,10 +54,10 @@ public:
 	void loadNewCamera(Camera* m_cam);
 
 	const void initCustomAnimation(
-		uint32_t customAnimationY,
-		uint32_t startX,
-		uint32_t amountOfFrames,
-		uint32_t amountOfRepetitions,
+		int customAnimationY,
+		int startX,
+		int amountOfFrames,
+		int amountOfRepetitions,
 		bool isAbleToMoveDuringAnimation
 		);
 

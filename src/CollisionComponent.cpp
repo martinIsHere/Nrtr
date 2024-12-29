@@ -5,6 +5,12 @@
 CollisionComponent::CollisionComponent(GameMap* gameMap) {
 	m_gameMap = gameMap;
 	m_posComp = nullptr;
+	buf = NULL;
+	oldYPos = NULL;
+	hitBoxOffsetX = NULL;
+	hitBoxTopOffset = NULL;
+	gameMapWidth_pixels = NULL;
+	gameMapHeight_pixels = NULL;
 }
 
 CollisionComponent::~CollisionComponent() {

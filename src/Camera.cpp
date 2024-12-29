@@ -22,8 +22,8 @@ Camera::Camera(
 	m_yOffsetFromScreenEdge = (int)((float)winHeight * 0.5f);
 	m_visibleTilesX = int((float)winWidth / (float)TILE_SIZE_PIXELS)+1; // one extra in case of decimal
 	m_visibleTilesY = int((float)winHeight / (float)TILE_SIZE_PIXELS)+1;
-	if (m_visibleTilesX > mapWidth) m_visibleTilesX = mapWidth;
-	if (m_visibleTilesY > mapHeight) m_visibleTilesY = mapHeight;
+	//if (m_visibleTilesX > mapWidth) m_visibleTilesX = mapWidth;
+	//if (m_visibleTilesY > mapHeight) m_visibleTilesY = mapHeight;
 	m_isSmallMap = isSmallMap;
 }
 

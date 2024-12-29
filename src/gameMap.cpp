@@ -178,9 +178,8 @@ void GameMap::draw() {
 	int offsetX = *m_mainCamera->getOffsetXPtr();
 	int offsetY = *m_mainCamera->getOffsetYPtr();
 
-
-	for (int y = int(offsetY / m_blockSize); y < (m_visibleTilesY_pixels + offsetY) / m_blockSize; y++) {
-		for (int x = int(offsetX / m_blockSize); x < (m_visibleTilesX_pixels + offsetX) / m_blockSize; x++) {
+	for (int y = int(offsetY / (int)m_blockSize); y < ((int)m_visibleTilesY_pixels + offsetY) / (int)m_blockSize; y++) {
+		for (int x = int(offsetX / (int)m_blockSize); x < ((int)m_visibleTilesX_pixels + offsetX) / (int)m_blockSize; x++) {
 			*m_tempDstRect = { 
 				int((x * m_blockSize) - offsetX),
 				int((y * m_blockSize) - offsetY),
@@ -259,8 +258,8 @@ void GameMap::drawSecondLayer() {
 	dstRect2->w = TILE_SIZE_PIXELS;
 	dstRect2->h = TILE_SIZE_PIXELS;
 
-	for (uint32_t y = offsetY / m_blockSize; y < (m_visibleTilesY_pixels + offsetY) / m_blockSize; y++) {
-		for (uint32_t x = offsetX / m_blockSize; x < (m_visibleTilesX_pixels + offsetX) / m_blockSize; x++) {
+	for (int y = (int)(offsetY / (int)m_blockSize); y < ((int)m_visibleTilesY_pixels + offsetY) / (int)m_blockSize; y++) {
+		for (int x = (int)(offsetX / (int)m_blockSize); x < ((int)m_visibleTilesX_pixels + offsetX) / (int)m_blockSize; x++) {
 
 
 			*m_tempDstRect = {
@@ -302,8 +301,9 @@ void GameMap::drawSecondLayer() {
 }
 
 uint16_t GameMap::getForegroundID(int x, int y) {
-	if (x >= 0 && x < int(m_mapWidth) && y >= 0 && y < int(m_mapHeight))
+	if (x >= 0 && x < int(m_mapWidth) && y >= 0 && y < int(m_mapHeight)) {
 		return m_foregroundLayer_array[(size_t(y) * m_mapWidth) + x];
+	}
 	return 0;
 }
 void GameMap::setForegroundID(int x, int y, int ID) {
@@ -312,8 +312,9 @@ void GameMap::setForegroundID(int x, int y, int ID) {
 }
 
 uint16_t GameMap::getBackID(int x, int y) {
-	if(x >= 0 && x < int(m_mapWidth) && y >= 0 && y < int(m_mapHeight))
+	if (x >= 0 && x < int(m_mapWidth) && y >= 0 && y < int(m_mapHeight)) {
 		return m_backLayer_array[(size_t(y) * m_mapWidth) + x];
+	}
 	return 0;
 }
 void GameMap::setBackID(int x, int y, int ID) {
@@ -321,8 +322,9 @@ void GameMap::setBackID(int x, int y, int ID) {
 		m_backLayer_array[(size_t(y) * m_mapWidth) + x] = ID;
 }
 uint16_t GameMap::getFrontID(int x, int y) {
-	if (x >= 0 && x < int(m_mapWidth) && y >= 0 && y < int(m_mapHeight))
+	if (x >= 0 && x < int(m_mapWidth) && y >= 0 && y < int(m_mapHeight)) {
 		return m_frontLayer_array[(size_t(y) * m_mapWidth) + x];
+	}
 	return 0;
 }
 void GameMap::setFrontID(int x, int y, int ID) {
@@ -330,8 +332,9 @@ void GameMap::setFrontID(int x, int y, int ID) {
 		m_frontLayer_array[(size_t(y) * m_mapWidth) + x] = ID;
 }
 bool GameMap::getState(int x, int y) {
-	if (x >= 0 && x < int(m_mapWidth) && y >= 0 && y < int(m_mapHeight))
+	if (x >= 0 && x < int(m_mapWidth) && y >= 0 && y < int(m_mapHeight)) {
 		return m_blockState_array[(size_t(y) * m_mapWidth) + x];
+	}
 	return 0;
 }
 void GameMap::setState(int x, int y, bool state) {
@@ -339,18 +342,21 @@ void GameMap::setState(int x, int y, bool state) {
 		m_blockState_array[(size_t(y) * m_mapWidth) + x] = state;
 }
 uint8_t& GameMap::getBackMirrorState(int x, int y) {
-	if (x >= 0 && x < int(m_mapWidth) && y >= 0 && y < int(m_mapHeight))
+	if (x >= 0 && x < int(m_mapWidth) && y >= 0 && y < int(m_mapHeight)) {
 		return m_backMirrorState_array[(size_t(y) * m_mapWidth) + x];
+	}
 	return m_backMirrorState_array[0];
 }
 uint8_t& GameMap::getFrontMirrorState(int x, int y) {
-	if (x >= 0 && x < int(m_mapWidth) && y >= 0 && y < int(m_mapHeight))
+	if (x >= 0 && x < int(m_mapWidth) && y >= 0 && y < int(m_mapHeight)) {
 		return m_frontMirrorState_array[(size_t(y) * int(m_mapWidth)) + x];
+	}
 	return m_frontMirrorState_array[0];
 }
 uint8_t& GameMap::getForegroundMirrorState(int x, int y) {
-	if (x >= 0 && x < int(m_mapWidth) && y >= 0 && y < int(m_mapHeight))
+	if (x >= 0 && x < int(m_mapWidth) && y >= 0 && y < int(m_mapHeight)){
 		return m_foregroundMirrorState_array[(size_t(y) * int(m_mapWidth)) + x];
+	}
 	return m_foregroundMirrorState_array[0];
 }
 uint32_t& GameMap::getBlockSize() {

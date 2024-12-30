@@ -94,7 +94,8 @@ public:
 		c->ent = this;
 
 		// adds component to component array and activates it by setting active to true
-		if (m_ComponentArray[getComponentTypeID<T>()]) {
+		if (m_ComponentArray[getComponentTypeID<T>()] != nullptr) {
+			
 			std::cout << "Component already added!\n";
 		}
 		m_ComponentArray[getComponentTypeID<T>()] = c;
@@ -122,14 +123,13 @@ public:
 
 	template <typename T>
 	bool hasComponent() const {
-
 		// checks if given component has been added to the component array
-		if (getComponentTypeID<T>() <= MAX_COMPONENTS && &m_ComponentArray != nullptr) {
+		if (getComponentTypeID<T>() < MAX_COMPONENTS && &m_ComponentArray != nullptr) {
 			if (m_ComponentArray[getComponentTypeID<T>()] != nullptr) {
 				return true;
 			}
 		}
-			return false;
+		return false;
 		
 	}
 

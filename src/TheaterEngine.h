@@ -17,7 +17,6 @@ public:
 		Manager* entityManagerPtr,
 		std::array<GameMap*, 10>* mapArrayPtr,
 		size_t* currentMapIdPtr,
-		std::vector<Entity*>* arrayOfActiveEntitiesPtr,
 		SDL_Renderer* renPtr,
 		uint32_t* nWinWidthPtr,
 		uint32_t* nWinHeightPtr

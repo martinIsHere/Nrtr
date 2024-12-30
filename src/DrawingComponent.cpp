@@ -105,6 +105,10 @@ void DrawingComponent::loadNewCamera(Camera* cam) {
 	m_cameraOffsetY = cam->getOffsetYPtr();
 }
 
+const Camera* DrawingComponent::getCurrentlyUsedCamPtr()const {
+	return m_cam;
+}
+
 DrawingComponent::~DrawingComponent() {
 	delete m_destRect, m_srcRect, m_spriteSheet;
 }

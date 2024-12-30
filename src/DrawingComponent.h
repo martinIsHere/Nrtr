@@ -65,6 +65,8 @@ public:
 
 	const int getPrevCustomAnimationY() const;
 
+	const Camera* getCurrentlyUsedCamPtr()const;
+
 private:
 	void update_walkingAnimation();
 

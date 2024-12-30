@@ -97,25 +97,31 @@ GameEngine::GameEngine(const uint32_t nWidth, const uint32_t nHeight, const std:
 	// create necessary entities
 
 	currentMapId = 0;
+	
+	std::cout << getComponentTypeID<GameMap>() << "\n";
+	std::cout << getComponentTypeID<GameEngine>() << "\n";
+	std::cout << getComponentTypeID<PositionComponent>() << "\n";
 
 	theaterEngine->init(
 		m_stateManagerPtr, 
 		&m_entityManager,
 		&mapArray,
 		&currentMapId,
-		arrayOfActiveEntitiesPtr,
 		renPtr,
 		&nWinWidth,
 		&nWinHeight
 		);
 
+	SDL_Delay(1000);
+
 
 	playerEntity = theaterEngine->getPlayerEntity();
+	if (playerEntity == nullptr) log("playerEntity == nullptr");
 
-	if (playerEntity->hasComponent<PositionComponent>())log("has positionCOmponet");
-
+	NPCEntity=m_entityManager.addEntity();
+	if (NPCEntity->hasComponent<PositionComponent>())log("NPCEntity->hasComponent<PositionComponent>");
 	NPCEntity->addComponent<PositionComponent>(TILE_SIZE_PIXELS, TILE_SIZE_PIXELS);
-
+	if (NPCEntity->hasComponent<DrawingComponent>())log("NPCEntity->hasComponent<DrawingComponent>");
 	NPCEntity->addComponent<DrawingComponent>(
 		renPtr,
 		"res/imgs/secondNPC.bmp",
@@ -123,12 +129,19 @@ GameEngine::GameEngine(const uint32_t nWidth, const uint32_t nHeight, const std:
 		3, 4,
 		2,// amount of animation frames per second
 		4, // amount of animation frames per second
-		Town1->getCam()
+		mapArray[currentMapId]->getCam()
 		);
 
-	NPCEntity->addComponent<CollisionComponent>(Town1);
+	if (NPCEntity->hasComponent<CollisionComponent>())log("NPCEntity->hasComponent<CollisionComponent>");
+	NPCEntity->addComponent<CollisionComponent>(mapArray[currentMapId]);
+
+	m_entityManager.init();
+
 	NPCEntity->getComponent<PositionComponent>().set_isFrictionless(true);
 	NPCEntity->getComponent<PositionComponent>().set_default_acceleration(0);
+
+
+
 
 }
 

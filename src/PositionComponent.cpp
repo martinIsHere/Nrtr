@@ -28,6 +28,7 @@ PositionComponent::~PositionComponent() {
 }
 
 int& PositionComponent::getx(){
+	log(m_X);
 	return m_X;
 }
 int& PositionComponent::gety(){

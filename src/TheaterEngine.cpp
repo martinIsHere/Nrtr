@@ -20,7 +20,6 @@ void TheaterEngine::init(
 	Manager* entityManagerPtr,
 	std::array<GameMap*, 10>* mapArrayPtr,
 	size_t* currentMapIdPtr,
-	std::vector<Entity*>* arrayOfActiveEntitiesPtr,
 	SDL_Renderer* renPtr,
 	uint32_t* nWinWidthPtr,
 	uint32_t* nWinHeightPtr
@@ -30,10 +29,11 @@ void TheaterEngine::init(
 	Scene::entityManagerPtr = entityManagerPtr;
 	Scene::mapArrayPtr = mapArrayPtr;
 	Scene::currentMapIdPtr = currentMapIdPtr;
-	Scene::arrayOfActiveEntitiesPtr = arrayOfActiveEntitiesPtr;
+	Scene::arrayOfActiveEntitiesPtr = entityManagerPtr->getEntityArrayPointer();
 	Scene::renPtr = renPtr;
 	Scene::nWinWidthPtr = nWinWidthPtr;
 	Scene::nWinHeightPtr = nWinHeightPtr;
+
 
 	// TODO: relative to prev save init a scene
 	currentScenePtr = new OpeningScene();

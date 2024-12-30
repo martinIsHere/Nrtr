@@ -1,10 +1,11 @@
 #pragma once
 #include "includes.h"
 #include "Scene.h"
+#include "ECS.h"
 
 class OpeningScene : public Scene {
 public:
-	OpeningScene();
+	Entity* NPCEntity;
 
 	void init() override;
 
@@ -15,7 +16,6 @@ public:
 
 class FirstHouseScene : public Scene {
 public:
-	FirstHouseScene();
 
 	void init() override;
 

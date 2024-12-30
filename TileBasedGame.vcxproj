@@ -160,6 +160,7 @@
     <ClCompile Include="src\gameMap.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\includesGlobalVariables.cpp" />
+    <ClCompile Include="src\Scene.cpp" />
     <ClCompile Include="src\SceneCollection.cpp" />
     <ClCompile Include="src\TheaterEngine.cpp" />
     <ClCompile Include="src\Vector.cpp" />

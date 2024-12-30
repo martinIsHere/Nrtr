@@ -32,7 +32,7 @@ public:
 
 	bool alive();
 
-	SDL_Renderer* getRen() const;
+	SDL_Renderer* getRenPtr() const;
 
 	const uint32_t getWinSize() const;
 
@@ -49,7 +49,7 @@ private:
 
 	uint32_t nWinWidth, nWinHeight;
 	SDL_Window* win;
-	SDL_Renderer* ren;
+	SDL_Renderer* renPtr;
 	SDL_Event* Event;
 	uint32_t unStartElapsedTime;
 	uint32_t nElapsedTime;
@@ -58,7 +58,7 @@ private:
 	uint32_t nDelay;
 	int mousePos[2];
 	std::string sTitle;
-	std::vector<Entity*>* arrayOfActiveEntities;
+	std::vector<Entity*>* arrayOfActiveEntitiesPtr;
 	std::vector<Entity*> bufferArrayOfEntities;
 
 	// key down bools
@@ -75,7 +75,7 @@ private:
 	Entity* NPCEntity;
 	
 	// state manager
-	GameStateManager* m_stateManager;
+	GameStateManager* m_stateManagerPtr;
 
 	// text
 	TTF_Font* arialFont;
@@ -93,7 +93,7 @@ private:
 
 	// loaded maps per section of game!
 	size_t currentMapId;
-	std::array<GameMap*, 2> mapArray;
+	std::array<GameMap*, 10> mapArray;
 
 	// theater engine instance
 	TheaterEngine* theaterEngine;

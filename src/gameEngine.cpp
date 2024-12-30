@@ -15,12 +15,12 @@ GameEngine::GameEngine(const uint32_t nWidth, const uint32_t nHeight, const std:
 
 
 	// game state related stuff
-	m_stateManager = new GameStateManager();
+	m_stateManagerPtr = new GameStateManager();
 
-	m_stateManager->set(m_stateManager->state_startingScreen);
+	m_stateManagerPtr->set(m_stateManagerPtr->state_startingScreen);
 
 	// when game has fully started
-	m_stateManager->set(m_stateManager->state_gameRunning);
+	m_stateManagerPtr->set(m_stateManagerPtr->state_gameRunning);
 
 
 
@@ -53,8 +53,8 @@ GameEngine::GameEngine(const uint32_t nWidth, const uint32_t nHeight, const std:
 		bRunning = false;
 		exit(1);
 	}
-	ren = SDL_CreateRenderer(win, -1, SDL_RENDERER_ACCELERATED);
-	if (ren == 0) {
+	renPtr = SDL_CreateRenderer(win, -1, SDL_RENDERER_ACCELERATED);
+	if (renPtr == 0) {
 		std::cout << "Failed to create renderer\n";
 		bRunning = false;
 		exit(1);
@@ -86,81 +86,54 @@ GameEngine::GameEngine(const uint32_t nWidth, const uint32_t nHeight, const std:
 		Mix_PlayMusic(gMusic, -1);
 	}
 
+	// entity manager
+
+	// array of all entities to be sorted
+	arrayOfActiveEntitiesPtr = m_entityManager.getEntityArrayPointer();
+
 	// for cutscenes
 	theaterEngine = new TheaterEngine();
 	// load necessary maps
 	// create necessary entities
 
-	theaterEngine->init(m_stateManager->getPtr(), &m_entityManager);
+	currentMapId = 0;
+
+	theaterEngine->init(
+		m_stateManagerPtr, 
+		&m_entityManager,
+		&mapArray,
+		&currentMapId,
+		arrayOfActiveEntitiesPtr,
+		renPtr,
+		&nWinWidth,
+		&nWinHeight
+		);
 
 
-	playerEntity = m_entityManager.addEntity();
-	NPCEntity = m_entityManager.addEntity();
-	playerEntity->addComponent<PositionComponent>(TILE_SIZE_PIXELS, TILE_SIZE_PIXELS);
+	playerEntity = theaterEngine->getPlayerEntity();
+
+	if (playerEntity->hasComponent<PositionComponent>())log("has positionCOmponet");
+
 	NPCEntity->addComponent<PositionComponent>(TILE_SIZE_PIXELS, TILE_SIZE_PIXELS);
 
-	Town1 = new GameMap(
-		ren,
-		"res/map/Town1.bin", // path to map file
-		"res/imgs/sh1.bmp",  // path to spritesheet file
-		12, // amount of tiles horizontally
-		18, // amount of tiles vertically
-		nWinWidth, nWinHeight, // window-to-be-displayed-on's width and heigth
-		&(playerEntity->getComponent<PositionComponent>().getx()), // pointer to coordinates for camera
-		&(playerEntity->getComponent<PositionComponent>().gety()), // here: just equal to the player position
-		false // if the map is very small, like a house -> set to true
-		);
-
-	House1 = new GameMap(
-		ren,     
-		"res/map/House1.bin",
-		"res/imgs/sh2.bmp",
-		7,
-		12,
-		nWinWidth, nWinHeight,
-		&(playerEntity->getComponent<PositionComponent>().getx()),
-		&(playerEntity->getComponent<PositionComponent>().gety()),
-		true
-		);
-
-	currentMapId = 0; // for Town1
-	mapArray = { Town1, House1 };
-
-
-	playerEntity->addComponent<DrawingComponent>(
-		ren,    // current working renderer
-		"res/imgs/hero.bmp", // path
-		16, // sprite size
-		6, 5, // sprite sheet columns and rows
-		4, // amount of frames/imgs of walking animation
-		8,  // amount of animation frames per second
-		Town1->getCam() // current working camera
-		);
 	NPCEntity->addComponent<DrawingComponent>(
-		ren,
+		renPtr,
 		"res/imgs/secondNPC.bmp",
-		16, 
+		16,
 		3, 4,
 		2,// amount of animation frames per second
 		4, // amount of animation frames per second
 		Town1->getCam()
 		);
 
-	playerEntity->addComponent<CollisionComponent>(Town1); // pass in map class
 	NPCEntity->addComponent<CollisionComponent>(Town1);
 	NPCEntity->getComponent<PositionComponent>().set_isFrictionless(true);
 	NPCEntity->getComponent<PositionComponent>().set_default_acceleration(0);
 
-	playerEntity->addComponent<InteractionComponent>(Town1);
-
-
-	m_entityManager.init();
-
-	arrayOfActiveEntities = m_entityManager.getEntityArrayPointer();
 }
 
 GameEngine::~GameEngine() {
-	SDL_DestroyRenderer(ren);
+	SDL_DestroyRenderer(renPtr);
 	SDL_DestroyWindow(win);
 }
 
@@ -296,7 +269,7 @@ const void  GameEngine::test_portalAnimationFunction() {
 
 void GameEngine::update() {
 	unStartElapsedTime = SDL_GetTicks();
-	if (m_stateManager->get() == m_stateManager->state_gameRunning) {
+	if (m_stateManagerPtr->get() == m_stateManagerPtr->state_gameRunning) {
 
 
 		//
@@ -343,27 +316,25 @@ void GameEngine::update() {
 }
 
 void GameEngine::sortEntityArray() {
-	// array of all entities to be sorted
-	arrayOfActiveEntities = m_entityManager.getEntityArrayPointer();
 	// empty the buffer
 	bufferArrayOfEntities.clear();
 	// sort the arrayOfActiveEntities going highest y-value to lowest y-value !!!!! TODO
-	while (arrayOfActiveEntities->size() > 0) {
+	while (arrayOfActiveEntitiesPtr->size() > 0) {
 		int suspectedIndex = 0;
-		if (arrayOfActiveEntities->size() != 1) {
-			for (int i = 1; i < arrayOfActiveEntities->size(); i++) {
-				if (arrayOfActiveEntities->at(i)->hasComponent<PositionComponent>()) {
-					if (arrayOfActiveEntities->at(i)->getComponent<PositionComponent>().gety() <
-						arrayOfActiveEntities->at(suspectedIndex)->getComponent<PositionComponent>().gety()) {
+		if (arrayOfActiveEntitiesPtr->size() != 1) {
+			for (int i = 1; i < arrayOfActiveEntitiesPtr->size(); i++) {
+				if (arrayOfActiveEntitiesPtr->at(i)->hasComponent<PositionComponent>()) {
+					if (arrayOfActiveEntitiesPtr->at(i)->getComponent<PositionComponent>().gety() <
+						arrayOfActiveEntitiesPtr->at(suspectedIndex)->getComponent<PositionComponent>().gety()) {
 						suspectedIndex = i;
 					}
 				}
 			}
 		}
-		bufferArrayOfEntities.push_back(arrayOfActiveEntities->at(suspectedIndex));
-		arrayOfActiveEntities->erase(arrayOfActiveEntities->begin() + suspectedIndex);
+		bufferArrayOfEntities.push_back(arrayOfActiveEntitiesPtr->at(suspectedIndex));
+		arrayOfActiveEntitiesPtr->erase(arrayOfActiveEntitiesPtr->begin() + suspectedIndex);
 	}
-	*arrayOfActiveEntities = bufferArrayOfEntities;
+	*arrayOfActiveEntitiesPtr = bufferArrayOfEntities;
 }
 
 void GameEngine::renderText() {
@@ -382,7 +353,7 @@ void GameEngine::renderText() {
 			TTF_RenderText_Solid(arialFont, textMessage.c_str(), White);
 		if (surfaceMessage == nullptr)log("surfaceMessage surface failed load!");
 		// now you can convert it into a texture
-		Message = SDL_CreateTextureFromSurface(ren, surfaceMessage);
+		Message = SDL_CreateTextureFromSurface(renPtr, surfaceMessage);
 		if (Message == nullptr)log("Message tex failed load!");
 		lastMessage = textMessage;
 	}
@@ -394,7 +365,7 @@ void GameEngine::renderText() {
 
 	TTF_SizeText(arialFont, "Broski", &Message_rect.w, &Message_rect.h);
 
-	SDL_RenderCopy(ren, Message, NULL, &Message_rect);
+	SDL_RenderCopy(renPtr, Message, NULL, &Message_rect);
 
 	//SDL_FreeSurface(surfaceMessage);
 	//SDL_DestroyTexture(Message);
@@ -403,10 +374,10 @@ void GameEngine::renderText() {
 void GameEngine::draw() {
 
 	// clear screen
-	SDL_SetRenderDrawColor(ren, 0, 0, 0, 255);
-	SDL_RenderClear(ren);
+	SDL_SetRenderDrawColor(renPtr, 0, 0, 0, 255);
+	SDL_RenderClear(renPtr);
 
-	if (m_stateManager->get() == m_stateManager->state_gameRunning) {
+	if (m_stateManagerPtr->get() == m_stateManagerPtr->state_gameRunning) {
 
 		mapArray[currentMapId]->draw();
 
@@ -419,12 +390,12 @@ void GameEngine::draw() {
 
 	renderText();
 
-	SDL_RenderPresent(ren);
+	SDL_RenderPresent(renPtr);
 }
 
 const bool GameEngine::changeCurrentMap(size_t newId) {
 	if (newId != currentMapId && newId < mapArray.size()) {
-		for (Entity* entity : *arrayOfActiveEntities) {
+		for (Entity* entity : *arrayOfActiveEntitiesPtr) {
 			if (entity->hasComponent<CollisionComponent>()) {
 				entity->getComponent<CollisionComponent>().loadNewMap(mapArray[newId]);
 			}
@@ -446,8 +417,8 @@ bool GameEngine::alive() {
 	return bRunning;
 }
 
-SDL_Renderer* GameEngine::getRen() const {
-	return ren;
+SDL_Renderer* GameEngine::getRenPtr() const {
+	return renPtr;
 }
 
 const uint32_t GameEngine::getWinSize() const {

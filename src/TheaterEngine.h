@@ -3,15 +3,25 @@
 #include "GameStateManager.h"
 
 class TheaterEngine {
-	 GameStateManager::GameState* gameState;
-	 Scene* currentScene;
-	 Manager* entityManager;
+	 GameStateManager* gameStateManagerPtr;
+	 Scene* currentScenePtr;
+	 Manager* entityManagerPtr;
+	 std::vector<Scene*>* currentlyLoadedScenesPtr;
 public:
 	TheaterEngine();
 
 	~TheaterEngine();
 
-	void init(GameStateManager::GameState* gameState, Manager* entityManager);
+	void init(
+		GameStateManager* gameStateManagerPtr,
+		Manager* entityManagerPtr,
+		std::array<GameMap*, 10>* mapArrayPtr,
+		size_t* currentMapIdPtr,
+		std::vector<Entity*>* arrayOfActiveEntitiesPtr,
+		SDL_Renderer* renPtr,
+		uint32_t* nWinWidthPtr,
+		uint32_t* nWinHeightPtr
+		);
 
 	void makeEntityMove_constantSpeedNoDiagonalMovement(
 		Entity* ent, 
@@ -27,6 +37,8 @@ public:
 		int xDest, 
 		int yDest
 		);
+
+	Entity* getPlayerEntity();
 
 	void update();
 private:

@@ -1,27 +1,44 @@
 #include "TheaterEngine.h"
 #include "SceneCollection.h"
+#include "Scene.h"
 #include "Components.h"
 //#include "Scene.h"
 
 TheaterEngine::TheaterEngine() {
-	gameState = nullptr;
-	currentScene = nullptr;
-	entityManager = nullptr;
+	gameStateManagerPtr = nullptr;
+	currentScenePtr = nullptr;
+	entityManagerPtr = nullptr;
+	currentlyLoadedScenesPtr = new std::vector<Scene*>();
 }
 
 TheaterEngine::~TheaterEngine() {
-	delete gameState;
+
 }
 
 void TheaterEngine::init(
-	GameStateManager::GameState* gameState,
-	Manager* entityManager
+	GameStateManager* gameStateManagerPtr,
+	Manager* entityManagerPtr,
+	std::array<GameMap*, 10>* mapArrayPtr,
+	size_t* currentMapIdPtr,
+	std::vector<Entity*>* arrayOfActiveEntitiesPtr,
+	SDL_Renderer* renPtr,
+	uint32_t* nWinWidthPtr,
+	uint32_t* nWinHeightPtr
 	) {
-	this->entityManager = entityManager;
-	this->gameState = gameState;
+	this->entityManagerPtr = entityManagerPtr;
+	this->gameStateManagerPtr = gameStateManagerPtr;
+	Scene::entityManagerPtr = entityManagerPtr;
+	Scene::mapArrayPtr = mapArrayPtr;
+	Scene::currentMapIdPtr = currentMapIdPtr;
+	Scene::arrayOfActiveEntitiesPtr = arrayOfActiveEntitiesPtr;
+	Scene::renPtr = renPtr;
+	Scene::nWinWidthPtr = nWinWidthPtr;
+	Scene::nWinHeightPtr = nWinHeightPtr;
+
 	// TODO: relative to prev save init a scene
-	currentScene = new OpeningScene();
-	currentScene->init();
+	currentScenePtr = new OpeningScene();
+	currentlyLoadedScenesPtr->push_back(currentScenePtr);
+	currentScenePtr->init();
 }
 
 void TheaterEngine::makeEntityMove_constantSpeedNoDiagonalMovement(
@@ -43,6 +60,10 @@ void TheaterEngine::teleportEntity(
 	int yDest
 	) {
 	ent->getComponent<PositionComponent>().setPos(xDest, yDest);
+}
+
+Entity* TheaterEngine::getPlayerEntity() {
+	return Scene::playerEntity;
 }
 
 void TheaterEngine::update() {

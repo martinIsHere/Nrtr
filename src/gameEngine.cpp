@@ -97,10 +97,6 @@ GameEngine::GameEngine(const uint32_t nWidth, const uint32_t nHeight, const std:
 	// create necessary entities
 
 	currentMapId = 0;
-	
-	std::cout << getComponentTypeID<GameMap>() << "\n";
-	std::cout << getComponentTypeID<GameEngine>() << "\n";
-	std::cout << getComponentTypeID<PositionComponent>() << "\n";
 
 	theaterEngine->init(
 		m_stateManagerPtr, 
@@ -111,9 +107,6 @@ GameEngine::GameEngine(const uint32_t nWidth, const uint32_t nHeight, const std:
 		&nWinWidth,
 		&nWinHeight
 		);
-
-	SDL_Delay(1000);
-
 
 	playerEntity = theaterEngine->getPlayerEntity();
 	if (playerEntity == nullptr) log("playerEntity == nullptr");

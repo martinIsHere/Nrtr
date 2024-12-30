@@ -11,23 +11,6 @@ constexpr int MAX_ENTITIES = 64;
 
 // static utility function
 
-static int getComponentTypeID() {
-
-	static int lastID = 0;
-	return lastID++;
-
-}
-// will return id of certain datatype
-// if datatype has not been entered add it
-
-template<typename T>
-static int getComponentTypeID() {
-
-	static int typeID = getComponentTypeID();
-	return typeID;
-
-}
-
 
 // useless
 
@@ -79,6 +62,22 @@ public:
 	}
 
 	~Entity() = default;
+
+
+	static int getComponentTypeID() {
+		static int lastID = 0;
+		return lastID++;
+
+	}
+	// will return id of certain datatype
+	// if datatype has not been entered add it
+
+	template<typename T>
+	static int getComponentTypeID() {
+		static int typeID = getComponentTypeID();
+		return typeID;
+
+	}
 
 	template <typename T, typename... tArgs> 
 	T& addComponent(const tArgs&... args) {

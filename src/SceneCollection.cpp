@@ -3,15 +3,16 @@
 #include "ECS.h"
 
 void OpeningScene::init()  {
-	if (Scene::entityManagerPtr == nullptr) log("entityManagerPtr == nullptr");
+
+
 	Scene::playerEntity = Scene::entityManagerPtr->addEntity();
 	//NPCEntity = entityManagerPtr->addEntity();
-	if (Scene::playerEntity->hasComponent<PositionComponent>()) log("playerEntity->hasComponent<PositionComponent>");
+
+
 	Scene::playerEntity->addComponent<PositionComponent>(TILE_SIZE_PIXELS, TILE_SIZE_PIXELS);
 	//NPCEntity->addComponent<PositionComponent>(TILE_SIZE_PIXELS, TILE_SIZE_PIXELS);
-	if (Scene::playerEntity->hasComponent<PositionComponent>())
-		log(Scene::playerEntity->getComponent<PositionComponent>().getx());
-	log("asdf");
+
+
 	GameMap* Town1 = new GameMap(
 		Scene::renPtr,
 		"res/map/Town1.bin", // path to map file

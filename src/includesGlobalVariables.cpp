@@ -1,7 +1,5 @@
 #include "includes.h"
 
-uint32_t unStartElapsedTime;
-uint32_t nElapsedTime;
 uint32_t actualFPS;
 uint32_t targetFPS;
 bool debugKeyDown;

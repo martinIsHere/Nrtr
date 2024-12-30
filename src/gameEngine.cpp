@@ -1,16 +1,15 @@
 #include "GameEngine.h"
 
-GameEngine::GameEngine(const uint32_t nWidth, const uint32_t nHeight, const std::string& title, const uint32_t fps) {
-	nElapsedTime = 0;
-	unStartElapsedTime = 0;
+GameEngine::GameEngine(const uint32_t nWidth, const uint32_t nHeight, const std::string title, const uint32_t fps) {
+	nElapsedTime = NULL;    // for capping fps - global
+	unStartElapsedTime = 0;  // for capping fps - global
 	nWinWidth = nWidth;
 	nWinHeight = nHeight;
 	bRunning = true;
 	nFps = fps;
-	targetFPS = fps; // quickfix
+	targetFPS = fps; // quickfix - global variable 
 	sTitle = title;
-	currentKey = 0;
-	nDelay = 1000 / nFps;
+	nDelay = uint32_t(1000 / nFps);
 	mousePos[0] = 0, mousePos[1] = 0;
 	numberOfFramesSinceStart = 0;
 
@@ -87,8 +86,10 @@ GameEngine::GameEngine(const uint32_t nWidth, const uint32_t nHeight, const std:
 		Mix_PlayMusic(gMusic, -1);
 	}
 
+	// for cutscenes
 	theaterEngine = new TheaterEngine();
 	theaterEngine->init(m_stateManager->getPtr());
+
 
 	playerEntity = m_entityManager.addEntity();
 	NPCEntity = m_entityManager.addEntity();
@@ -108,7 +109,7 @@ GameEngine::GameEngine(const uint32_t nWidth, const uint32_t nHeight, const std:
 		);
 
 	House1 = new GameMap(
-		ren,
+		ren,     
 		"res/map/House1.bin",
 		"res/imgs/sh2.bmp",
 		7,
@@ -124,13 +125,13 @@ GameEngine::GameEngine(const uint32_t nWidth, const uint32_t nHeight, const std:
 
 
 	playerEntity->addComponent<DrawingComponent>(
-		ren, 
-		"res/imgs/hero.bmp",
-		16, 
-		6, 5, 
+		ren,    // current working renderer
+		"res/imgs/hero.bmp", // path
+		16, // sprite size
+		6, 5, // sprite sheet columns and rows
 		4, // amount of frames/imgs of walking animation
 		8,  // amount of animation frames per second
-		Town1->getCam()
+		Town1->getCam() // current working camera
 		);
 	NPCEntity->addComponent<DrawingComponent>(
 		ren,
@@ -142,7 +143,7 @@ GameEngine::GameEngine(const uint32_t nWidth, const uint32_t nHeight, const std:
 		Town1->getCam()
 		);
 
-	playerEntity->addComponent<CollisionComponent>(Town1);
+	playerEntity->addComponent<CollisionComponent>(Town1); // pass in map class
 	NPCEntity->addComponent<CollisionComponent>(Town1);
 	NPCEntity->getComponent<PositionComponent>().set_isFrictionless(true);
 	NPCEntity->getComponent<PositionComponent>().set_default_acceleration(0);

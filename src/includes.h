@@ -24,8 +24,6 @@
 #define AVERAGE_ENTITY_SIZE_PIXELS 64
 class GameEngine;
 class GameMap;
-extern uint32_t unStartElapsedTime;
-extern uint32_t nElapsedTime;
 extern uint32_t actualFPS;
 extern uint32_t targetFPS;
 

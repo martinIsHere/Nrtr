@@ -14,7 +14,7 @@ public:
 	GameEngine(
 		uint32_t nWidth, 
 		uint32_t nHeight, 
-		const std::string& title, 
+		const std::string title, 
 		uint32_t fps
 		);
 
@@ -51,9 +51,8 @@ private:
 	SDL_Window* win;
 	SDL_Renderer* ren;
 	SDL_Event* Event;
-	//uint32_t unStartElapsedTime;
-	//int nElapsedTime;
-	int currentKey;
+	uint32_t unStartElapsedTime;
+	uint32_t nElapsedTime;
 	uint32_t numberOfFramesSinceStart;
 	uint32_t nFps;
 	uint32_t nDelay;
@@ -68,8 +67,10 @@ private:
 	bool s_keyDown;
 	bool d_keyDown;
 
-	// game entities
+	// entity managaer
 	Manager m_entityManager;
+
+	// game entities
 	Entity* playerEntity;
 	Entity* NPCEntity;
 	
@@ -83,13 +84,14 @@ private:
 	SDL_Surface* surfaceMessage;
 	SDL_Texture* Message;
 
-	// music
+	// music / soundeffects
 	Mix_Music* gMusic;
 
-	// gamemap instance
+	// gamemap instances
 	GameMap* Town1;
 	GameMap* House1;
 
+	// loaded maps per section of game!
 	size_t currentMapId;
 	std::array<GameMap*, 2> mapArray_firstSection;
 

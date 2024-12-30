@@ -67,5 +67,5 @@ Entity* TheaterEngine::getPlayerEntity() {
 }
 
 void TheaterEngine::update() {
-
+	currentScenePtr->update();
 }

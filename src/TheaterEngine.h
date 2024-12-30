@@ -40,6 +40,7 @@ public:
 	Entity* getPlayerEntity();
 
 	void update();
+
 private:
 
 };

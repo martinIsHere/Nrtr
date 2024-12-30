@@ -111,6 +111,7 @@ GameEngine::GameEngine(const uint32_t nWidth, const uint32_t nHeight, const std:
 	playerEntity = theaterEngine->getPlayerEntity();
 	if (playerEntity == nullptr) log("playerEntity == nullptr");
 
+	/*
 	NPCEntity=m_entityManager.addEntity();
 	if (NPCEntity->hasComponent<PositionComponent>())log("NPCEntity->hasComponent<PositionComponent>");
 	NPCEntity->addComponent<PositionComponent>(TILE_SIZE_PIXELS, TILE_SIZE_PIXELS);
@@ -128,12 +129,13 @@ GameEngine::GameEngine(const uint32_t nWidth, const uint32_t nHeight, const std:
 	if (NPCEntity->hasComponent<CollisionComponent>())log("NPCEntity->hasComponent<CollisionComponent>");
 	NPCEntity->addComponent<CollisionComponent>(mapArray[currentMapId]);
 
-	m_entityManager.init();
 
 	NPCEntity->getComponent<PositionComponent>().set_isFrictionless(true);
 	NPCEntity->getComponent<PositionComponent>().set_default_acceleration(0);
+	*/
 
 
+	m_entityManager.init();
 
 
 }
@@ -289,7 +291,7 @@ void GameEngine::update() {
 
 
 		// move the npc
-		test_NPCMoveFunction();
+		//test_NPCMoveFunction();
 
 		// teleportation mechanic
 		test_portalAnimationFunction();

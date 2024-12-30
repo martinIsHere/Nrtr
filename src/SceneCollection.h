@@ -6,6 +6,7 @@
 class OpeningScene : public Scene {
 public:
 	Entity* NPCEntity;
+	uint32_t frames;
 
 	void init() override;
 

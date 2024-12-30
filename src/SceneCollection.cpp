@@ -3,14 +3,14 @@
 #include "ECS.h"
 
 void OpeningScene::init()  {
-
+	frames = 0;
 
 	Scene::playerEntity = Scene::entityManagerPtr->addEntity();
-	//NPCEntity = entityManagerPtr->addEntity();
+	NPCEntity = entityManagerPtr->addEntity();
 
 
 	Scene::playerEntity->addComponent<PositionComponent>(TILE_SIZE_PIXELS, TILE_SIZE_PIXELS);
-	//NPCEntity->addComponent<PositionComponent>(TILE_SIZE_PIXELS, TILE_SIZE_PIXELS);
+	NPCEntity->addComponent<PositionComponent>(TILE_SIZE_PIXELS, TILE_SIZE_PIXELS);
 
 
 	GameMap* Town1 = new GameMap(
@@ -52,7 +52,7 @@ void OpeningScene::init()  {
 		8,  // amount of animation frames per second
 		Town1->getCam() // current working camera
 		);
-	/*
+	
 	NPCEntity->addComponent<DrawingComponent>(
 		renPtr,
 		"res/imgs/secondNPC.bmp",
@@ -62,12 +62,12 @@ void OpeningScene::init()  {
 		4, // amount of animation frames per second
 		Town1->getCam()
 		);
-	*/
+	
 
 	playerEntity->addComponent<CollisionComponent>(Town1); // pass in map class
-	//NPCEntity->addComponent<CollisionComponent>(Town1);
-	//NPCEntity->getComponent<PositionComponent>().set_isFrictionless(true);
-	//NPCEntity->getComponent<PositionComponent>().set_default_acceleration(0);
+	NPCEntity->addComponent<CollisionComponent>(Town1);
+	NPCEntity->getComponent<PositionComponent>().set_isFrictionless(true);
+	NPCEntity->getComponent<PositionComponent>().set_default_acceleration(0);
 
 	playerEntity->addComponent<InteractionComponent>(Town1);
 
@@ -77,7 +77,40 @@ void OpeningScene::init()  {
 }
 
 void OpeningScene::update()  {
-
+	if (frames < 228) {
+		NPCEntity->getComponent<PositionComponent>().setVel(4, 0);
+		NPCEntity->getComponent<PositionComponent>().setDir(DIR_RIGHT, true);
+		NPCEntity->getComponent<PositionComponent>().setFacingDir(DIR_RIGHT);
+	}
+	else if (frames < 800) {
+		NPCEntity->getComponent<PositionComponent>().setVel(-2.8f, 2.8f);
+		NPCEntity->getComponent<PositionComponent>().setDir(DIR_RIGHT, false);
+		NPCEntity->getComponent<PositionComponent>().setDir(DIR_LEFT, true);
+		NPCEntity->getComponent<PositionComponent>().setFacingDir(DIR_LEFT);
+	}
+	else if (frames < 1400) {
+		NPCEntity->getComponent<PositionComponent>().setVel(2.8f, 2.8f);
+		NPCEntity->getComponent<PositionComponent>().setDir(DIR_LEFT, false);
+		NPCEntity->getComponent<PositionComponent>().setDir(DIR_RIGHT, true);
+		NPCEntity->getComponent<PositionComponent>().setFacingDir(DIR_RIGHT);
+	}
+	else if (frames < 1600) {
+		NPCEntity->getComponent<PositionComponent>().setVel(-2.8f, 0);
+		NPCEntity->getComponent<PositionComponent>().setDir(DIR_RIGHT, false);
+		NPCEntity->getComponent<PositionComponent>().setDir(DIR_LEFT, true);
+		NPCEntity->getComponent<PositionComponent>().setFacingDir(DIR_LEFT);
+	}
+	else if (frames < 1700) {
+		NPCEntity->getComponent<PositionComponent>().setVel(0, 2.8f);
+		NPCEntity->getComponent<PositionComponent>().setDir(DIR_LEFT, false);
+		NPCEntity->getComponent<PositionComponent>().setDir(DIR_DOWN, true);
+		NPCEntity->getComponent<PositionComponent>().setFacingDir(DIR_DOWN);
+	}
+	else {
+		NPCEntity->getComponent<PositionComponent>().setDir(DIR_DOWN, false);
+		NPCEntity->getComponent<PositionComponent>().setVel(0, 0);
+	}
+	frames++;
 }
 
 void OpeningScene::end()  {

@@ -395,3 +395,11 @@ const int GameMap::getXcoordOnscreen_fromMapcoord(const int x) const {
 const int GameMap::getYcoordOnscreen_fromMapcoord(const int y) const {
 	return y * m_blockSize;
 }
+
+const int GameMap::getCellx_fromCoord(const int x)const {
+	return int(x / m_blockSize);
+}
+
+const int GameMap::getCelly_fromCoord(const int y)const {
+	return int(y / m_blockSize);
+}

@@ -93,6 +93,11 @@ Vector& Point::operator+(const Point& p) {
 	return *vec;
 }
 
+bool Point::isEqual(Point* p) {
+	if (p->x == x && p->y == y) return true;
+	return false;
+}
+
 
 
 

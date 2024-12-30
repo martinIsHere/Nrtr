@@ -101,8 +101,7 @@ GameEngine::GameEngine(const uint32_t nWidth, const uint32_t nHeight, const std:
 	theaterEngine->init(
 		m_stateManagerPtr, 
 		&m_entityManager,
-		&mapArray,
-		&currentMapId,
+		currentMapPtr,
 		renPtr,
 		&nWinWidth,
 		&nWinHeight
@@ -203,7 +202,7 @@ void GameEngine::handleEvents() {
 				break;
 			case SDLK_SPACE:
 				playerEntity->getComponent<InteractionComponent>().interact();
-				if (!changeCurrentMap(0)) changeCurrentMap(1);
+				//if (!changeCurrentMap(0)) changeCurrentMap(1);
 				break;
 			case SDLK_1:
 				playerEntity->getComponent<DrawingComponent>().initCustomAnimation(4, 0, 6, 1, false);
@@ -299,13 +298,14 @@ void GameEngine::update() {
 		//
 		mapArray[currentMapId]->update();
 
-
 		// 
 		theaterEngine->update();
 
 
 		//
 		draw();
+
+		
 	
 
 		// delay
@@ -394,9 +394,12 @@ void GameEngine::draw() {
 		m_entityManager.draw();
 
 		mapArray[currentMapId]->drawSecondLayer();
+
+		theaterEngine->draw();
+
+		renderText();
 	}
 
-	renderText();
 
 	SDL_RenderPresent(renPtr);
 }

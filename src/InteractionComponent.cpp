@@ -1,9 +1,10 @@
 #include "InteractionComponent.h"
 
-InteractionComponent::InteractionComponent(GameMap* gameMap) {
+InteractionComponent::InteractionComponent(GameMap* gameMap, Point* interactionCoords, bool* hasInteracted) {
 	m_gameMap = gameMap;
 	m_posComp = nullptr;
-	m_hasInteracted = false;
+	m_hasInteracted = hasInteracted;
+	this->interactionCoords = interactionCoords;
 }
 
 
@@ -27,32 +28,28 @@ InteractionComponent::~InteractionComponent() {
 
 }
 
-void interFunc() {
-	log("cancer");
-}
-
 void InteractionComponent::update() {
-
-	// creating coordinates in a different unit size - blocksized
-	int bs = m_gameMap->getBlockSize();
-	//int offsetBS = int(bs * 0.5f);
-	float px = ((float)m_posComp->getx() / (float)bs);
-	float py = ((float)m_posComp->gety() / (float)bs);
-	if (m_hasInteracted) {
-		if (m_posComp->getFacingDir() == DIR_RIGHT) {
-			int touched_ID = m_gameMap->getBackID(int(px + 1), int(py + 0.5f)); // block that has been interacted with
-			
-			interFunc();
-		}
-
+	if (m_posComp->getFacingDir() == DIR_RIGHT) {
+		interactionCoords->x = m_gameMap->getCellx_fromCoord(m_posComp->getx() + int(AVERAGE_ENTITY_SIZE_PIXELS / 2) + m_gameMap->getBlockSize() * interactionDistance);
+		interactionCoords->y = m_gameMap->getCelly_fromCoord(m_posComp->gety() + int(AVERAGE_ENTITY_SIZE_PIXELS / 2));
+	} 
+	else if (m_posComp->getFacingDir() == DIR_LEFT) {
+		interactionCoords->x = m_gameMap->getCellx_fromCoord(m_posComp->getx() + int(AVERAGE_ENTITY_SIZE_PIXELS / 2) - m_gameMap->getBlockSize() * interactionDistance);
+		interactionCoords->y = m_gameMap->getCelly_fromCoord(m_posComp->gety() + int(AVERAGE_ENTITY_SIZE_PIXELS / 2));
 	}
-	m_hasInteracted = false;
+	else if (m_posComp->getFacingDir() == DIR_UP) {
+		interactionCoords->x = m_gameMap->getCellx_fromCoord(m_posComp->getx() + int(AVERAGE_ENTITY_SIZE_PIXELS / 2));
+		interactionCoords->y = m_gameMap->getCelly_fromCoord(m_posComp->gety() + int(AVERAGE_ENTITY_SIZE_PIXELS / 2) - m_gameMap->getBlockSize() * interactionDistance);
+	}
+	else { // if DIR_DOWN
+		interactionCoords->x = m_gameMap->getCellx_fromCoord(m_posComp->getx() + int(AVERAGE_ENTITY_SIZE_PIXELS / 2));
+		interactionCoords->y = m_gameMap->getCelly_fromCoord(m_posComp->gety() + int(AVERAGE_ENTITY_SIZE_PIXELS / 2) + m_gameMap->getBlockSize() * interactionDistance);
+	}
 }
 
 void InteractionComponent::draw() {
-
 }
 
 void InteractionComponent::interact() {
-	m_hasInteracted = true;
+	*m_hasInteracted = true;
 }

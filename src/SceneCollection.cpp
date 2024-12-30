@@ -2,81 +2,81 @@
 #include "components.h"
 #include "ECS.h"
 
+bool isViableInteractCoords(Point* interactionCoords) {
+	if (interactionCoords->x < 0) return false;
+	return true;
+}
+
 void OpeningScene::init()  {
 	frames = 0;
 
-	Scene::playerEntity = Scene::entityManagerPtr->addEntity();
-	NPCEntity = entityManagerPtr->addEntity();
+	// creating player
+	if (!Scene::playerEntity) {
+		Scene::playerEntity = Scene::entityManagerPtr->addEntity();
+		Scene::playerEntity->addComponent<PositionComponent>(TILE_SIZE_PIXELS, TILE_SIZE_PIXELS);
+	}
 
+	// loading maps
+	if (!Town1) {
+		GameMap* Town1 = new GameMap(
+			Scene::renPtr,
+			"res/map/Town1.bin", // path to map file
+			"res/imgs/sh1.bmp",  // path to spritesheet file
+			12, // amount of tiles horizontally in spritesheet
+			18, // amount of tiles vertically in spritesheet
+			*Scene::nWinWidthPtr, *Scene::nWinHeightPtr, // window-to-be-displayed-on's width and heigth
+			&(Scene::playerEntity->getComponent<PositionComponent>().getx()), // pointer to coordinates for camera
+			&(Scene::playerEntity->getComponent<PositionComponent>().gety()), // here: just equal to the player position
+			false // if the map is very small, like a house -> set to true
+			);
+		currentMapPtr = Town1;
+	}
 
-	Scene::playerEntity->addComponent<PositionComponent>(TILE_SIZE_PIXELS, TILE_SIZE_PIXELS);
-	NPCEntity->addComponent<PositionComponent>(TILE_SIZE_PIXELS, TILE_SIZE_PIXELS);
+	if (!Scene::playerEntity->hasComponent<DrawingComponent>()) {
+		playerEntity->addComponent<DrawingComponent>(
+			renPtr,    // current working renderer
+			"res/imgs/hero.bmp", // path
+			16, // sprite size
+			6, 5, // sprite sheet columns and rows
+			4, // amount of frames/imgs of walking animation
+			8,  // amount of animation frames per second
+			Town1->getCam() // current working camera
+			);
+		playerEntity->addComponent<CollisionComponent>(Town1); // pass in map class
+		playerEntity->addComponent<InteractionComponent>(Town1, interactionCoords, playerHasInteracted);
+	}
 
+	if (!NPCEntity) {
+		NPCEntity = entityManagerPtr->addEntity();
 
-	GameMap* Town1 = new GameMap(
-		Scene::renPtr,
-		"res/map/Town1.bin", // path to map file
-		"res/imgs/sh1.bmp",  // path to spritesheet file
-		12, // amount of tiles horizontally in spritesheet
-		18, // amount of tiles vertically in spritesheet
-		*Scene::nWinWidthPtr, *Scene::nWinHeightPtr, // window-to-be-displayed-on's width and heigth
-		&(Scene::playerEntity->getComponent<PositionComponent>().getx()), // pointer to coordinates for camera
-		&(Scene::playerEntity->getComponent<PositionComponent>().gety()), // here: just equal to the player position
-		false // if the map is very small, like a house -> set to true
-		);
+		NPCEntity->addComponent<PositionComponent>(TILE_SIZE_PIXELS, TILE_SIZE_PIXELS);
 
-	GameMap* House1 = new GameMap(
-		renPtr,
-		"res/map/House1.bin",
-		"res/imgs/sh2.bmp",
-		7,
-		12,
-		*nWinWidthPtr, *nWinHeightPtr,
-		&(playerEntity->getComponent<PositionComponent>().getx()),
-		&(playerEntity->getComponent<PositionComponent>().gety()),
-		true
-		);
+		NPCEntity->addComponent<DrawingComponent>(
+			renPtr,
+			"res/imgs/secondNPC.bmp",
+			16,
+			3, 4,
+			2,// amount of animation frames per second
+			4, // amount of animation frames per second
+			Town1->getCam()
+			);
 
-	*currentMapIdPtr = 0; // for Town1
-	*mapArrayPtr = { Town1, House1 };
+		NPCEntity->addComponent<CollisionComponent>(Town1);
 
-	if (Town1->getCam() == nullptr) log("Town1->getCam() == nullptr  idk why ;-;");
+		NPCEntity->getComponent<PositionComponent>().set_isFrictionless(true);
 
-	if (playerEntity->hasComponent<DrawingComponent>()) log("playerEntity->hasComponent<DrawingComponent>");
-	playerEntity->addComponent<DrawingComponent>(
-		renPtr,    // current working renderer
-		"res/imgs/hero.bmp", // path
-		16, // sprite size
-		6, 5, // sprite sheet columns and rows
-		4, // amount of frames/imgs of walking animation
-		8,  // amount of animation frames per second
-		Town1->getCam() // current working camera
-		);
-	
-	NPCEntity->addComponent<DrawingComponent>(
-		renPtr,
-		"res/imgs/secondNPC.bmp",
-		16,
-		3, 4,
-		2,// amount of animation frames per second
-		4, // amount of animation frames per second
-		Town1->getCam()
-		);
-	
-
-	playerEntity->addComponent<CollisionComponent>(Town1); // pass in map class
-	NPCEntity->addComponent<CollisionComponent>(Town1);
-	NPCEntity->getComponent<PositionComponent>().set_isFrictionless(true);
-	NPCEntity->getComponent<PositionComponent>().set_default_acceleration(0);
-
-	playerEntity->addComponent<InteractionComponent>(Town1);
-
-
-	//entityManagerPtr->init();
-
+		NPCEntity->getComponent<PositionComponent>().set_default_acceleration(0);
+	}
 }
 
 void OpeningScene::update()  {
+	if (*playerHasInteracted && isViableInteractCoords(interactionCoords)) {
+		*playerHasInteracted = false;
+		if (interactionCoords->isEqual(new Point(2, 2))) {
+			log("attacked a man");
+		}
+	}
+
 	if (frames < 228) {
 		NPCEntity->getComponent<PositionComponent>().setVel(4, 0);
 		NPCEntity->getComponent<PositionComponent>().setDir(DIR_RIGHT, true);
@@ -113,6 +113,16 @@ void OpeningScene::update()  {
 	frames++;
 }
 
+void OpeningScene::draw() {
+	SDL_Rect box = { 
+		interactionCoords->x * TILE_SIZE_PIXELS - *mapArrayPtr->at(*currentMapIdPtr)->getCam()->getOffsetXPtr(),
+		interactionCoords->y * TILE_SIZE_PIXELS - *mapArrayPtr->at(*currentMapIdPtr)->getCam()->getOffsetYPtr(),
+		TILE_SIZE_PIXELS, 
+		TILE_SIZE_PIXELS };
+	SDL_SetRenderDrawColor(renPtr, 255, 0, 0, 255);
+	SDL_RenderDrawRect(renPtr, &box);
+}
+
 void OpeningScene::end()  {
 
 }
@@ -120,10 +130,26 @@ void OpeningScene::end()  {
 /*#¤#¤#¤#¤#¤#¤#¤#¤#¤#¤#¤#¤#¤#¤#¤#¤#¤#¤#¤#¤#¤#¤#¤#¤#*/
 
 void FirstHouseScene::init() {
-
+	if (!House1) {
+		GameMap* House1 = new GameMap(
+				renPtr,
+				"res/map/House1.bin",
+				"res/imgs/sh2.bmp",
+				7,
+				12,
+				*nWinWidthPtr, *nWinHeightPtr,
+				&(playerEntity->getComponent<PositionComponent>().getx()),
+				&(playerEntity->getComponent<PositionComponent>().gety()),
+				true
+				);
+	}
 }
 
 void FirstHouseScene::update() {
+
+}
+
+void FirstHouseScene::draw() {
 
 }
 

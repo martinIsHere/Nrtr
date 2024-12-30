@@ -15,8 +15,7 @@ public:
 	void init(
 		GameStateManager* gameStateManagerPtr,
 		Manager* entityManagerPtr,
-		std::array<GameMap*, 10>* mapArrayPtr,
-		size_t* currentMapIdPtr,
+		GameMap* currentMapPtr,
 		SDL_Renderer* renPtr,
 		uint32_t* nWinWidthPtr,
 		uint32_t* nWinHeightPtr
@@ -40,6 +39,8 @@ public:
 	Entity* getPlayerEntity();
 
 	void update();
+
+	void draw();
 
 private:
 

@@ -10,13 +10,17 @@ class InteractionComponent : public Component {
 
 	GameMap* m_gameMap;
 
-	bool m_hasInteracted;
+	Point* interactionCoords;
+
+	bool* m_hasInteracted;
+
+	constexpr static int interactionDistance = 1; // in blocks
 
 public:
 
 	void interact();
 
-	InteractionComponent(GameMap* gameMap);
+	InteractionComponent(GameMap* gameMap, Point* interactionCoords, bool* hasInteracted);
 
 	~InteractionComponent();
 

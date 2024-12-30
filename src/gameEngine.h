@@ -92,8 +92,7 @@ private:
 	GameMap* House1;
 
 	// loaded maps per section of game!
-	size_t currentMapId;
-	std::array<GameMap*, 10> mapArray;
+	GameMap* currentMapPtr;
 
 	// theater engine instance
 	TheaterEngine* theaterEngine;

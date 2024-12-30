@@ -9,6 +9,7 @@ TheaterEngine::TheaterEngine() {
 	currentScenePtr = nullptr;
 	entityManagerPtr = nullptr;
 	currentlyLoadedScenesPtr = new std::vector<Scene*>();
+
 }
 
 TheaterEngine::~TheaterEngine() {
@@ -18,8 +19,7 @@ TheaterEngine::~TheaterEngine() {
 void TheaterEngine::init(
 	GameStateManager* gameStateManagerPtr,
 	Manager* entityManagerPtr,
-	std::array<GameMap*, 10>* mapArrayPtr,
-	size_t* currentMapIdPtr,
+	GameMap* currentMapPtr,
 	SDL_Renderer* renPtr,
 	uint32_t* nWinWidthPtr,
 	uint32_t* nWinHeightPtr
@@ -27,12 +27,13 @@ void TheaterEngine::init(
 	this->entityManagerPtr = entityManagerPtr;
 	this->gameStateManagerPtr = gameStateManagerPtr;
 	Scene::entityManagerPtr = entityManagerPtr;
-	Scene::mapArrayPtr = mapArrayPtr;
-	Scene::currentMapIdPtr = currentMapIdPtr;
+	Scene::currentMapPtr = currentMapPtr;
 	Scene::arrayOfActiveEntitiesPtr = entityManagerPtr->getEntityArrayPointer();
 	Scene::renPtr = renPtr;
 	Scene::nWinWidthPtr = nWinWidthPtr;
 	Scene::nWinHeightPtr = nWinHeightPtr;
+	Scene::interactionCoords = new Point(-1, -1);
+	Scene::playerHasInteracted = new bool(false);
 
 
 	// TODO: relative to prev save init a scene
@@ -68,4 +69,8 @@ Entity* TheaterEngine::getPlayerEntity() {
 
 void TheaterEngine::update() {
 	currentScenePtr->update();
+}
+
+void TheaterEngine::draw() {
+	currentScenePtr->draw();
 }

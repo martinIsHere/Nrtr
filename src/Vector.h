@@ -12,6 +12,8 @@ public:
 
 	Point(int x, int y);
 
+	bool isEqual(Point* p);
+
 	Point() = default;
 
 	Vector& operator-(const Point& p);

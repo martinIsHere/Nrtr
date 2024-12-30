@@ -68,6 +68,10 @@ public:
 
 	const int getYcoordOnscreen_fromMapcoord(const int y)const;
 
+	const int getCellx_fromCoord(const int x)const;
+
+	const int getCelly_fromCoord(const int y)const;
+
 private:
 
 	std::vector <uint16_t> m_backLayer_array;

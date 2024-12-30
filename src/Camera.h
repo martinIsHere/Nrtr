@@ -1,9 +1,6 @@
 #pragma once
 #include "includes.h"
 
-class GameEngine;
-class GameMap;
-
 class Camera{
 
 	int m_xCameraOffset, m_yCameraOffset;

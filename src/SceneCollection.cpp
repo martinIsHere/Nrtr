@@ -1,5 +1,8 @@
 #include "SceneCollection.h"
 
+OpeningScene::OpeningScene() {
+
+}
 
 void OpeningScene::init()  {
 
@@ -14,6 +17,10 @@ void OpeningScene::end()  {
 }
 
 /*#¤#¤#¤#¤#¤#¤#¤#¤#¤#¤#¤#¤#¤#¤#¤#¤#¤#¤#¤#¤#¤#¤#¤#¤#*/
+
+FirstHouseScene::FirstHouseScene() {
+
+}
 
 void FirstHouseScene::init() {
 

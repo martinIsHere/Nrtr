@@ -1,10 +1,10 @@
 #pragma once
-#include "GameMap.h"
-#include "ECS.H"
-#include "Components.h"
-#include "GameStateManager.h"
-#include "TheaterEngine.h"
 #include "includes.h"
+#include "ECS.h"
+#include "GameMap.h"
+#include "GameStateManager.h"
+#include "Components.h"
+#include "TheaterEngine.h"
 
 class GameMap;
 
@@ -93,7 +93,7 @@ private:
 
 	// loaded maps per section of game!
 	size_t currentMapId;
-	std::array<GameMap*, 2> mapArray_firstSection;
+	std::array<GameMap*, 2> mapArray;
 
 	// theater engine instance
 	TheaterEngine* theaterEngine;

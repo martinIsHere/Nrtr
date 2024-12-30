@@ -24,6 +24,11 @@
 #define AVERAGE_ENTITY_SIZE_PIXELS 64
 class GameEngine;
 class GameMap;
+class Entity;
+class Manager;
+class Scene;
+class GameMap;
+class TheaterEngine;
 extern uint32_t actualFPS;
 extern uint32_t targetFPS;
 

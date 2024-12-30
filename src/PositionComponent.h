@@ -1,8 +1,6 @@
 #pragma once
-
-#include "ECS.h"
 #include "includes.h"
-
+#include "ECS.h"
 
 
 class PositionComponent : public Component{

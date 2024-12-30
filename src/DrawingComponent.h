@@ -1,7 +1,7 @@
 #pragma once
-#include "ECS.h"
-#include "components.h"
 #include "includes.h"
+#include "ECS.h"
+#include "PositionComponent.h"
 #include "Camera.h"
 
 class DrawingComponent : public Component{

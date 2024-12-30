@@ -1,16 +1,27 @@
 #include "TheaterEngine.h"
-#include "PositionComponent.h"
+#include "SceneCollection.h"
+#include "Components.h"
+//#include "Scene.h"
 
 TheaterEngine::TheaterEngine() {
 	gameState = nullptr;
+	currentScene = nullptr;
+	entityManager = nullptr;
 }
 
 TheaterEngine::~TheaterEngine() {
 	delete gameState;
 }
 
-void TheaterEngine::init(GameStateManager::GameState* gameState) {
+void TheaterEngine::init(
+	GameStateManager::GameState* gameState,
+	Manager* entityManager
+	) {
+	this->entityManager = entityManager;
 	this->gameState = gameState;
+	// TODO: relative to prev save init a scene
+	currentScene = new OpeningScene();
+	currentScene->init();
 }
 
 void TheaterEngine::makeEntityMove_constantSpeedNoDiagonalMovement(

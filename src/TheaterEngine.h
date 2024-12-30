@@ -1,16 +1,17 @@
 #pragma once
 #include "includes.h"
-#include "ECS.h"
 #include "GameStateManager.h"
 
 class TheaterEngine {
 	 GameStateManager::GameState* gameState;
+	 Scene* currentScene;
+	 Manager* entityManager;
 public:
 	TheaterEngine();
 
 	~TheaterEngine();
 
-	void init(GameStateManager::GameState* gameState);
+	void init(GameStateManager::GameState* gameState, Manager* entityManager);
 
 	void makeEntityMove_constantSpeedNoDiagonalMovement(
 		Entity* ent, 

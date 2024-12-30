@@ -1,6 +1,4 @@
 #include "GameEngine.h"
-#include "ECS.h"
-#include "Components.h"
 
 // f12 moves into defenition   
 // f9 breakpoint 

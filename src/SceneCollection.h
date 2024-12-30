@@ -1,8 +1,8 @@
-#include "Scene.h"
+#pragma once
 #include "includes.h"
-#include "ECS.h"
+#include "Scene.h"
 
-class OpeningScene : Scene {
+class OpeningScene : public Scene {
 public:
 	OpeningScene();
 
@@ -13,8 +13,10 @@ public:
 	void end() override;
 };
 
-class FirstHouseScene : Scene {
+class FirstHouseScene : public Scene {
 public:
+	FirstHouseScene();
+
 	void init() override;
 
 	void update() override;

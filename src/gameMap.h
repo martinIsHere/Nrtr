@@ -25,6 +25,8 @@ public:
 	
 	void loadMap(std::string map);
 
+	const std::string getLoadedMapPath()const;
+
 	void draw();
 
 	void drawSecondLayer();
@@ -76,6 +78,8 @@ private:
 	std::vector <uint8_t> m_foregroundMirrorState_array;
 	std::vector <uint8_t> m_frontMirrorState_array;
 	std::vector <uint8_t> m_backMirrorState_array;
+
+	std::string mapPath;
 
 	//uint16_t* m_backLayer_array;
 	//uint16_t* m_frontLayer_array;

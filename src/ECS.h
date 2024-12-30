@@ -56,18 +56,26 @@ public:
 
 };
 
+static int getEntityID() {
+	static int lastID = 0;
+	return lastID++;
+
+}
+
 class Entity {
 
 	std::array<Component*, MAX_COMPONENTS> m_ComponentArray;
 	std::bitset<MAX_COMPONENTS> m_ComponentBitset;
 	bool active;
+	uint32_t entityID;
 public:
 
 	//init
 	Entity() { 
 		m_ComponentArray = {}; 
-		active = true;
 		m_ComponentBitset = {};
+		active = true;
+		entityID = getEntityID();
 	}
 
 	~Entity() = default;

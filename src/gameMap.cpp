@@ -134,14 +134,15 @@ GameMap::GameMap(
 		new SpriteSheet{
 		SDL_CreateTextureFromSurface(m_ren, SDL_LoadBMP(spriteSheetPath.c_str())),
 		16, 
-		spriteSheetTilesX,   // 12
-		spriteSheetTilesX    // 18
+		spriteSheetTilesX,   
+		spriteSheetTilesX   
 		};
 
 	if (!m_spriteSheet0->tex) log("Failed to load texture.");
 
 	// load map
 	loadMap(map);
+	mapPath = map;
 
 	// create camera at players position
 	m_mainCamera = new Camera(
@@ -165,6 +166,10 @@ SDL_FreeSurface(temp);
 
 GameMap::~GameMap() {
 	delete m_spriteSheet0, m_tempSrcRect, m_tempDstRect, m_mainCamera;
+}
+
+const std::string GameMap::getLoadedMapPath() const {
+	return mapPath;
 }
 
 void GameMap::update() {
@@ -265,8 +270,8 @@ void GameMap::drawSecondLayer() {
 	mousePositionX += offsetX;
 	mousePositionY += offsetY;
 
-	dstRect2->x = int(mousePositionX / TILE_SIZE_PIXELS) * TILE_SIZE_PIXELS - offsetX;
-	dstRect2->y = int(mousePositionY / TILE_SIZE_PIXELS) * TILE_SIZE_PIXELS - offsetY,
+	dstRect2->x = (mousePositionX >= 0 ? int(mousePositionX / TILE_SIZE_PIXELS) : int(mousePositionX / TILE_SIZE_PIXELS) - 1) * TILE_SIZE_PIXELS - offsetX;
+	dstRect2->y = (mousePositionY >= 0 ? int(mousePositionY / TILE_SIZE_PIXELS) : int(mousePositionY / TILE_SIZE_PIXELS) - 1) * TILE_SIZE_PIXELS - offsetY;
 	dstRect2->w = TILE_SIZE_PIXELS;
 	dstRect2->h = TILE_SIZE_PIXELS;
 

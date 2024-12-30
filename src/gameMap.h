@@ -19,6 +19,8 @@ public:
 		int* cameraPosy,
 		bool smallMap
 		);
+
+	GameMap();
 	
 	~GameMap();
 	
@@ -110,4 +112,5 @@ private:
 	std::ifstream m_mapFile;
 
 	SpriteSheet* m_spriteSheet0;
+
 };

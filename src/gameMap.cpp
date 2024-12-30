@@ -96,6 +96,28 @@ void GameMap::loadMap(std::string map) {
 	
 	m_mapFile.close();
 }
+GameMap::GameMap() {
+	m_ren = nullptr;
+	m_tempSrcRect = nullptr;
+	m_tempDstRect = nullptr;
+	m_mapWidth = NULL;
+	m_mapHeight = NULL;
+	m_windowWidth = NULL;
+	m_windowHeight = NULL;
+	m_current_ID = NULL;
+	m_xId = NULL;
+	m_yId = NULL;
+	m_currentState = NULL;
+	m_currentMirrorState = NULL;
+	m_blockSize = TILE_SIZE_PIXELS;
+	m_visibleTilesX_pixels = NULL;
+	m_visibleTilesY_pixels = NULL;
+	m_mainCamera = nullptr;
+	m_readingBuffer[0] = {NULL};
+	m_readingBuffer[1] = {NULL};
+	m_isDrawingSolidStates = false;
+	m_spriteSheet0 = nullptr;
+}
 
 GameMap::GameMap(
 	SDL_Renderer* ren, 

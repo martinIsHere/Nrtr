@@ -19,7 +19,7 @@ TheaterEngine::~TheaterEngine() {
 void TheaterEngine::init(
 	GameStateManager* gameStateManagerPtr,
 	Manager* entityManagerPtr,
-	GameMap* currentMapPtr,
+	GameMap** currentMapPtr,
 	SDL_Renderer* renPtr,
 	uint32_t* nWinWidthPtr,
 	uint32_t* nWinHeightPtr
@@ -32,7 +32,7 @@ void TheaterEngine::init(
 	Scene::renPtr = renPtr;
 	Scene::nWinWidthPtr = nWinWidthPtr;
 	Scene::nWinHeightPtr = nWinHeightPtr;
-	Scene::interactionCoords = new Point(-1, -1);
+	Scene::interactionCoords = new Point(NULL, NULL);
 	Scene::playerHasInteracted = new bool(false);
 
 
@@ -61,6 +61,25 @@ void TheaterEngine::teleportEntity(
 	int yDest
 	) {
 	ent->getComponent<PositionComponent>().setPos(xDest, yDest);
+}
+
+const bool TheaterEngine::changeCurrentMap(GameMap* in_currentMapPtr) {
+	if (in_currentMapPtr != nullptr) {
+		for (Entity* entity : *entityManagerPtr->getEntityArrayPointer()) {
+			if (entity->hasComponent<CollisionComponent>()) {
+				entity->getComponent<CollisionComponent>().loadNewMap(in_currentMapPtr);
+			}
+			if (entity->hasComponent<DrawingComponent>()) {
+				entity->getComponent<DrawingComponent>().loadNewCamera(in_currentMapPtr->getCam());
+			}
+			if (entity->hasComponent<PositionComponent>()) {
+				entity->getComponent<PositionComponent>().setPos(TILE_SIZE_PIXELS * 2, TILE_SIZE_PIXELS * 3);
+			}
+		}
+		*Scene::currentMapPtr = in_currentMapPtr;
+		return true;
+	}
+	return false;
 }
 
 Entity* TheaterEngine::getPlayerEntity() {

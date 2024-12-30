@@ -8,7 +8,7 @@ struct gameInteractionEvent;
 class Scene {
 public:
 	static Manager* entityManagerPtr;
-	static GameMap* currentMapPtr;
+	static GameMap** currentMapPtr;
 	static std::vector<Entity*>* arrayOfActiveEntitiesPtr;
 	static SDL_Renderer* renPtr;
 	static uint32_t* nWinWidthPtr, * nWinHeightPtr;

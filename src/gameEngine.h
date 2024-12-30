@@ -42,9 +42,6 @@ public:
 
 	const void test_portalAnimationFunction();
 
-	// return true if successful change
-	const bool changeCurrentMap(size_t newId);
-
 private:
 
 	uint32_t nWinWidth, nWinHeight;
@@ -92,7 +89,7 @@ private:
 	GameMap* House1;
 
 	// loaded maps per section of game!
-	GameMap* currentMapPtr;
+	GameMap** currentMapPtr;
 
 	// theater engine instance
 	TheaterEngine* theaterEngine;

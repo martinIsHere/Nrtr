@@ -15,7 +15,7 @@ public:
 	void init(
 		GameStateManager* gameStateManagerPtr,
 		Manager* entityManagerPtr,
-		GameMap* currentMapPtr,
+		GameMap** currentMapPtr,
 		SDL_Renderer* renPtr,
 		uint32_t* nWinWidthPtr,
 		uint32_t* nWinHeightPtr
@@ -35,6 +35,8 @@ public:
 		int xDest, 
 		int yDest
 		);
+
+	const bool changeCurrentMap(GameMap* in_currentMapPtr);
 
 	Entity* getPlayerEntity();
 

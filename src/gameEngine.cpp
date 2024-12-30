@@ -96,7 +96,7 @@ GameEngine::GameEngine(const uint32_t nWidth, const uint32_t nHeight, const std:
 	// load necessary maps
 	// create necessary entities
 
-	currentMapId = 0;
+	currentMapPtr = new GameMap*();
 
 	theaterEngine->init(
 		m_stateManagerPtr, 
@@ -194,7 +194,7 @@ void GameEngine::handleEvents() {
 				d_keyDown = false;
 				break;
 			case SDLK_t:
-				mapArray[currentMapId]->get_drawingSolidStates_bool() = mapArray[currentMapId]->get_drawingSolidStates_bool() ? false : true;
+				(*currentMapPtr)->get_drawingSolidStates_bool() = (*currentMapPtr)->get_drawingSolidStates_bool() ? false : true;
 				break;
 			case SDLK_l:
 				// help key for debugging
@@ -296,7 +296,7 @@ void GameEngine::update() {
 		test_portalAnimationFunction();
 
 		//
-		mapArray[currentMapId]->update();
+		(*currentMapPtr)->update();
 
 		// 
 		theaterEngine->update();
@@ -387,13 +387,13 @@ void GameEngine::draw() {
 
 	if (m_stateManagerPtr->get() == m_stateManagerPtr->state_gameRunning) {
 
-		mapArray[currentMapId]->draw();
+		(*currentMapPtr)->draw();
 
 		// sort array in order to draw entities in front last
 		sortEntityArray();
 		m_entityManager.draw();
 
-		mapArray[currentMapId]->drawSecondLayer();
+		(*currentMapPtr)->drawSecondLayer();
 
 		theaterEngine->draw();
 
@@ -404,24 +404,26 @@ void GameEngine::draw() {
 	SDL_RenderPresent(renPtr);
 }
 
-const bool GameEngine::changeCurrentMap(size_t newId) {
-	if (newId != currentMapId && newId < mapArray.size()) {
+/*
+const bool GameEngine::changeCurrentMap(GameMap* in_currentMapPtr) {
+	if (in_currentMapPtr != nullptr) {
 		for (Entity* entity : *arrayOfActiveEntitiesPtr) {
 			if (entity->hasComponent<CollisionComponent>()) {
-				entity->getComponent<CollisionComponent>().loadNewMap(mapArray[newId]);
+				entity->getComponent<CollisionComponent>().loadNewMap(in_currentMapPtr);
 			}
 			if (entity->hasComponent<DrawingComponent>()) {
-				entity->getComponent<DrawingComponent>().loadNewCamera(mapArray[newId]->getCam());
+				entity->getComponent<DrawingComponent>().loadNewCamera(in_currentMapPtr->getCam());
 			}
 			if (entity->hasComponent<PositionComponent>()) {
 				entity->getComponent<PositionComponent>().setPos(TILE_SIZE_PIXELS*2, TILE_SIZE_PIXELS*3);
 			}
 		}
-		currentMapId = newId;
+		currentMapPtr = in_currentMapPtr;
 		return true;
 	}
 	return false;
 }
+*/
 
 
 bool GameEngine::alive() {

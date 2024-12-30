@@ -17,6 +17,8 @@ public:
 
 	constexpr static int ID = 0;
 
+	OpeningScene();
+
 	void init() override;
 
 	void update() override;
@@ -32,6 +34,8 @@ public:
 	GameMap* House1;
 
 	constexpr static int ID = 1;
+
+	FirstHouseScene();
 
 	void init() override;
 

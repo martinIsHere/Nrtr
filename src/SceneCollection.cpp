@@ -7,6 +7,12 @@ bool isViableInteractCoords(Point* interactionCoords) {
 	return true;
 }
 
+OpeningScene::OpeningScene() {
+	NPCEntity = nullptr;
+	Town1 = nullptr;
+	frames = NULL;
+}
+
 void OpeningScene::init()  {
 	frames = 0;
 
@@ -18,7 +24,7 @@ void OpeningScene::init()  {
 
 	// loading maps
 	if (!Town1) {
-		GameMap* Town1 = new GameMap(
+		Town1 = new GameMap(
 			Scene::renPtr,
 			"res/map/Town1.bin", // path to map file
 			"res/imgs/sh1.bmp",  // path to spritesheet file
@@ -29,8 +35,8 @@ void OpeningScene::init()  {
 			&(Scene::playerEntity->getComponent<PositionComponent>().gety()), // here: just equal to the player position
 			false // if the map is very small, like a house -> set to true
 			);
-		currentMapPtr = Town1;
 	}
+	*currentMapPtr = Town1;
 
 	if (!Scene::playerEntity->hasComponent<DrawingComponent>()) {
 		playerEntity->addComponent<DrawingComponent>(
@@ -115,8 +121,8 @@ void OpeningScene::update()  {
 
 void OpeningScene::draw() {
 	SDL_Rect box = { 
-		interactionCoords->x * TILE_SIZE_PIXELS - *mapArrayPtr->at(*currentMapIdPtr)->getCam()->getOffsetXPtr(),
-		interactionCoords->y * TILE_SIZE_PIXELS - *mapArrayPtr->at(*currentMapIdPtr)->getCam()->getOffsetYPtr(),
+		interactionCoords->x * TILE_SIZE_PIXELS - *(*currentMapPtr)->getCam()->getOffsetXPtr(),
+		interactionCoords->y * TILE_SIZE_PIXELS - *(*currentMapPtr)->getCam()->getOffsetYPtr(),
 		TILE_SIZE_PIXELS, 
 		TILE_SIZE_PIXELS };
 	SDL_SetRenderDrawColor(renPtr, 255, 0, 0, 255);
@@ -129,9 +135,14 @@ void OpeningScene::end()  {
 
 /*#¤#¤#¤#¤#¤#¤#¤#¤#¤#¤#¤#¤#¤#¤#¤#¤#¤#¤#¤#¤#¤#¤#¤#¤#*/
 
+FirstHouseScene::FirstHouseScene() {
+	House1 = nullptr;
+	frames = NULL;
+}
+
 void FirstHouseScene::init() {
 	if (!House1) {
-		GameMap* House1 = new GameMap(
+		House1 = new GameMap(
 				renPtr,
 				"res/map/House1.bin",
 				"res/imgs/sh2.bmp",

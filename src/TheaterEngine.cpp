@@ -37,7 +37,12 @@ void TheaterEngine::init(
 
 	// TODO: relative to prev save init a scene
 	changeCurrentScene<OpeningScene>();
-	currentScenePtr->init();
+	initCurrentScene();
+}
+
+void TheaterEngine::initCurrentScene() {
+	if(currentScenePtr)
+		currentScenePtr->init();
 }
 
 void TheaterEngine::makeEntityMove_constantSpeedNoDiagonalMovement(
@@ -77,6 +82,9 @@ bool TheaterEngine::changeCurrentMap(GameMap* in_currentMapPtr) {
 	return false;
 }
 
+void TheaterEngine::setTransitionState() {
+	gameStateManagerPtr->set(GameStateManager::state_blockTransition);
+}
 
 Entity* TheaterEngine::getPlayerEntity() {
 	return Scene::playerEntity;

@@ -4,12 +4,23 @@
 #include "TheaterEngine.h"
 
 
+
 bool isViableInteractCoords(Point* interactionCoords) {
 	if (interactionCoords->x < 0) return false;
 	return true;
 }
 
-OpeningScene::OpeningScene() {
+// can be made more efficient for bigger points arrays. fine for small arrays tho.
+template<size_t arraySize>
+int arrayHasPoint(const std::array<Point, arraySize>* points, const Point* targetPoint) {
+	for (int i = 0; i < arraySize; i++) {
+		if ((*points)[i].isEqual(targetPoint)) return i;
+	}
+	return -1;
+}
+
+
+OpeningScene::OpeningScene() : doorInteractionArray({Point(7,5), Point(8,5)}) {
 	NPCEntity = nullptr;
 	Town1 = nullptr;
 	frames = NULL;
@@ -84,7 +95,7 @@ void OpeningScene::init()  {
 	playerEntity->setActive();
 	NPCEntity->setActive();
 	// make this cleaner ------------------------------------
-	playerEntity->getComponent<PositionComponent>().setPos(TILE_SIZE_PIXELS * 8, TILE_SIZE_PIXELS * 6);
+	//playerEntity->getComponent<PositionComponent>().setPos(TILE_SIZE_PIXELS * 8, TILE_SIZE_PIXELS * 6);
 	NPCEntity->getComponent<PositionComponent>().setPos(TILE_SIZE_PIXELS, TILE_SIZE_PIXELS);
 }
 
@@ -93,11 +104,14 @@ void OpeningScene::update()  {
 	// change this -----------------------------------
 	if (*playerHasInteracted && isViableInteractCoords(interactionCoords)) {
 		*playerHasInteracted = false;
-		if (interactionCoords->isEqual(new Point(7,5))
-			|| interactionCoords->isEqual(new Point(8, 5))) {
-			if (theaterEnginePtr != nullptr) { 
-			theaterEnginePtr->changeCurrentScene<FirstHouseScene>();
-			}
+		int i = arrayHasPoint<MAX_SIZE_DOOR_INTERACTIONS>(&doorInteractionArray, interactionCoords);
+		if (i >= 0) { // player has interacted with interactable tile.
+			switch (i) {
+				// if i == 1 OR i ==2
+			case 0: case 1: // first house door
+				theaterEnginePtr->changeCurrentScene<FirstHouseScene>();
+				break;
+			} 
 		}
 	}
 
@@ -151,7 +165,7 @@ void OpeningScene::draw() {
 }
 
 void OpeningScene::end()  {
-
+	theaterEnginePtr->setTransitionState();
 }
 
 /*#¤#¤#¤#¤#¤#¤#¤#¤#¤#¤#¤#¤#¤#¤#¤#¤#¤#¤#¤#¤#¤#¤#¤#¤#*/
@@ -212,6 +226,7 @@ void FirstHouseScene::update() {
 	if (*playerHasInteracted && isViableInteractCoords(interactionCoords)) {
 		*playerHasInteracted = false;
 		if (interactionCoords->isEqual(new Point(2, 4))) {
+			playerEntity->getComponent<PositionComponent>().setPos(TILE_SIZE_PIXELS * 8, TILE_SIZE_PIXELS * 6);
 			theaterEnginePtr->changeCurrentScene<OpeningScene>();
 		}
 	}
@@ -228,7 +243,7 @@ void FirstHouseScene::draw() {
 }
 
 void FirstHouseScene::end() {
-
+	theaterEnginePtr->setTransitionState();
 }
 
 /*#¤#¤#¤#¤#¤#¤#¤#¤#¤#¤#¤#¤#¤#¤#¤#¤#¤#¤#¤#¤#¤#¤#¤#¤#*/

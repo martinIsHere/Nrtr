@@ -12,7 +12,9 @@ public:
 
 	Point(int x, int y);
 
-	bool isEqual(Point* p);
+	bool isEqual(const Point* p)const;
+
+	bool isEqual(const Point& p)const;
 
 	Point() = default;
 

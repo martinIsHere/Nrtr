@@ -11,8 +11,9 @@ GameEngine::GameEngine(const uint32_t nWidth, const uint32_t nHeight, const std:
 	sTitle = title;
 	nDelay = uint32_t(1000 / nFps);
 	mousePos[0] = 0, mousePos[1] = 0;
-	numberOfFramesSinceStart = 0;
 
+	// for transition animation
+	elapsedFrames = 0;
 
 	// game state related stuff
 	m_stateManagerPtr = new GameStateManager();
@@ -232,43 +233,6 @@ void GameEngine::handeKeyInputBools() {
 	}
 }
 
- // raw manual code for npc movement
-void GameEngine::test_NPCMoveFunction() {
-	if (numberOfFramesSinceStart < 228) {
-		NPCEntity->getComponent<PositionComponent>().setVel(4, 0);
-		NPCEntity->getComponent<PositionComponent>().setDir(DIR_RIGHT, true);
-		NPCEntity->getComponent<PositionComponent>().setFacingDir(DIR_RIGHT);
-	}
-	else if (numberOfFramesSinceStart < 580) {
-		NPCEntity->getComponent<PositionComponent>().setVel(-2.8f, 2.8f);
-		NPCEntity->getComponent<PositionComponent>().setDir(DIR_RIGHT, false);
-		NPCEntity->getComponent<PositionComponent>().setDir(DIR_LEFT, true);
-		NPCEntity->getComponent<PositionComponent>().setFacingDir(DIR_LEFT);
-	}
-	else if (numberOfFramesSinceStart < 1100) {
-		NPCEntity->getComponent<PositionComponent>().setVel(2.8f, 2.8f);
-		NPCEntity->getComponent<PositionComponent>().setDir(DIR_LEFT, false);
-		NPCEntity->getComponent<PositionComponent>().setDir(DIR_RIGHT, true);
-		NPCEntity->getComponent<PositionComponent>().setFacingDir(DIR_RIGHT);
-	}
-	else if (numberOfFramesSinceStart < 1350) {
-		NPCEntity->getComponent<PositionComponent>().setVel(-2.8f, 0);
-		NPCEntity->getComponent<PositionComponent>().setDir(DIR_RIGHT, false);
-		NPCEntity->getComponent<PositionComponent>().setDir(DIR_LEFT, true);
-		NPCEntity->getComponent<PositionComponent>().setFacingDir(DIR_LEFT);
-	}
-	else if (numberOfFramesSinceStart < 1400) {
-		NPCEntity->getComponent<PositionComponent>().setVel(0, 2.8f);
-		NPCEntity->getComponent<PositionComponent>().setDir(DIR_LEFT, false);
-		NPCEntity->getComponent<PositionComponent>().setDir(DIR_DOWN, true);
-		NPCEntity->getComponent<PositionComponent>().setFacingDir(DIR_DOWN);
-	}
-	else {
-		NPCEntity->getComponent<PositionComponent>().setDir(DIR_DOWN, false);
-		NPCEntity->getComponent<PositionComponent>().setVel(0, 0);
-	}
-}
-
 const void  GameEngine::test_portalAnimationFunction() {
 	if (playerEntity->getComponent<DrawingComponent>().customAnimationHasEnded()
 		&& playerEntity->getComponent<DrawingComponent>().getPrevCustomAnimationY() == 4) {
@@ -276,10 +240,22 @@ const void  GameEngine::test_portalAnimationFunction() {
 	}
 }
 
+void GameEngine::delayAndUpdateWindowTitle() {
+	// delay
+	nElapsedTime = SDL_GetTicks() - unStartElapsedTime;
+	if (nDelay > nElapsedTime) {
+		SDL_Delay(nDelay - nElapsedTime);
+	}
+	if ((SDL_GetTicks() - unStartElapsedTime) != 0) {
+		actualFPS = 1000 / (SDL_GetTicks() - unStartElapsedTime);
+	}
+	std::string bufTitle = sTitle + "    FPS:" + std::to_string(actualFPS);
+	SDL_SetWindowTitle(win, bufTitle.c_str());
+}
+
 void GameEngine::update() {
 	unStartElapsedTime = SDL_GetTicks();
 	if (m_stateManagerPtr->get() == m_stateManagerPtr->state_gameRunning) {
-
 
 		//
 		handleEvents();
@@ -290,39 +266,25 @@ void GameEngine::update() {
 		m_entityManager.update();
 		playerEntity->getComponent<PositionComponent>().setAcc(0, 0);
 
-
-		// move the npc
-		//test_NPCMoveFunction();
-
 		// teleportation mechanic
 		test_portalAnimationFunction();
 
 		//
 		(*currentMapPtr)->update();
 
-		// 
-		theaterEngine->update();
-
-
 		//
 		draw();
 
-		
-	
+		// 
+		theaterEngine->update();
 
 		// delay
-		nElapsedTime = SDL_GetTicks() - unStartElapsedTime;
-		if (nDelay > nElapsedTime) {
-			SDL_Delay(nDelay - nElapsedTime);
-		}
-		if ((SDL_GetTicks() - unStartElapsedTime) != 0) {
-			actualFPS = 1000 / (SDL_GetTicks() - unStartElapsedTime);
-		}
-		std::string bufTitle = sTitle + "    FPS:" + std::to_string(actualFPS);
-		SDL_SetWindowTitle(win, bufTitle.c_str());
+		delayAndUpdateWindowTitle();
+	} else if (m_stateManagerPtr->get() == m_stateManagerPtr->state_blockTransition) {
+		(*currentMapPtr)->update();
+		GameEngine::transitionDraw();
+		delayAndUpdateWindowTitle();
 	}
-
-	numberOfFramesSinceStart++;
 }
 
 void GameEngine::sortEntityArray() {
@@ -381,29 +343,71 @@ void GameEngine::renderText() {
 	//SDL_DestroyTexture(Message);
 }
 
+// main drawing for normal gameplay
 void GameEngine::draw() {
 
 	// clear screen
 	SDL_SetRenderDrawColor(renPtr, 0, 0, 0, 255);
 	SDL_RenderClear(renPtr);
 
-	if (m_stateManagerPtr->get() == m_stateManagerPtr->state_gameRunning) {
+	(*currentMapPtr)->draw();
 
-		(*currentMapPtr)->draw();
+	// sort array in order to draw entities in front last
+	sortEntityArray();
+	m_entityManager.draw();
 
-		// sort array in order to draw entities in front last
-		sortEntityArray();
-		m_entityManager.draw();
+	(*currentMapPtr)->drawSecondLayer();
 
-		(*currentMapPtr)->drawSecondLayer();
+	theaterEngine->draw();
 
-		theaterEngine->draw();
-
-		renderText();
-	}
-
+	renderText();
 
 	SDL_RenderPresent(renPtr);
+}
+
+constexpr int amountOfBoxesX = 10;
+constexpr int amountOfBoxesY = 4;
+
+// drawing to be done during transition
+// incredibly sketchy and rough draft
+// clean up later
+void GameEngine::transitionDraw() {
+	if (elapsedFrames == 0) {
+		boxWidth = int(nWinWidth / amountOfBoxesX); // 20 -> amount of boxes to be drawn across window
+		boxHeight = int(nWinHeight / amountOfBoxesY);
+		drawRect = { 0, 0, boxWidth,boxHeight };
+		boxCount = 0;
+		SDL_SetRenderDrawColor(renPtr, 100, 100, 100, 255);
+	}
+	if (boxCount < (amountOfBoxesX+1) * amountOfBoxesY) {
+		// transition animation
+		drawRect.x = (boxCount % (amountOfBoxesX + 1)) * boxWidth;
+		drawRect.y = int(boxCount / (amountOfBoxesX + 1)) * boxHeight;
+		SDL_RenderFillRect(renPtr, &drawRect);
+		boxCount++;
+	}
+	else if (boxCount < (amountOfBoxesX+1) * amountOfBoxesY * 2) {
+		if(boxCount == (amountOfBoxesX + 1) * amountOfBoxesY)
+			theaterEngine->initCurrentScene();
+		draw();
+		SDL_SetRenderDrawColor(renPtr, 100, 100, 100, 255);
+		// transition animation in reverse
+		drawRect.x = (boxCount % (amountOfBoxesX + 1)) * boxWidth;
+		drawRect.y = int(boxCount / (amountOfBoxesX + 1)) * boxHeight;
+		for (int i = boxCount - (amountOfBoxesX + 1) * amountOfBoxesY; i < (amountOfBoxesX + 1) * amountOfBoxesY; i++) {
+			drawRect.x = (i % (amountOfBoxesX + 1)) * boxWidth;
+			drawRect.y = int(i / (amountOfBoxesX + 1)) * boxHeight;
+			SDL_RenderFillRect(renPtr, &drawRect);
+		}
+		SDL_RenderFillRect(renPtr, &drawRect);
+		boxCount++;
+	}
+	else {
+		m_stateManagerPtr->set(m_stateManagerPtr->state_gameRunning);
+		elapsedFrames = -1; // because transitionDraw ends with adding 1
+	}
+	SDL_RenderPresent(renPtr);
+	elapsedFrames++;
 }
 
 /*

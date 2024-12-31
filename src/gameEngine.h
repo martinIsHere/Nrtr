@@ -28,6 +28,8 @@ public:
 
 	void draw();
 
+	void transitionDraw();
+
 	void sortEntityArray();
 
 	bool alive();
@@ -38,7 +40,7 @@ public:
 
 	void renderText();
 
-	void test_NPCMoveFunction();
+	void delayAndUpdateWindowTitle();
 
 	const void test_portalAnimationFunction();
 
@@ -50,7 +52,7 @@ private:
 	SDL_Event* Event;
 	uint32_t unStartElapsedTime;
 	uint32_t nElapsedTime;
-	uint32_t numberOfFramesSinceStart;
+	uint32_t elapsedFrames;
 	uint32_t nFps;
 	uint32_t nDelay;
 	int mousePos[2];
@@ -73,6 +75,12 @@ private:
 	
 	// state manager
 	GameStateManager* m_stateManagerPtr;
+
+	// for transition animation
+	SDL_Rect drawRect;
+	int boxCount;
+	int boxWidth;
+	int boxHeight;
 
 	// text
 	TTF_Font* arialFont;

@@ -25,6 +25,8 @@ public:
 		uint32_t* nWinHeightPtr
 		);
 
+	void initCurrentScene();
+
 	void makeEntityMove_constantSpeedNoDiagonalMovement(
 		Entity* ent, 
 		int xDest, 
@@ -44,25 +46,25 @@ public:
 
 	template <typename T>
 	Scene* loadOrGetScene() const {
-		if ((*currentlyLoadedScenesPtr)[Scene::getSceneTypeID<T>()] != nullptr)
-			return (*currentlyLoadedScenesPtr)[Scene::getSceneTypeID<T>()];
-		T* newScene = new T();
-		(*currentlyLoadedScenesPtr)[Scene::getSceneTypeID<T>()] = newScene;
+		if ((*currentlyLoadedScenesPtr)[Scene::getSceneTypeID<T>()] != nullptr) // if wanted scene is already loaded
+			return (*currentlyLoadedScenesPtr)[Scene::getSceneTypeID<T>()]; // return the loaded scene
+		T* newScene = new T(); // else return a newly created version of the scene type ...
+		(*currentlyLoadedScenesPtr)[Scene::getSceneTypeID<T>()] = newScene; // and add to array of loaded scenes.
 		return newScene;
 	}
 
 	template <typename T>  // return true if the new scene has already been loaded
 	bool changeCurrentScene() {
-		Scene* in_currentScenePtr = loadOrGetScene<T>();
-		if (!in_currentScenePtr) return false;
-		currentScenePtr = in_currentScenePtr;
-		currentScenePtr->init();
-		for (Scene* scene : *currentlyLoadedScenesPtr) {
-			if (scene = in_currentScenePtr) return true;
+		Scene* in_currentScenePtr = loadOrGetScene<T>(); 
+		
+		if (currentScenePtr) { // if previous scene was not nullptr
+			currentScenePtr->end(); // call an ending function.
 		}
-		(*currentlyLoadedScenesPtr)[Scene::getSceneTypeID<T>()] = in_currentScenePtr;
+		currentScenePtr = in_currentScenePtr; // update current scenePtr
 		return true;
 	}
+
+	void setTransitionState();
 
 	Entity* getPlayerEntity();
 

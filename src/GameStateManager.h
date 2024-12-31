@@ -11,6 +11,7 @@ public:
 		state_startingScreen,
 		state_startToGame_fade,
 		state_gameRunning,
+		state_blockTransition,
 		state_theaterMode,
 		state_win,
 		state_death,

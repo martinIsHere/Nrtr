@@ -37,6 +37,8 @@ public:
 
 	}
 
+	// add unload scene
+
 	static int getSceneTypeID() {
 		static int lastID = 0;
 		return lastID++;

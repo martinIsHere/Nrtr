@@ -9,8 +9,11 @@ struct gameInteractionEvent {
 	int ID; // ID of scene be activated
 };
 
+#define MAX_SIZE_DOOR_INTERACTIONS 2
+
 class OpeningScene : public Scene {
 public:
+	const std::array<Point, MAX_SIZE_DOOR_INTERACTIONS> doorInteractionArray;
 	Entity* NPCEntity;
 	uint32_t frames;
 	GameMap* Town1;

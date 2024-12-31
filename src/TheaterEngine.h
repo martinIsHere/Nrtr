@@ -1,6 +1,8 @@
 #pragma once
 #include "includes.h"
 #include "GameStateManager.h"
+#include "Scene.h"
+#include "ECS.h"
 
 #define MAX_LOADED_SCENES 10
 
@@ -38,13 +40,29 @@ public:
 		int yDest
 		);
 
-	template <typename T>
-	Scene* createOrGetScene()const;
-
 	bool changeCurrentMap(GameMap* in_currentMapPtr);
 
 	template <typename T>
-	bool changeCurrentScene();
+	Scene* loadOrGetScene() const {
+		if ((*currentlyLoadedScenesPtr)[Scene::getSceneTypeID<T>()] != nullptr)
+			return (*currentlyLoadedScenesPtr)[Scene::getSceneTypeID<T>()];
+		T* newScene = new T();
+		(*currentlyLoadedScenesPtr)[Scene::getSceneTypeID<T>()] = newScene;
+		return newScene;
+	}
+
+	template <typename T>  // return true if the new scene has already been loaded
+	bool changeCurrentScene() {
+		Scene* in_currentScenePtr = loadOrGetScene<T>();
+		if (!in_currentScenePtr) return false;
+		currentScenePtr = in_currentScenePtr;
+		currentScenePtr->init();
+		for (Scene* scene : *currentlyLoadedScenesPtr) {
+			if (scene = in_currentScenePtr) return true;
+		}
+		(*currentlyLoadedScenesPtr)[Scene::getSceneTypeID<T>()] = in_currentScenePtr;
+		return true;
+	}
 
 	Entity* getPlayerEntity();
 

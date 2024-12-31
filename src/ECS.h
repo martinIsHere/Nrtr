@@ -5,8 +5,8 @@
 #include <array>
 #include <stdexcept>
 
-constexpr int MAX_COMPONENTS = 32;
-constexpr int MAX_ENTITIES = 64;
+constexpr int MAX_COMPONENTS = 16;
+constexpr int MAX_ENTITIES = 16;
 
 
 // static utility function
@@ -116,6 +116,14 @@ public:
 		return active;
 	}
 
+	void setActive() {
+		active = true;
+	}
+
+	void setInactive() {
+		active = false;
+	}
+
 	void destroy() {
 		active = false;
 	}
@@ -202,15 +210,17 @@ public:
 
 	void update() {
 		// iterate through entity array and update entities
-		for (auto ent : m_EntityArray) {
-			ent->update();
+		for (Entity* ent : m_EntityArray) {
+			if (ent->isActive())
+				ent->update();
 		}
 	}
 
 	void draw() {
 		// iterate through entity array and draw entities
-		for (auto ent : m_EntityArray) {
-			ent->draw();
+		for (Entity* ent : m_EntityArray) {
+			if(ent->isActive())
+				ent->draw();
 		}
 	}
 

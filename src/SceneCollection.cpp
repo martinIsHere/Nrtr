@@ -38,7 +38,6 @@ void OpeningScene::init()  {
 			false // if the map is very small, like a house -> set to true
 			);
 	}
-	*currentMapPtrPtr = Town1;
 
 	if (!Scene::playerEntity->hasComponent<DrawingComponent>()) {
 		playerEntity->addComponent<DrawingComponent>(
@@ -75,19 +74,35 @@ void OpeningScene::init()  {
 
 		NPCEntity->getComponent<PositionComponent>().set_default_acceleration(0);
 	}
+
+	theaterEnginePtr->changeCurrentMap(Town1);
+
+	// change this -----------------------------------
+	for (Entity* ent : *entityManagerPtr->getEntityArrayPointer()) {
+		ent->setInactive();
+	}
+	playerEntity->setActive();
+	NPCEntity->setActive();
+	// make this cleaner ------------------------------------
+	playerEntity->getComponent<PositionComponent>().setPos(TILE_SIZE_PIXELS * 8, TILE_SIZE_PIXELS * 6);
+	NPCEntity->getComponent<PositionComponent>().setPos(TILE_SIZE_PIXELS, TILE_SIZE_PIXELS);
 }
 
 void OpeningScene::update()  {
+
+	// change this -----------------------------------
 	if (*playerHasInteracted && isViableInteractCoords(interactionCoords)) {
 		*playerHasInteracted = false;
 		if (interactionCoords->isEqual(new Point(7,5))
 			|| interactionCoords->isEqual(new Point(8, 5))) {
 			if (theaterEnginePtr != nullptr) { 
-			//(*theaterEnginePtr).changeCurrentScene<FirstHouseScene>();
+			theaterEnginePtr->changeCurrentScene<FirstHouseScene>();
 			}
 		}
 	}
 
+
+	// change this -----------------------------------
 	if (frames < 228) {
 		NPCEntity->getComponent<PositionComponent>().setVel(4, 0);
 		NPCEntity->getComponent<PositionComponent>().setDir(DIR_RIGHT, true);
@@ -125,6 +140,7 @@ void OpeningScene::update()  {
 }
 
 void OpeningScene::draw() {
+	// change this -----------------------------------
 	SDL_Rect box = { 
 		interactionCoords->x * TILE_SIZE_PIXELS - *(*currentMapPtrPtr)->getCam()->getOffsetXPtr(),
 		interactionCoords->y * TILE_SIZE_PIXELS - *(*currentMapPtrPtr)->getCam()->getOffsetYPtr(),
@@ -146,6 +162,13 @@ FirstHouseScene::FirstHouseScene() {
 }
 
 void FirstHouseScene::init() {
+
+	// creating player
+	if (!Scene::playerEntity) {
+		Scene::playerEntity = Scene::entityManagerPtr->addEntity();
+		Scene::playerEntity->addComponent<PositionComponent>(TILE_SIZE_PIXELS, TILE_SIZE_PIXELS);
+	}
+
 	if (!House1) {
 		House1 = new GameMap(
 				renPtr,
@@ -159,14 +182,49 @@ void FirstHouseScene::init() {
 				true
 				);
 	}
+
+	if (!Scene::playerEntity->hasComponent<DrawingComponent>()) {
+		playerEntity->addComponent<DrawingComponent>(
+			renPtr,    // current working renderer
+			"res/imgs/hero.bmp", // path
+			16, // sprite size
+			6, 5, // sprite sheet columns and rows
+			4, // amount of frames/imgs of walking animation
+			8,  // amount of animation frames per second
+			House1->getCam() // current working camera
+			);
+		playerEntity->addComponent<CollisionComponent>(House1); // pass in map class
+		playerEntity->addComponent<InteractionComponent>(House1, interactionCoords, playerHasInteracted);
+	}
+
+	theaterEnginePtr->changeCurrentMap(House1);
+
+
+	for (Entity* ent : *entityManagerPtr->getEntityArrayPointer()) {
+		ent->setInactive();
+	}
+	playerEntity->setActive();
+	playerEntity->getComponent<PositionComponent>().setPos(2*TILE_SIZE_PIXELS,3* TILE_SIZE_PIXELS);
+
 }
 
 void FirstHouseScene::update() {
-
+	if (*playerHasInteracted && isViableInteractCoords(interactionCoords)) {
+		*playerHasInteracted = false;
+		if (interactionCoords->isEqual(new Point(2, 4))) {
+			theaterEnginePtr->changeCurrentScene<OpeningScene>();
+		}
+	}
 }
 
 void FirstHouseScene::draw() {
-
+	SDL_Rect box = {
+		interactionCoords->x * TILE_SIZE_PIXELS - *(*currentMapPtrPtr)->getCam()->getOffsetXPtr(),
+		interactionCoords->y * TILE_SIZE_PIXELS - *(*currentMapPtrPtr)->getCam()->getOffsetYPtr(),
+		TILE_SIZE_PIXELS,
+		TILE_SIZE_PIXELS };
+	SDL_SetRenderDrawColor(renPtr, 255, 0, 0, 255);
+	SDL_RenderDrawRect(renPtr, &box);
 }
 
 void FirstHouseScene::end() {

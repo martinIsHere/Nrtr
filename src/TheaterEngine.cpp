@@ -1,6 +1,5 @@
 #include "TheaterEngine.h"
 #include "SceneCollection.h"
-#include "Scene.h"
 #include "Components.h"
 
 TheaterEngine::TheaterEngine() {
@@ -71,33 +70,11 @@ bool TheaterEngine::changeCurrentMap(GameMap* in_currentMapPtr) {
 			if (entity->hasComponent<DrawingComponent>()) {
 				entity->getComponent<DrawingComponent>().loadNewCamera(in_currentMapPtr->getCam());
 			}
-			if (entity->hasComponent<PositionComponent>()) {
-				entity->getComponent<PositionComponent>().setPos(TILE_SIZE_PIXELS * 2, TILE_SIZE_PIXELS * 3);
-			}
 		}
 		*Scene::currentMapPtrPtr = in_currentMapPtr;
 		return true;
 	}
 	return false;
-}
-
-template <typename T>
-Scene* TheaterEngine::createOrGetScene() const {
-	if ((*currentlyLoadedScenesPtr)[Scene::getSceneTypeID<T>()] != nullptr) 
-		return (*currentlyLoadedScenesPtr)[Scene::getSceneTypeID<T>()];
-	return new T();
-}
-
-template <typename T>  // return true if the new scene has already been loaded
-bool TheaterEngine::changeCurrentScene() {
-	Scene* in_currentScenePtr = createOrGetScene<T>();
-	if (!in_currentScenePtr) return false;
-	currentScenePtr = in_currentScenePtr;
-	for (Scene* scene : *currentlyLoadedScenesPtr) {
-		if (scene = in_currentScenePtr) return true;
-	}
-	(*currentlyLoadedScenesPtr)[Scene::getSceneTypeID<T>()] = in_currentScenePtr;
-	return true;
 }
 
 

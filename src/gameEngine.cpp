@@ -133,17 +133,14 @@ GameEngine::GameEngine(const uint32_t nWidth, const uint32_t nHeight, const std:
 	NPCEntity->getComponent<PositionComponent>().set_isFrictionless(true);
 	NPCEntity->getComponent<PositionComponent>().set_default_acceleration(0);
 	*/
-
-
-	m_entityManager.init();
-
-
 }
 
 GameEngine::~GameEngine() {
 	SDL_DestroyRenderer(renPtr);
 	SDL_DestroyWindow(win);
 }
+
+int a = 0;
 
 void GameEngine::handleEvents() {
 	while (SDL_PollEvent(Event)) {
@@ -157,8 +154,28 @@ void GameEngine::handleEvents() {
 			break;
 
 		case SDL_MOUSEBUTTONDOWN:
+			switch ((a % 6)) {
+			case 0:
+				log("outside door");
+				break;
+			case 1:
+				break;
+			case 2:
+				log("outside door spawn");
+				break;
+			case 3:
+				log("inside door");
+				break;
+			case 4:
+				break;
+			case 5:
+				log("inside door spawn");
+				break;
+			}
 			std::cout << "x: " << theaterEngine->getCurrentMap()->getCellx_fromCoord(mousePos[0] + *theaterEngine->getCurrentMap()->getCam()->getOffsetXPtr()) << "\n";
 			std::cout << "y: " << theaterEngine->getCurrentMap()->getCelly_fromCoord(mousePos[1] + *theaterEngine->getCurrentMap()->getCam()->getOffsetYPtr()) << "\n";
+			log("--------------");
+			a++;
 			break;
 		case SDL_KEYDOWN:
 			if (Event->key.repeat == 0) {

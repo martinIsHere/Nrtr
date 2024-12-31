@@ -9,7 +9,7 @@ struct gameInteractionEvent {
 	int ID; // ID of scene be activated
 };
 
-#define MAX_SIZE_DOOR_INTERACTIONS 2
+#define MAX_SIZE_DOOR_INTERACTIONS 16
 
 class OpeningScene : public Scene {
 public:
@@ -33,12 +33,52 @@ public:
 
 class FirstHouseScene : public Scene {
 public:
+	const std::array<Point, MAX_SIZE_DOOR_INTERACTIONS> doorInteractionArray;
 	uint32_t frames;
 	GameMap* House1;
 
 	const int ID = 1;
 
 	FirstHouseScene();
+
+	void init() override;
+
+	void update() override;
+
+	void draw() override;
+
+	void end() override;
+};
+
+class SecondHouseScene : public Scene {
+public:
+	const std::array<Point, MAX_SIZE_DOOR_INTERACTIONS> doorInteractionArray;
+	uint32_t frames;
+	GameMap* House2;
+
+	const int ID = 1;
+
+	SecondHouseScene();
+
+	void init() override;
+
+	void update() override;
+
+	void draw() override;
+
+	void end() override;
+};
+
+class FirstPlantHouseScene : public Scene {
+public:
+	const std::array<Point, MAX_SIZE_DOOR_INTERACTIONS> doorInteractionArray;
+	uint32_t frames;
+	GameMap* plantHouse1;
+	Entity* CashierEntity;
+
+	const int ID = 1;
+
+	FirstPlantHouseScene();
 
 	void init() override;
 

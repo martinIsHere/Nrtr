@@ -92,8 +92,7 @@ void DrawingComponent::init() {
 	// Position component to entity's component
 	if (ent->hasComponent<PositionComponent>()) {
 		m_posComp = &ent->getComponent<PositionComponent>();
-	}
-	else {
+	} else {
 		std::cout << "Entity doesn't have position component.\n";
 		exit(-1);
 	}

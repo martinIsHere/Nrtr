@@ -15,7 +15,7 @@ public:
 	uint32_t frames;
 	GameMap* Town1;
 
-	constexpr static int ID = 0;
+	const int ID = 0;
 
 	OpeningScene();
 
@@ -33,7 +33,7 @@ public:
 	uint32_t frames;
 	GameMap* House1;
 
-	constexpr static int ID = 1;
+	const int ID = 1;
 
 	FirstHouseScene();
 

@@ -2,13 +2,12 @@
 #include "SceneCollection.h"
 #include "Scene.h"
 #include "Components.h"
-//#include "Scene.h"
 
 TheaterEngine::TheaterEngine() {
 	gameStateManagerPtr = nullptr;
 	currentScenePtr = nullptr;
 	entityManagerPtr = nullptr;
-	currentlyLoadedScenesPtr = new std::vector<Scene*>();
+	currentlyLoadedScenesPtr = new std::array<Scene*, MAX_LOADED_SCENES>();
 
 }
 
@@ -19,7 +18,7 @@ TheaterEngine::~TheaterEngine() {
 void TheaterEngine::init(
 	GameStateManager* gameStateManagerPtr,
 	Manager* entityManagerPtr,
-	GameMap** currentMapPtr,
+	GameMap** currentMapPtrPtr,
 	SDL_Renderer* renPtr,
 	uint32_t* nWinWidthPtr,
 	uint32_t* nWinHeightPtr
@@ -27,18 +26,18 @@ void TheaterEngine::init(
 	this->entityManagerPtr = entityManagerPtr;
 	this->gameStateManagerPtr = gameStateManagerPtr;
 	Scene::entityManagerPtr = entityManagerPtr;
-	Scene::currentMapPtr = currentMapPtr;
+	Scene::currentMapPtrPtr = currentMapPtrPtr;
 	Scene::arrayOfActiveEntitiesPtr = entityManagerPtr->getEntityArrayPointer();
 	Scene::renPtr = renPtr;
 	Scene::nWinWidthPtr = nWinWidthPtr;
 	Scene::nWinHeightPtr = nWinHeightPtr;
 	Scene::interactionCoords = new Point(NULL, NULL);
 	Scene::playerHasInteracted = new bool(false);
+	Scene::theaterEnginePtr = this;
 
 
 	// TODO: relative to prev save init a scene
-	currentScenePtr = new OpeningScene();
-	currentlyLoadedScenesPtr->push_back(currentScenePtr);
+	changeCurrentScene<OpeningScene>();
 	currentScenePtr->init();
 }
 
@@ -63,7 +62,7 @@ void TheaterEngine::teleportEntity(
 	ent->getComponent<PositionComponent>().setPos(xDest, yDest);
 }
 
-const bool TheaterEngine::changeCurrentMap(GameMap* in_currentMapPtr) {
+bool TheaterEngine::changeCurrentMap(GameMap* in_currentMapPtr) {
 	if (in_currentMapPtr != nullptr) {
 		for (Entity* entity : *entityManagerPtr->getEntityArrayPointer()) {
 			if (entity->hasComponent<CollisionComponent>()) {
@@ -76,14 +75,38 @@ const bool TheaterEngine::changeCurrentMap(GameMap* in_currentMapPtr) {
 				entity->getComponent<PositionComponent>().setPos(TILE_SIZE_PIXELS * 2, TILE_SIZE_PIXELS * 3);
 			}
 		}
-		*Scene::currentMapPtr = in_currentMapPtr;
+		*Scene::currentMapPtrPtr = in_currentMapPtr;
 		return true;
 	}
 	return false;
 }
 
+template <typename T>
+Scene* TheaterEngine::createOrGetScene() const {
+	if ((*currentlyLoadedScenesPtr)[Scene::getSceneTypeID<T>()] != nullptr) 
+		return (*currentlyLoadedScenesPtr)[Scene::getSceneTypeID<T>()];
+	return new T();
+}
+
+template <typename T>  // return true if the new scene has already been loaded
+bool TheaterEngine::changeCurrentScene() {
+	Scene* in_currentScenePtr = createOrGetScene<T>();
+	if (!in_currentScenePtr) return false;
+	currentScenePtr = in_currentScenePtr;
+	for (Scene* scene : *currentlyLoadedScenesPtr) {
+		if (scene = in_currentScenePtr) return true;
+	}
+	(*currentlyLoadedScenesPtr)[Scene::getSceneTypeID<T>()] = in_currentScenePtr;
+	return true;
+}
+
+
 Entity* TheaterEngine::getPlayerEntity() {
 	return Scene::playerEntity;
+}
+
+GameMap* TheaterEngine::getCurrentMap() {
+	return *Scene::currentMapPtrPtr;
 }
 
 void TheaterEngine::update() {

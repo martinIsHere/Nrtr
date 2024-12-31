@@ -1,6 +1,8 @@
 #include "SceneCollection.h"
 #include "components.h"
 #include "ECS.h"
+#include "TheaterEngine.h"
+
 
 bool isViableInteractCoords(Point* interactionCoords) {
 	if (interactionCoords->x < 0) return false;
@@ -36,7 +38,7 @@ void OpeningScene::init()  {
 			false // if the map is very small, like a house -> set to true
 			);
 	}
-	*currentMapPtr = Town1;
+	*currentMapPtrPtr = Town1;
 
 	if (!Scene::playerEntity->hasComponent<DrawingComponent>()) {
 		playerEntity->addComponent<DrawingComponent>(
@@ -78,8 +80,11 @@ void OpeningScene::init()  {
 void OpeningScene::update()  {
 	if (*playerHasInteracted && isViableInteractCoords(interactionCoords)) {
 		*playerHasInteracted = false;
-		if (interactionCoords->isEqual(new Point(2, 2))) {
-			log("attacked a man");
+		if (interactionCoords->isEqual(new Point(7,5))
+			|| interactionCoords->isEqual(new Point(8, 5))) {
+			if (theaterEnginePtr != nullptr) { 
+			//(*theaterEnginePtr).changeCurrentScene<FirstHouseScene>();
+			}
 		}
 	}
 
@@ -121,8 +126,8 @@ void OpeningScene::update()  {
 
 void OpeningScene::draw() {
 	SDL_Rect box = { 
-		interactionCoords->x * TILE_SIZE_PIXELS - *(*currentMapPtr)->getCam()->getOffsetXPtr(),
-		interactionCoords->y * TILE_SIZE_PIXELS - *(*currentMapPtr)->getCam()->getOffsetYPtr(),
+		interactionCoords->x * TILE_SIZE_PIXELS - *(*currentMapPtrPtr)->getCam()->getOffsetXPtr(),
+		interactionCoords->y * TILE_SIZE_PIXELS - *(*currentMapPtrPtr)->getCam()->getOffsetYPtr(),
 		TILE_SIZE_PIXELS, 
 		TILE_SIZE_PIXELS };
 	SDL_SetRenderDrawColor(renPtr, 255, 0, 0, 255);

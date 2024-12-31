@@ -156,6 +156,8 @@ void GameEngine::handleEvents() {
 			break;
 
 		case SDL_MOUSEBUTTONDOWN:
+			std::cout << "x: " << theaterEngine->getCurrentMap()->getCellx_fromCoord(mousePos[0] + *theaterEngine->getCurrentMap()->getCam()->getOffsetXPtr()) << "\n";
+			std::cout << "y: " << theaterEngine->getCurrentMap()->getCelly_fromCoord(mousePos[1] + *theaterEngine->getCurrentMap()->getCam()->getOffsetYPtr()) << "\n";
 			break;
 		case SDL_KEYDOWN:
 			if (Event->key.repeat == 0) {

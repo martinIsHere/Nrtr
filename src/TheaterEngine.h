@@ -2,11 +2,13 @@
 #include "includes.h"
 #include "GameStateManager.h"
 
+#define MAX_LOADED_SCENES 10
+
 class TheaterEngine {
 	 GameStateManager* gameStateManagerPtr;
 	 Scene* currentScenePtr;
 	 Manager* entityManagerPtr;
-	 std::vector<Scene*>* currentlyLoadedScenesPtr;
+	 std::array<Scene*, MAX_LOADED_SCENES>* currentlyLoadedScenesPtr;
 public:
 	TheaterEngine();
 
@@ -15,7 +17,7 @@ public:
 	void init(
 		GameStateManager* gameStateManagerPtr,
 		Manager* entityManagerPtr,
-		GameMap** currentMapPtr,
+		GameMap** currentMapPtrPtr,
 		SDL_Renderer* renPtr,
 		uint32_t* nWinWidthPtr,
 		uint32_t* nWinHeightPtr
@@ -36,9 +38,17 @@ public:
 		int yDest
 		);
 
-	const bool changeCurrentMap(GameMap* in_currentMapPtr);
+	template <typename T>
+	Scene* createOrGetScene()const;
+
+	bool changeCurrentMap(GameMap* in_currentMapPtr);
+
+	template <typename T>
+	bool changeCurrentScene();
 
 	Entity* getPlayerEntity();
+
+	GameMap* getCurrentMap();
 
 	void update();
 

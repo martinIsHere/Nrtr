@@ -86,10 +86,6 @@ private:
 
 	std::string mapPath;
 
-	//uint16_t* m_backLayer_array;
-	//uint16_t* m_frontLayer_array;
-	//bool* m_blockState_array;
-
 	SDL_Renderer* m_ren;
 
 	SDL_Rect* m_tempSrcRect, * m_tempDstRect;
@@ -100,6 +96,7 @@ private:
 	uint8_t m_currentState;
 	uint8_t m_currentMirrorState;
 	int m_blockSize;
+
 	// amount of visible tiles in pixels. tiles * TILE_SIZE_PIXELS
 	int m_visibleTilesX_pixels, m_visibleTilesY_pixels;
 	Camera* m_mainCamera;

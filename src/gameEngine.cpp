@@ -1,5 +1,38 @@
 #include "GameEngine.h"
 
+void set_pixel(const SDL_Surface* surface, const int x, const int y, const Uint32 pixel)
+{
+	Uint8* target_pixel = (Uint8*)surface->pixels + y * surface->pitch + x * 4;
+	*(Uint32*)target_pixel = pixel;
+}
+
+uint32_t RGBtoUint32(const uint8_t r, const uint8_t g, const uint8_t b) {
+	// uint32 -> XX(r) - XX(g) - XX(b) - XX(a)
+	return (r << 8 * 3) + (g << 8 * 2) + (b << 8) + (uint8_t)255;
+}
+
+void set_pixel(const SDL_Surface* surface, const uint64_t x, const uint64_t y, const uint8_t r, const uint8_t g, const uint8_t b)
+{
+	Uint8* target_pixel = (Uint8*)surface->pixels  // address of first pixel
+								+ y * surface->pitch  // add y * amountOfPixelsPerRowOfPixels
+								+ x * surface->format->BytesPerPixel;			// add x * sizeOfOnePixelInMemory (each pixel is represented by 32 bits)
+	*(Uint32*)target_pixel = RGBtoUint32(r,g,b);
+}
+
+void makeSurfaceTransparent(SDL_Surface* surface) {
+	int pixelSize_inBytes = surface->format->BytesPerPixel;
+	int sizeOfPixelArray_inBytes = (surface->pitch * surface->h);
+	for (uint32_t i = 3; 
+		i < sizeOfPixelArray_inBytes;
+		i += pixelSize_inBytes) {
+		Uint8* target_byte = (Uint8*)surface->pixels  // address of first pixel
+								+ i;
+		*target_byte = 0x00; // alpha value = 0
+	}
+}
+
+SDL_Texture* pixelTexturePtr;
+
 GameEngine::GameEngine(const uint32_t nWidth, const uint32_t nHeight, const std::string title, const uint32_t fps) {
 	nElapsedTime = NULL;    // for capping fps - global
 	unStartElapsedTime = 0;  // for capping fps - global
@@ -113,9 +146,24 @@ GameEngine::GameEngine(const uint32_t nWidth, const uint32_t nHeight, const std:
 
 	
 	// sdl create surface with vignette 
-	SDL_Surface vignetteSurface;
-	SDL_LockSurface(&vignetteSurface);
+	SDL_Surface* vignetteSurface = SDL_CreateRGBSurface(0, nWinWidth, nWinHeight, 32, 0, 0, 0, 0);
+	SDL_SetSurfaceAlphaMod(vignetteSurface, 0x00);
+	SDL_LockSurface(vignetteSurface);
+	makeSurfaceTransparent(vignetteSurface);
+	set_pixel(vignetteSurface, 0, 0, 255, 255, 255);
+	set_pixel(vignetteSurface, 0, 0, 255, 255, 255);
+	set_pixel(vignetteSurface, 2, 2, 255, 255, 255);
+	set_pixel(vignetteSurface, 3, 3, 255, 255, 255);
+	set_pixel(vignetteSurface, 4, 4, 255, 255, 255);
+	set_pixel(vignetteSurface, 5, 5, 255, 255, 255);
+	if (SDL_SetSurfaceBlendMode(vignetteSurface, SDL_BLENDMODE_BLEND) < 0) {
+		log("fuck my life");
+	}
+	SDL_UnlockSurface(vignetteSurface);
+	pixelTexturePtr = SDL_CreateTextureFromSurface(renPtr, vignetteSurface);
+	SDL_FreeSurface(vignetteSurface);
 }
+
 
 GameEngine::~GameEngine() {
 	SDL_DestroyRenderer(renPtr);
@@ -279,6 +327,8 @@ void GameEngine::update() {
 
 		// delay
 		delayAndUpdateWindowTitle();
+
+		// should still be checking for move and exit button inputs!
 	} else if (m_stateManagerPtr->get() == m_stateManagerPtr->state_blockTransition) {
 		(*currentMapPtr)->update();
 		GameEngine::transitionDraw_boxes();
@@ -361,6 +411,9 @@ void GameEngine::draw(bool isPresenting) {
 
 	renderText();
 
+
+	SDL_RenderCopy(renPtr, pixelTexturePtr, NULL, new SDL_Rect{ 0,0,(int)nWinWidth,(int)nWinHeight });
+
 	if (isPresenting) {
 		SDL_RenderPresent(renPtr);
 	}
@@ -372,7 +425,7 @@ constexpr int amountOfBoxesY = 4;
 // drawing to be done during transition
 // incredibly sketchy and rough draft
 // clean up later
-void GameEngine::transitionDraw_boxes(const uint32_t&& r=100, const uint32_t&& g = 100, const uint32_t&& b = 100) {
+void GameEngine::transitionDraw_boxes(const uint32_t&& r, const uint32_t&& g, const uint32_t&& b) {
 	if (elapsedFrames == 0) {
 		boxWidth = int(nWinWidth / amountOfBoxesX); // 20 -> amount of boxes to be drawn across window
 		boxHeight = int(nWinHeight / amountOfBoxesY);

@@ -16,6 +16,7 @@ void set_pixel(const SDL_Surface* surface, const uint64_t x, const uint64_t y, c
 	Uint8* target_pixel = (Uint8*)surface->pixels  // address of first pixel
 								+ y * surface->pitch  // add y * amountOfPixelsPerRowOfPixels
 								+ x * surface->format->BytesPerPixel;			// add x * sizeOfOnePixelInMemory (each pixel is represented by 32 bits)
+	//log((int)*(target_pixel + 3));
 	*(Uint32*)target_pixel = RGBtoUint32(r,g,b);
 }
 
@@ -28,6 +29,45 @@ void makeSurfaceTransparent(SDL_Surface* surface) {
 		Uint8* target_byte = (Uint8*)surface->pixels  // address of first pixel
 								+ i;
 		*target_byte = 0x00; // alpha value = 0
+	}
+}
+
+
+// incredibly bad code
+// will need refactoring
+void clearWithDitherEffect(SDL_Surface* surface) {
+	int pixelSize_inBytes = surface->format->BytesPerPixel;
+	int sizeOfPixelArray_inBytes = (surface->pitch * surface->h);
+	uint32_t oldIsOdd = -1;
+	uint32_t isOdd = 0;
+	for (uint32_t i = 0;
+		i < sizeOfPixelArray_inBytes - pixelSize_inBytes*4;
+		i += pixelSize_inBytes*8) {
+		isOdd = uint32_t((float)i / (float)surface->pitch) % 2;
+
+		if (isOdd && isOdd != oldIsOdd)
+			i += pixelSize_inBytes * 4;// pixelSize_inBytes*4 / 2
+			oldIsOdd = isOdd;
+
+
+		Uint8* target_byte = (Uint8*)surface->pixels  // address of first pixel
+									+ i; // offset in bytes
+		*target_byte = 0xFF; 
+		*(target_byte + 1) = 0x00;
+		*(target_byte + 2) = 0x00;
+		*(target_byte + 3) = 0x00;
+		*(target_byte + 4) = 0xFF;
+		*(target_byte + 5) = 0x00;
+		*(target_byte + 6) = 0x00;
+		*(target_byte + 7) = 0x00;
+		*(target_byte + 8) = 0xFF;
+		*(target_byte + 9) = 0x00;
+		*(target_byte + 10) = 0x00;
+		*(target_byte + 11) = 0x00;
+		*(target_byte + 12) = 0xFF;
+		*(target_byte + 13) = 0x00;
+		*(target_byte + 14) = 0x00;
+		*(target_byte + 15) = 0x00;
 	}
 }
 
@@ -146,21 +186,19 @@ GameEngine::GameEngine(const uint32_t nWidth, const uint32_t nHeight, const std:
 
 	
 	// sdl create surface with vignette 
-	SDL_Surface* vignetteSurface = SDL_CreateRGBSurface(0, nWinWidth, nWinHeight, 32, 0, 0, 0, 0);
-	SDL_SetSurfaceAlphaMod(vignetteSurface, 0x00);
+	// TODO : finish
+	SDL_Surface* vignetteSurface = SDL_CreateRGBSurface(0, nWinWidth, nWinHeight, 32, 0xFF000000, 0x00FF0000, 0x0000FF00, 0x000000FF);
 	SDL_LockSurface(vignetteSurface);
-	makeSurfaceTransparent(vignetteSurface);
-	set_pixel(vignetteSurface, 0, 0, 255, 255, 255);
-	set_pixel(vignetteSurface, 0, 0, 255, 255, 255);
-	set_pixel(vignetteSurface, 2, 2, 255, 255, 255);
-	set_pixel(vignetteSurface, 3, 3, 255, 255, 255);
-	set_pixel(vignetteSurface, 4, 4, 255, 255, 255);
-	set_pixel(vignetteSurface, 5, 5, 255, 255, 255);
+	// ADD OR BLEND
 	if (SDL_SetSurfaceBlendMode(vignetteSurface, SDL_BLENDMODE_BLEND) < 0) {
-		log("fuck my life");
+		log("SDL_SetSurfaceBlendMode(vignetteSurface, SDL_BLENDMODE_ADD) < 0");
 	}
+	// redundant
+	clearWithDitherEffect(vignetteSurface);
+	
 	SDL_UnlockSurface(vignetteSurface);
 	pixelTexturePtr = SDL_CreateTextureFromSurface(renPtr, vignetteSurface);
+
 	SDL_FreeSurface(vignetteSurface);
 }
 
@@ -411,7 +449,7 @@ void GameEngine::draw(bool isPresenting) {
 
 	renderText();
 
-
+	// temporary
 	SDL_RenderCopy(renPtr, pixelTexturePtr, NULL, new SDL_Rect{ 0,0,(int)nWinWidth,(int)nWinHeight });
 
 	if (isPresenting) {
@@ -460,6 +498,10 @@ void GameEngine::transitionDraw_boxes(const uint32_t&& r, const uint32_t&& g, co
 		m_stateManagerPtr->set(m_stateManagerPtr->state_gameRunning);
 		elapsedFrames = -1; // because transitionDraw ends with adding 1
 	}
+
+	// temporary
+	SDL_RenderCopy(renPtr, pixelTexturePtr, NULL, new SDL_Rect{ 0,0,(int)nWinWidth,(int)nWinHeight });
+	
 	SDL_RenderPresent(renPtr);
 	elapsedFrames++;
 }

@@ -16,6 +16,21 @@ PositionComponent::PositionComponent(int x, int y) : m_X(x), m_Y(y) {
 	isFrictionless = false;
 }
 
+PositionComponent::PositionComponent(int x, int y, uint32_t blockSize) : m_X(x), m_Y(y), blockSize(blockSize){
+	m_velocity_vector = nullptr;
+	m_acceleration_vector = nullptr;
+
+	// defaults
+	m_Directions = { false, false, false, false };
+	m_facingDir = 0;
+	default_acceleration = float(1.6 * (double)TILE_SIZE_PIXELS / (double)targetFPS); // DEFAULT ACCELERATION   // 1.4 if TILE_SIZE_PIXELS = 64
+	default_natural_deceleration = float(0.5 * (double)TILE_SIZE_PIXELS / (double)targetFPS); // 0.8 if TILE_SIZE_PIXELS = 64 and targetFPS = 60
+	natural_deceleration = default_natural_deceleration;
+	max_vel = float(8 * (double)TILE_SIZE_PIXELS / (double)targetFPS); // 10 if TILE_SIZE_PIXELS = 64 and targetFPS = 60
+	isAbleToMove = true;
+	isFrictionless = false;
+}
+
 void PositionComponent::init() {
 	// init
 	m_velocity_vector = new Vector(0.f, 0.f);
@@ -147,6 +162,15 @@ void PositionComponent::setVel(const float x, const float y) {
 void PositionComponent::setPos(const int x, const int y) {
 	m_X = x;
 	m_Y = y;
+}
+
+void PositionComponent::setPos_tileCoords(const int x_inTiles, const int y_inTiles) {
+	if (blockSize == 0) {
+		std::cerr << "blockSize has not been initialized!\n";
+		return;
+	}
+	m_X = x_inTiles *blockSize;
+	m_Y = y_inTiles *blockSize;
 }
 
 void PositionComponent::moveForward(int d) {

@@ -111,28 +111,10 @@ GameEngine::GameEngine(const uint32_t nWidth, const uint32_t nHeight, const std:
 	playerEntity = theaterEngine->getPlayerEntity();
 	if (playerEntity == nullptr) log("playerEntity == nullptr");
 
-	/*
-	NPCEntity=m_entityManager.addEntity();
-	if (NPCEntity->hasComponent<PositionComponent>())log("NPCEntity->hasComponent<PositionComponent>");
-	NPCEntity->addComponent<PositionComponent>(TILE_SIZE_PIXELS, TILE_SIZE_PIXELS);
-	if (NPCEntity->hasComponent<DrawingComponent>())log("NPCEntity->hasComponent<DrawingComponent>");
-	NPCEntity->addComponent<DrawingComponent>(
-		renPtr,
-		"res/imgs/secondNPC.bmp",
-		16,
-		3, 4,
-		2,// amount of animation frames per second
-		4, // amount of animation frames per second
-		mapArray[currentMapId]->getCam()
-		);
-
-	if (NPCEntity->hasComponent<CollisionComponent>())log("NPCEntity->hasComponent<CollisionComponent>");
-	NPCEntity->addComponent<CollisionComponent>(mapArray[currentMapId]);
-
-
-	NPCEntity->getComponent<PositionComponent>().set_isFrictionless(true);
-	NPCEntity->getComponent<PositionComponent>().set_default_acceleration(0);
-	*/
+	
+	// sdl create surface with vignette 
+	SDL_Surface vignetteSurface;
+	SDL_LockSurface(&vignetteSurface);
 }
 
 GameEngine::~GameEngine() {
@@ -290,7 +272,7 @@ void GameEngine::update() {
 		(*currentMapPtr)->update();
 
 		//
-		draw();
+		draw(true);
 
 		// 
 		theaterEngine->update();
@@ -299,7 +281,7 @@ void GameEngine::update() {
 		delayAndUpdateWindowTitle();
 	} else if (m_stateManagerPtr->get() == m_stateManagerPtr->state_blockTransition) {
 		(*currentMapPtr)->update();
-		GameEngine::transitionDraw();
+		GameEngine::transitionDraw_boxes();
 		delayAndUpdateWindowTitle();
 	}
 }
@@ -361,7 +343,7 @@ void GameEngine::renderText() {
 }
 
 // main drawing for normal gameplay
-void GameEngine::draw() {
+void GameEngine::draw(bool isPresenting) {
 
 	// clear screen
 	SDL_SetRenderDrawColor(renPtr, 0, 0, 0, 255);
@@ -379,7 +361,9 @@ void GameEngine::draw() {
 
 	renderText();
 
-	SDL_RenderPresent(renPtr);
+	if (isPresenting) {
+		SDL_RenderPresent(renPtr);
+	}
 }
 
 constexpr int amountOfBoxesX = 10;
@@ -388,7 +372,7 @@ constexpr int amountOfBoxesY = 4;
 // drawing to be done during transition
 // incredibly sketchy and rough draft
 // clean up later
-void GameEngine::transitionDraw() {
+void GameEngine::transitionDraw_boxes(const uint32_t&& r=100, const uint32_t&& g = 100, const uint32_t&& b = 100) {
 	if (elapsedFrames == 0) {
 		boxWidth = int(nWinWidth / amountOfBoxesX); // 20 -> amount of boxes to be drawn across window
 		boxHeight = int(nWinHeight / amountOfBoxesY);
@@ -406,7 +390,7 @@ void GameEngine::transitionDraw() {
 	else if (boxCount < (amountOfBoxesX+1) * amountOfBoxesY * 2) {
 		if(boxCount == (amountOfBoxesX + 1) * amountOfBoxesY)
 			theaterEngine->initCurrentScene();
-		draw();
+		draw(false);
 		SDL_SetRenderDrawColor(renPtr, 100, 100, 100, 255);
 		// transition animation in reverse
 		drawRect.x = (boxCount % (amountOfBoxesX + 1)) * boxWidth;

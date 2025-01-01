@@ -20,6 +20,8 @@ class CollisionComponent : public Component{
 	int hitBoxTopOffset;
 
 	int oldYPos;
+
+	uint32_t blockSize;
 	
 public:
 

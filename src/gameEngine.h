@@ -26,9 +26,9 @@ public:
 
 	void update();
 
-	void draw();
+	void draw(bool isPresenting);
 
-	void transitionDraw();
+	void transitionDraw_boxes(const uint32_t&& r = 100, const uint32_t&& g = 100, const uint32_t&& b = 100);
 
 	void sortEntityArray();
 

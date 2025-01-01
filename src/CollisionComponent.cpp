@@ -11,6 +11,7 @@ CollisionComponent::CollisionComponent(GameMap* gameMap) {
 	hitBoxTopOffset = NULL;
 	gameMapWidth_pixels = NULL;
 	gameMapHeight_pixels = NULL;
+	blockSize = m_gameMap->getBlockSize();
 }
 
 CollisionComponent::~CollisionComponent() {
@@ -31,14 +32,14 @@ void CollisionComponent::init() {
 			std::cout << "Entity does not have positionComponent!\n";
 		}
 	}
-	gameMapWidth_pixels = m_gameMap->getMapWidth_tiles() * TILE_SIZE_PIXELS;
-	gameMapHeight_pixels = m_gameMap->getMapHeight_tiles() * TILE_SIZE_PIXELS;
+	gameMapWidth_pixels = m_gameMap->getMapWidth_tiles() * blockSize;
+	gameMapHeight_pixels = m_gameMap->getMapHeight_tiles() * blockSize;
 }
 
 void CollisionComponent::loadNewMap(GameMap* gameMap) {
 	m_gameMap = gameMap;
-	gameMapWidth_pixels = m_gameMap->getMapWidth_tiles() * TILE_SIZE_PIXELS;
-	gameMapHeight_pixels = m_gameMap->getMapHeight_tiles() * TILE_SIZE_PIXELS;
+	gameMapWidth_pixels = m_gameMap->getMapWidth_tiles() * blockSize;
+	gameMapHeight_pixels = m_gameMap->getMapHeight_tiles() * blockSize;
 }
 
 void CollisionComponent::update() {
@@ -53,17 +54,17 @@ void CollisionComponent::draw() {
 
 inline bool CollisionComponent::apply_correction_in_LEFT_COLLISION() {
 	if (m_gameMap->getState(
-		int((m_posComp->getx() + COLSN_OFST + hitBoxOffsetX) / TILE_SIZE_PIXELS),
-		int((oldYPos + COLSN_OFST + hitBoxTopOffset) / TILE_SIZE_PIXELS)
+		int((m_posComp->getx() + COLSN_OFST + hitBoxOffsetX) / blockSize),
+		int((oldYPos + COLSN_OFST + hitBoxTopOffset) / blockSize)
 		)
 		|| m_gameMap->getState(
-			int((m_posComp->getx() + COLSN_OFST + hitBoxOffsetX) / TILE_SIZE_PIXELS),
-			int(((oldYPos + AVERAGE_ENTITY_SIZE_PIXELS - COLSN_OFST - 1) / TILE_SIZE_PIXELS)))
+			int((m_posComp->getx() + COLSN_OFST + hitBoxOffsetX) / blockSize),
+			int(((oldYPos + AVERAGE_ENTITY_SIZE_PIXELS - COLSN_OFST - 1) / blockSize)))
 		) {
 
 		// Correct collision: move back to the left boundary
 		m_posComp->getx() =
-			int((m_posComp->getx() + COLSN_OFST + hitBoxOffsetX) / TILE_SIZE_PIXELS) * TILE_SIZE_PIXELS + TILE_SIZE_PIXELS - hitBoxOffsetX;
+			int((m_posComp->getx() + COLSN_OFST + hitBoxOffsetX) / blockSize) * blockSize + blockSize - hitBoxOffsetX;
 
 		// Reset velocity to prevent movement into the collision
 		m_posComp->getVelx() = 0;
@@ -75,15 +76,15 @@ inline bool CollisionComponent::apply_correction_in_LEFT_COLLISION() {
 
 inline bool CollisionComponent::apply_correction_in_RIGHT_COLLISION() {
 	if (m_gameMap->getState(
-		int((m_posComp->getx() + AVERAGE_ENTITY_SIZE_PIXELS - COLSN_OFST - hitBoxOffsetX - 1) / TILE_SIZE_PIXELS),
-		int((oldYPos + COLSN_OFST + hitBoxTopOffset) / TILE_SIZE_PIXELS))
+		int((m_posComp->getx() + AVERAGE_ENTITY_SIZE_PIXELS - COLSN_OFST - hitBoxOffsetX - 1) / blockSize),
+		int((oldYPos + COLSN_OFST + hitBoxTopOffset) / blockSize))
 		|| m_gameMap->getState(
-			int(((m_posComp->getx() + AVERAGE_ENTITY_SIZE_PIXELS - COLSN_OFST - hitBoxOffsetX - 1) / TILE_SIZE_PIXELS)),
-			int(((oldYPos + AVERAGE_ENTITY_SIZE_PIXELS - COLSN_OFST - 1) / TILE_SIZE_PIXELS)))) {
+			int(((m_posComp->getx() + AVERAGE_ENTITY_SIZE_PIXELS - COLSN_OFST - hitBoxOffsetX - 1) / blockSize)),
+			int(((oldYPos + AVERAGE_ENTITY_SIZE_PIXELS - COLSN_OFST - 1) / blockSize)))) {
 
 		// Correct collision: move back to the right boundary
 		m_posComp->getx() =
-			int((m_posComp->getx() + AVERAGE_ENTITY_SIZE_PIXELS - COLSN_OFST - hitBoxOffsetX - 1) / TILE_SIZE_PIXELS) * TILE_SIZE_PIXELS - AVERAGE_ENTITY_SIZE_PIXELS + hitBoxOffsetX;
+			int((m_posComp->getx() + AVERAGE_ENTITY_SIZE_PIXELS - COLSN_OFST - hitBoxOffsetX - 1) / blockSize) * blockSize - AVERAGE_ENTITY_SIZE_PIXELS + hitBoxOffsetX;
 
 		// Reset velocity to prevent movement into the collision
 		m_posComp->getVelx() = 0;
@@ -96,15 +97,15 @@ inline bool CollisionComponent::apply_correction_in_RIGHT_COLLISION() {
 
 inline bool CollisionComponent::apply_correction_in_ABOVE_COLLISION() {
 	if (m_gameMap->getState(
-		int((m_posComp->getx() + COLSN_OFST + hitBoxOffsetX) / TILE_SIZE_PIXELS),
-		int((m_posComp->gety() + COLSN_OFST + hitBoxTopOffset) / TILE_SIZE_PIXELS))
+		int((m_posComp->getx() + COLSN_OFST + hitBoxOffsetX) / blockSize),
+		int((m_posComp->gety() + COLSN_OFST + hitBoxTopOffset) / blockSize))
 		|| m_gameMap->getState(
-			int(((m_posComp->getx() + AVERAGE_ENTITY_SIZE_PIXELS - COLSN_OFST - hitBoxOffsetX - 1) / TILE_SIZE_PIXELS)),
-			int((m_posComp->gety() + COLSN_OFST + hitBoxTopOffset) / TILE_SIZE_PIXELS))) {
+			int(((m_posComp->getx() + AVERAGE_ENTITY_SIZE_PIXELS - COLSN_OFST - hitBoxOffsetX - 1) / blockSize)),
+			int((m_posComp->gety() + COLSN_OFST + hitBoxTopOffset) / blockSize))) {
 
 		// Correct collision: move back to the top boundary
 		m_posComp->gety() =
-			int((m_posComp->gety() + COLSN_OFST + hitBoxTopOffset) / TILE_SIZE_PIXELS) * TILE_SIZE_PIXELS + TILE_SIZE_PIXELS - hitBoxTopOffset;
+			int((m_posComp->gety() + COLSN_OFST + hitBoxTopOffset) / blockSize) * blockSize + blockSize - hitBoxTopOffset;
 
 		// Reset velocity to prevent movement into the collision
 		m_posComp->getVely() = 0;
@@ -117,15 +118,15 @@ inline bool CollisionComponent::apply_correction_in_ABOVE_COLLISION() {
 
 inline bool CollisionComponent::apply_correction_in_BELOW_COLLISION() {
 	if (m_gameMap->getState(
-		int((m_posComp->getx() + COLSN_OFST + hitBoxOffsetX) / TILE_SIZE_PIXELS),
-		int((m_posComp->gety() + AVERAGE_ENTITY_SIZE_PIXELS - COLSN_OFST - 1) / TILE_SIZE_PIXELS))
+		int((m_posComp->getx() + COLSN_OFST + hitBoxOffsetX) / blockSize),
+		int((m_posComp->gety() + AVERAGE_ENTITY_SIZE_PIXELS - COLSN_OFST - 1) / blockSize))
 		|| m_gameMap->getState(
-			int(((m_posComp->getx() + AVERAGE_ENTITY_SIZE_PIXELS - COLSN_OFST - hitBoxOffsetX - 1) / TILE_SIZE_PIXELS)),
-			int((m_posComp->gety() + AVERAGE_ENTITY_SIZE_PIXELS - COLSN_OFST - 1) / TILE_SIZE_PIXELS))) {
+			int(((m_posComp->getx() + AVERAGE_ENTITY_SIZE_PIXELS - COLSN_OFST - hitBoxOffsetX - 1) / blockSize)),
+			int((m_posComp->gety() + AVERAGE_ENTITY_SIZE_PIXELS - COLSN_OFST - 1) / blockSize))) {
 
 		// Correct collision: move back to the bottom boundary
 		m_posComp->gety() =
-			int((m_posComp->gety() + AVERAGE_ENTITY_SIZE_PIXELS - COLSN_OFST - 1) / TILE_SIZE_PIXELS) * TILE_SIZE_PIXELS - AVERAGE_ENTITY_SIZE_PIXELS;
+			int((m_posComp->gety() + AVERAGE_ENTITY_SIZE_PIXELS - COLSN_OFST - 1) / blockSize) * blockSize - AVERAGE_ENTITY_SIZE_PIXELS;
 
 		// Reset velocity to prevent movement into the collision
 		m_posComp->getVely() = 0;
@@ -165,6 +166,7 @@ inline bool CollisionComponent::apply_correction_in_MAP_EDGE_COLLISION() {
 	return collision;
 }
 
+// could be wildy optimized
 bool CollisionComponent::correct_possible_collision() {
 
 	bool collision = false;

@@ -6,6 +6,8 @@
 class PositionComponent : public Component{
 	// coordinates of entity in pixels on the map not the screen.
 	int m_X, m_Y;
+
+	uint32_t blockSize;
 	// if unable to move -> acceleration and velocity will be set to zero 
 	// and nothing else will be updated. Primarily used in animations.
 	bool isAbleToMove;
@@ -32,6 +34,8 @@ public:
 
 	PositionComponent(int x, int y);
 
+	PositionComponent(int x, int y, uint32_t blockSize);
+
 	PositionComponent() = default;
 
 	~PositionComponent();
@@ -51,6 +55,8 @@ public:
 	void moveForward(int d);
 
 	void setPos(const int x, const int y);
+
+	void setPos_tileCoords(const int x_inTiles, const int y_inTiles);
 
 	void setAcc(const float& xAcc, const float& yAcc);
 	

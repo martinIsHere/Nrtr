@@ -85,22 +85,22 @@ void OpeningScene::init()  {
 	frames = 0;
 
 	// creating player
-	if (!Scene::playerEntity) {
-		Scene::playerEntity = Scene::entityManagerPtr->addEntity();
-		Scene::playerEntity->addComponent<PositionComponent>(TILE_SIZE_PIXELS, TILE_SIZE_PIXELS);
+	if (!playerEntity) {
+		playerEntity = entityManagerPtr->addEntity();
+		playerEntity->addComponent<PositionComponent>(TILE_SIZE_PIXELS, TILE_SIZE_PIXELS, TILE_SIZE_PIXELS);
 	}
 
 	// loading maps
 	if (!Town1) {
 		Town1 = new GameMap(
-			Scene::renPtr,
+			renPtr,
 			"res/map/Town1_sh1.bin", // path to map file
 			"res/imgs/sh1.bmp",  // path to spritesheet file
 			12, // amount of tiles horizontally in spritesheet
 			18, // amount of tiles vertically in spritesheet
-			*Scene::nWinWidthPtr, *Scene::nWinHeightPtr, // window-to-be-displayed-on's width and heigth
-			&(Scene::playerEntity->getComponent<PositionComponent>().getx()), // pointer to coordinates for camera
-			&(Scene::playerEntity->getComponent<PositionComponent>().gety()), // here: just equal to the player position
+			*nWinWidthPtr, *nWinHeightPtr, // window-to-be-displayed-on's width and heigth
+			&(playerEntity->getComponent<PositionComponent>().getx()), // pointer to coordinates for camera
+			&(playerEntity->getComponent<PositionComponent>().gety()), // here: just equal to the player position
 			false // if the map is very small, like a house -> set to true
 			);
 	}
@@ -123,7 +123,7 @@ void OpeningScene::init()  {
 	if (!NPCEntity) {
 		NPCEntity = entityManagerPtr->addEntity();
 
-		NPCEntity->addComponent<PositionComponent>(TILE_SIZE_PIXELS, TILE_SIZE_PIXELS);
+		NPCEntity->addComponent<PositionComponent>(TILE_SIZE_PIXELS, TILE_SIZE_PIXELS, TILE_SIZE_PIXELS);
 
 		NPCEntity->addComponent<DrawingComponent>(
 			renPtr,
@@ -154,7 +154,7 @@ void OpeningScene::init()  {
 	NPCEntity->setActive();
 	// make this cleaner ------------------------------------
 	//playerEntity->getComponent<PositionComponent>().setPos(TILE_SIZE_PIXELS * 8, TILE_SIZE_PIXELS * 6);
-	NPCEntity->getComponent<PositionComponent>().setPos(TILE_SIZE_PIXELS, TILE_SIZE_PIXELS);
+	NPCEntity->getComponent<PositionComponent>().setPos_tileCoords(1, 1);
 }
 
 void OpeningScene::update()  {
@@ -170,11 +170,11 @@ void OpeningScene::update()  {
 				theaterEnginePtr->changeCurrentScene<FirstHouseScene>();
 				break;
 			case 2: case 3: // second house door
-				playerEntity->getComponent<PositionComponent>().setPos(5 * TILE_SIZE_PIXELS, 8 * TILE_SIZE_PIXELS);
+				playerEntity->getComponent<PositionComponent>().setPos_tileCoords(5, 8);
 				theaterEnginePtr->changeCurrentScene<SecondHouseScene>();
 				break;
 			case 4: case 5: // first plant house door
-				playerEntity->getComponent<PositionComponent>().setPos(2 * TILE_SIZE_PIXELS, 4 * TILE_SIZE_PIXELS);
+				playerEntity->getComponent<PositionComponent>().setPos_tileCoords(2, 4);
 				theaterEnginePtr->changeCurrentScene<FirstPlantHouseScene>();
 				break;
 			} 
@@ -285,7 +285,7 @@ void FirstHouseScene::init() {
 		ent->setInactive();
 	}
 	playerEntity->setActive();
-	playerEntity->getComponent<PositionComponent>().setPos(2*TILE_SIZE_PIXELS,3* TILE_SIZE_PIXELS);
+	playerEntity->getComponent<PositionComponent>().setPos_tileCoords(2,3);
 
 }
 
@@ -297,7 +297,7 @@ void FirstHouseScene::update() {
 			switch (i) {
 				// if i == 1
 			case 0: // first house door
-				playerEntity->getComponent<PositionComponent>().setPos(TILE_SIZE_PIXELS * 8, TILE_SIZE_PIXELS * 6);
+				playerEntity->getComponent<PositionComponent>().setPos_tileCoords(8, 6);
 				theaterEnginePtr->changeCurrentScene<OpeningScene>();
 				break;
 			}
@@ -380,7 +380,7 @@ void SecondHouseScene::update() {
 			switch (i) {
 				// if i == 1
 			case 0: case 1: // first house door
-				playerEntity->getComponent<PositionComponent>().setPos(TILE_SIZE_PIXELS * 29, TILE_SIZE_PIXELS * 39);
+				playerEntity->getComponent<PositionComponent>().setPos_tileCoords(29, 39);
 				theaterEnginePtr->changeCurrentScene<OpeningScene>();
 				break;
 			}
@@ -482,7 +482,7 @@ void FirstPlantHouseScene::init() {
 	CashierEntity->setActive();
 	playerEntity->setActive();
 
-	CashierEntity->getComponent<PositionComponent>().setPos(TILE_SIZE_PIXELS * 2, TILE_SIZE_PIXELS * 2);
+	CashierEntity->getComponent<PositionComponent>().setPos_tileCoords(2, 2);
 }
 
 void FirstPlantHouseScene::update() {
@@ -493,7 +493,7 @@ void FirstPlantHouseScene::update() {
 			switch (i) {
 				// if i == 1
 			case 0: case 1: // FirstPlantHouseScene inside house door
-				playerEntity->getComponent<PositionComponent>().setPos(TILE_SIZE_PIXELS * 29, TILE_SIZE_PIXELS * 11);
+				playerEntity->getComponent<PositionComponent>().setPos_tileCoords(29, 11);
 				theaterEnginePtr->changeCurrentScene<OpeningScene>();
 				break;
 			}

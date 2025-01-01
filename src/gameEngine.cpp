@@ -113,7 +113,7 @@ GameEngine::GameEngine(const uint32_t nWidth, const uint32_t nHeight, const std:
 
 	// load font
 	arialFont = TTF_OpenFont("res/fonts/arial.ttf", 80);
-	if (arialFont == nullptr) { log(TTF_GetError()); log("failed to load font")}
+	if (arialFont == nullptr) { log(TTF_GetError()); log("failed to load font!")}
 	textMessage = "";
 	lastMessage = "";
 	surfaceMessage = nullptr;
@@ -459,7 +459,7 @@ void GameEngine::draw(bool isPresenting) {
 
 constexpr int amountOfBoxesX = 10;
 constexpr int amountOfBoxesY = 4;
-
+//
 // drawing to be done during transition
 // incredibly sketchy and rough draft
 // clean up later

@@ -415,7 +415,7 @@ void FirstPlantHouseScene::init() {
 	// creating player
 	if (!Scene::playerEntity) {
 		Scene::playerEntity = Scene::entityManagerPtr->addEntity();
-		Scene::playerEntity->addComponent<PositionComponent>(TILE_SIZE_PIXELS, TILE_SIZE_PIXELS);
+		Scene::playerEntity->addComponent<PositionComponent>(TILE_SIZE_PIXELS, TILE_SIZE_PIXELS, TILE_SIZE_PIXELS);
 	}
 
 	if (!plantHouse1) {
@@ -450,7 +450,7 @@ void FirstPlantHouseScene::init() {
 	if (!CashierEntity) {
 		CashierEntity = entityManagerPtr->addEntity();
 
-		CashierEntity->addComponent<PositionComponent>(TILE_SIZE_PIXELS*2, TILE_SIZE_PIXELS*2);
+		CashierEntity->addComponent<PositionComponent>(TILE_SIZE_PIXELS*2, TILE_SIZE_PIXELS*2, TILE_SIZE_PIXELS);
 
 		CashierEntity->addComponent<DrawingComponent>(
 			renPtr,

@@ -5,6 +5,8 @@ PositionComponent::PositionComponent(int x, int y) : m_X(x), m_Y(y) {
 	m_velocity_vector = nullptr;
 	m_acceleration_vector = nullptr;
 
+	blockSize = 0;
+
 	// defaults
 	m_Directions = { false, false, false, false };
 	m_facingDir = 0;

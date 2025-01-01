@@ -10,7 +10,7 @@ class TheaterEngine {
 	 GameStateManager* gameStateManagerPtr;
 	 Scene* currentScenePtr;
 	 Manager* entityManagerPtr;
-	 std::array<Scene*, MAX_LOADED_SCENES>* currentlyLoadedScenesPtr;
+	 std::array<Scene*, MAX_LOADED_SCENES> currentlyLoadedScenesPtr;
 public:
 	TheaterEngine();
 
@@ -45,11 +45,11 @@ public:
 	bool changeCurrentMap(GameMap* in_currentMapPtr);
 
 	template <typename T>
-	Scene* loadOrGetScene() const {
-		if ((*currentlyLoadedScenesPtr)[Scene::getSceneTypeID<T>()] != nullptr) // if wanted scene is already loaded
-			return (*currentlyLoadedScenesPtr)[Scene::getSceneTypeID<T>()]; // return the loaded scene
+	Scene* loadOrGetScene() {
+		if (currentlyLoadedScenesPtr[Scene::getSceneTypeID<T>()] != nullptr) // if wanted scene is already loaded
+			return currentlyLoadedScenesPtr[Scene::getSceneTypeID<T>()]; // return the loaded scene
 		T* newScene = new T(); // else return a newly created version of the scene type ...
-		(*currentlyLoadedScenesPtr)[Scene::getSceneTypeID<T>()] = newScene; // and add to array of loaded scenes.
+		currentlyLoadedScenesPtr[Scene::getSceneTypeID<T>()] = newScene; // and add to array of loaded scenes.
 		return newScene;
 	}
 

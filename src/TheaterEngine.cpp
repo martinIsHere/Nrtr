@@ -6,7 +6,7 @@ TheaterEngine::TheaterEngine() {
 	gameStateManagerPtr = nullptr;
 	currentScenePtr = nullptr;
 	entityManagerPtr = nullptr;
-	currentlyLoadedScenesPtr = new std::array<Scene*, MAX_LOADED_SCENES>();
+	currentlyLoadedScenesPtr = { };
 
 }
 

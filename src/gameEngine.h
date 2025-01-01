@@ -71,7 +71,6 @@ private:
 
 	// game entities
 	Entity* playerEntity;
-	Entity* NPCEntity;
 	
 	// state manager
 	GameStateManager* m_stateManagerPtr;

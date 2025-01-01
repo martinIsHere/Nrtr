@@ -1,6 +1,6 @@
 #include "GameEngine.h"
 
-void set_pixel(const SDL_Surface* surface, const int x, const int y, const Uint32 pixel)
+void set_pixel(const SDL_Surface* surface, const uint64_t x, const uint64_t y, const Uint32 pixel)
 {
 	Uint8* target_pixel = (Uint8*)surface->pixels + y * surface->pitch + x * 4;
 	*(Uint32*)target_pixel = pixel;

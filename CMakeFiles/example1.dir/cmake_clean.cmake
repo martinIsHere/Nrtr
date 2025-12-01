@@ -1,0 +1,41 @@
+file(REMOVE_RECURSE
+  "C:/Users/marti/Desktop/Code/Nrtr/bin/example1.exe"
+  "C:/Users/marti/Desktop/Code/Nrtr/bin/example1.exe.manifest"
+  "C:/Users/marti/Desktop/Code/Nrtr/bin/example1.pdb"
+  "CMakeFiles/example1.dir/src/Camera.cpp.obj"
+  "CMakeFiles/example1.dir/src/Camera.cpp.obj.d"
+  "CMakeFiles/example1.dir/src/CollisionComponent.cpp.obj"
+  "CMakeFiles/example1.dir/src/CollisionComponent.cpp.obj.d"
+  "CMakeFiles/example1.dir/src/DrawingComponent.cpp.obj"
+  "CMakeFiles/example1.dir/src/DrawingComponent.cpp.obj.d"
+  "CMakeFiles/example1.dir/src/GameStateManager.cpp.obj"
+  "CMakeFiles/example1.dir/src/GameStateManager.cpp.obj.d"
+  "CMakeFiles/example1.dir/src/InteractionComponent.cpp.obj"
+  "CMakeFiles/example1.dir/src/InteractionComponent.cpp.obj.d"
+  "CMakeFiles/example1.dir/src/PositionComponent.cpp.obj"
+  "CMakeFiles/example1.dir/src/PositionComponent.cpp.obj.d"
+  "CMakeFiles/example1.dir/src/Scene.cpp.obj"
+  "CMakeFiles/example1.dir/src/Scene.cpp.obj.d"
+  "CMakeFiles/example1.dir/src/SceneCollection.cpp.obj"
+  "CMakeFiles/example1.dir/src/SceneCollection.cpp.obj.d"
+  "CMakeFiles/example1.dir/src/TheaterEngine.cpp.obj"
+  "CMakeFiles/example1.dir/src/TheaterEngine.cpp.obj.d"
+  "CMakeFiles/example1.dir/src/Vector.cpp.obj"
+  "CMakeFiles/example1.dir/src/Vector.cpp.obj.d"
+  "CMakeFiles/example1.dir/src/gameEngine.cpp.obj"
+  "CMakeFiles/example1.dir/src/gameEngine.cpp.obj.d"
+  "CMakeFiles/example1.dir/src/gameMap.cpp.obj"
+  "CMakeFiles/example1.dir/src/gameMap.cpp.obj.d"
+  "CMakeFiles/example1.dir/src/includesGlobalVariables.cpp.obj"
+  "CMakeFiles/example1.dir/src/includesGlobalVariables.cpp.obj.d"
+  "CMakeFiles/example1.dir/src/main.cpp.obj"
+  "CMakeFiles/example1.dir/src/main.cpp.obj.d"
+  "CMakeFiles/example1.dir/src/player.cpp.obj"
+  "CMakeFiles/example1.dir/src/player.cpp.obj.d"
+  "libexample1.dll.a"
+)
+
+# Per-language clean rules from dependency scanning.
+foreach(lang CXX)
+  include(CMakeFiles/example1.dir/cmake_clean_${lang}.cmake OPTIONAL)
+endforeach()

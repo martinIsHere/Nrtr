@@ -1,0 +1,3 @@
+-std=c++17
+-m64
+-I"C:\Users\marti\Desktop\Code\win64DevTools\w64devkit\lib\gcc\x86_64-w64-mingw32\14.2.0\include\c++"

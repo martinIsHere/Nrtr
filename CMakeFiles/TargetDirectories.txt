@@ -1,0 +1,3 @@
+C:/Users/marti/Desktop/Code/Nrtr/Nrtr/CMakeFiles/example1.dir
+C:/Users/marti/Desktop/Code/Nrtr/Nrtr/CMakeFiles/edit_cache.dir
+C:/Users/marti/Desktop/Code/Nrtr/Nrtr/CMakeFiles/rebuild_cache.dir

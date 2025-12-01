@@ -1,7 +1,6 @@
 #pragma once
 #include "Components.h"
 #include "ECS.h"
-#include "GameMap.h"
 #include "GameStateManager.h"
 #include "TheaterEngine.h"
 #include "includes.h"
@@ -32,7 +31,7 @@ class GameEngine {
 
   SDL_Renderer* getRenPtr() const;
 
-  const uint32_t getWinSize() const;
+  const Vector getWinSize() const;
 
   void renderText();
 

@@ -1,4 +1,5 @@
 #include "GameEngine.h"
+#include "Vector.h"
 
 void set_pixel(const SDL_Surface* surface, const uint64_t x, const uint64_t y,
                const Uint32 pixel) {
@@ -73,8 +74,8 @@ SDL_Texture* pixelTexturePtr;
 
 GameEngine::GameEngine(const uint32_t nWidth, const uint32_t nHeight,
                        const std::string title, const uint32_t fps) {
-  nElapsedTime = NULL;     // for capping fps - global
-  unStartElapsedTime = 0;  // for capping fps - global
+  nElapsedTime = (uint32_t)NULL;  // for capping fps - global
+  unStartElapsedTime = 0;         // for capping fps - global
   nWinWidth = nWidth;
   nWinHeight = nHeight;
   bRunning = true;
@@ -554,4 +555,6 @@ bool GameEngine::alive() { return bRunning; }
 
 SDL_Renderer* GameEngine::getRenPtr() const { return renPtr; }
 
-const uint32_t GameEngine::getWinSize() const { return nWinWidth, nWinHeight; }
+const Vector GameEngine::getWinSize() const {
+  return Vector(nWinWidth, nWinHeight);
+}

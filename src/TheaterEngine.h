@@ -1,79 +1,73 @@
 #pragma once
-#include "includes.h"
+#include "ECS.h"
 #include "GameStateManager.h"
 #include "Scene.h"
-#include "ECS.h"
+#include "includes.h"
 
 #define MAX_LOADED_SCENES 10
 
 class TheaterEngine {
-	 GameStateManager* gameStateManagerPtr;
-	 Scene* currentScenePtr;
-	 Manager* entityManagerPtr;
-	 std::array<Scene*, MAX_LOADED_SCENES> currentlyLoadedScenesPtr;
-public:
-	TheaterEngine();
+  GameStateManager* gameStateManagerPtr;
+  Scene* currentScenePtr;
+  Manager* entityManagerPtr;
+  std::array<Scene*, MAX_LOADED_SCENES> currentlyLoadedScenesPtr;
 
-	~TheaterEngine();
+ public:
+  TheaterEngine();
 
-	void init(
-		GameStateManager* gameStateManagerPtr,
-		Manager* entityManagerPtr,
-		GameMap** currentMapPtrPtr,
-		SDL_Renderer* renPtr,
-		uint32_t* nWinWidthPtr,
-		uint32_t* nWinHeightPtr
-		);
+  ~TheaterEngine();
 
-	void initCurrentScene();
+  void init(GameStateManager* gameStateManagerPtr, Manager* entityManagerPtr,
+            GameMap** currentMapPtrPtr, SDL_Renderer* renPtr,
+            uint32_t* nWinWidthPtr, uint32_t* nWinHeightPtr);
 
-	void makeEntityMove_constantSpeedNoDiagonalMovement(
-		Entity* ent, 
-		int xDest, 
-		int yDest, 
-		float speed, 
-		int waitTimeFirstStop,
-		int waitTimeSecondStop,
-		bool xMove_before_yMove
-		);
-	void teleportEntity(
-		Entity* ent, 
-		int xDest, 
-		int yDest
-		);
+  void initCurrentScene();
 
-	bool changeCurrentMap(GameMap* in_currentMapPtr);
+  void makeEntityMove_constantSpeedNoDiagonalMovement(Entity* ent, int xDest,
+                                                      int yDest, float speed,
+                                                      int waitTimeFirstStop,
+                                                      int waitTimeSecondStop,
+                                                      bool xMove_before_yMove);
+  void teleportEntity(Entity* ent, int xDest, int yDest);
 
-	template <typename T>
-	Scene* loadOrGetScene() {
-		if (currentlyLoadedScenesPtr[Scene::getSceneTypeID<T>()] != nullptr) // if wanted scene is already loaded
-			return currentlyLoadedScenesPtr[Scene::getSceneTypeID<T>()]; // return the loaded scene
-		T* newScene = new T(); // else return a newly created version of the scene type ...
-		currentlyLoadedScenesPtr[Scene::getSceneTypeID<T>()] = newScene; // and add to array of loaded scenes.
-		return newScene;
-	}
+  bool changeCurrentMap(GameMap* in_currentMapPtr);
 
-	template <typename T>  // return true if the new scene has already been loaded
-	bool changeCurrentScene() {
-		Scene* in_currentScenePtr = loadOrGetScene<T>(); 
-		
-		if (currentScenePtr) { // if previous scene was not nullptr
-			currentScenePtr->end(); // call an ending function.
-		}
-		currentScenePtr = in_currentScenePtr; // update current scenePtr
-		return true;
-	}
+  template <typename T>
+  Scene* loadOrGetScene() {
+    if (currentlyLoadedScenesPtr
+            [Scene::getSceneTypeID<T>()])  // if wanted scene is already loaded
+      return currentlyLoadedScenesPtr
+          [Scene::getSceneTypeID<T>()];  // return the loaded scene
+    T* newScene =
+        new T();  // else return a newly created version of the scene type ...
+    currentlyLoadedScenesPtr[Scene::getSceneTypeID<T>()] =
+        newScene;  // and add to array of loaded scenes.
+    return newScene;
+  }
 
-	void setTransitionState();
+  template <typename T>  // return true if the new scene has already been loaded
+  bool changeCurrentScene() {
+    Scene* in_currentScenePtr = loadOrGetScene<T>();
+    if (!in_currentScenePtr) {
+      return false;
+    }
 
-	Entity* getPlayerEntity();
+    if (currentScenePtr) {     // if previous scene was not nullptr
+      currentScenePtr->end();  // call an ending function.
+    }
+    currentScenePtr = in_currentScenePtr;  // update current scenePtr
+    return true;
+  }
 
-	GameMap* getCurrentMap();
+  void setTransitionState();
 
-	void update();
+  Entity* getPlayerEntity();
 
-	void draw();
+  GameMap* getCurrentMap();
 
-private:
+  void update();
 
+  void draw();
+
+ private:
 };

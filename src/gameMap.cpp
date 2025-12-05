@@ -32,6 +32,8 @@ repeating:
         3 = both
 */
 
+// TODO DRAW_MAP FUNCTIONS
+
 void GameMap::loadMap(std::string map) {
   m_mapFile.open(map, std::fstream::in | std::fstream::binary);
 
@@ -199,11 +201,15 @@ void GameMap::draw() {
   // offset from camera body to top left corner of viewing area
   int offsetX = *m_mainCamera->getOffsetXPtr();
   int offsetY = *m_mainCamera->getOffsetYPtr();
+  const int initialX = int(offsetX / m_blockSize);
+  const int initialY = int(offsetY / m_blockSize);
+  const int endBoundaryX =
+      int((m_visibleTilesX_pixels + offsetX) / m_blockSize) + 1;
+  const int endBoundaryY =
+      int((m_visibleTilesY_pixels + offsetY) / m_blockSize) + 1;
 
-  for (int y = int(offsetY / m_blockSize);
-       y < (m_visibleTilesY_pixels + offsetY) / m_blockSize; y++) {
-    for (int x = int(offsetX / m_blockSize);
-         x < (m_visibleTilesX_pixels + offsetX) / m_blockSize; x++) {
+  for (int y = initialY; y < endBoundaryY; y++) {
+    for (int x = initialX; x < endBoundaryX; x++) {
       *m_tempDstRect = {int((x * m_blockSize) - offsetX),
                         int((y * m_blockSize) - offsetY), int(m_blockSize),
                         int(m_blockSize)};
@@ -248,11 +254,18 @@ void GameMap::draw() {
 void GameMap::drawSecondLayer() {
   int offsetX = *m_mainCamera->getOffsetXPtr();
   int offsetY = *m_mainCamera->getOffsetYPtr();
+  const int initialX = int(offsetX / m_blockSize);
+  const int initialY = int(offsetY / m_blockSize);
+  const int endBoundaryX =
+      int((m_visibleTilesX_pixels + offsetX) / m_blockSize) + 1;
+  const int endBoundaryY =
+      int((m_visibleTilesY_pixels + offsetY) / m_blockSize) + 1;
 
   SDL_GetMouseState(&mousePositionX, &mousePositionY);
   mousePositionX += offsetX;
   mousePositionY += offsetY;
 
+  // debug
   dstRect2->x =
       (mousePositionX >= 0 ? int(mousePositionX / TILE_SIZE_PIXELS)
                            : int(mousePositionX / TILE_SIZE_PIXELS) - 1) *
@@ -265,11 +278,10 @@ void GameMap::drawSecondLayer() {
       offsetY;
   dstRect2->w = TILE_SIZE_PIXELS;
   dstRect2->h = TILE_SIZE_PIXELS;
+  //
 
-  for (int y = (int)(offsetY / m_blockSize);
-       y < (m_visibleTilesY_pixels + offsetY) / m_blockSize; y++) {
-    for (int x = (int)(offsetX / m_blockSize);
-         x < (m_visibleTilesX_pixels + offsetX) / m_blockSize; x++) {
+  for (int y = initialY; y < endBoundaryY; y++) {
+    for (int x = initialX; x < endBoundaryX; x++) {
       *m_tempDstRect = {int((x * m_blockSize) - offsetX),
                         int((y * m_blockSize) - offsetY), int(m_blockSize),
                         int(m_blockSize)};
@@ -290,6 +302,7 @@ void GameMap::drawSecondLayer() {
     }
   }
 
+  // debug
   SDL_SetRenderDrawColor(m_ren, 0, 255, 255, 255);
   SDL_RenderDrawRect(m_ren, dstRect2);
 }
